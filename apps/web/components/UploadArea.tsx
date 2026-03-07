@@ -4,13 +4,6 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { CaseUploadForm } from "@/components/CaseUploadForm";
 
-const PAST_DOCS = [
-  { id: 1, name: "Asylum Application (I-589)" },
-  { id: 2, name: "Personal Declaration" },
-  { id: 3, name: "Country Conditions Report" },
-  { id: 4, name: "Supporting Evidence Package" },
-];
-
 export function UploadArea() {
   const [showForm, setShowForm] = useState(false);
 
@@ -45,21 +38,6 @@ export function UploadArea() {
         </span>
       </button>
 
-      {/* Past Documents */}
-      <div>
-        <h2 className="text-sm font-medium text-[#e8e8f0] mb-3">Past Documents</h2>
-        <div className="flex flex-col divide-y divide-[#2E323A] border border-[#2E323A] rounded-[14px] overflow-hidden">
-          {PAST_DOCS.map((doc) => (
-            <div
-              key={doc.id}
-              className="flex items-center px-4 py-3 hover:bg-[#161A24] transition cursor-pointer"
-            >
-              <span className="text-sm text-[#2E323A] w-16 shrink-0">Name</span>
-              <span className="text-sm text-[#e8e8f0]">{doc.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
