@@ -63,7 +63,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
 
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = false; // Only show final results, no flickering
+    recognition.interimResults = false; // Only show final results, no flickering.
     recognition.lang = "";
 
     finalTranscriptRef.current = query;

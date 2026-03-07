@@ -44,7 +44,6 @@ const SearchPage = () => {
       setMessages(loaded);
       setSessionId(id);
     } catch {
-      // Session not found or unauthorized — start fresh.
       setMessages([]);
       setSessionId(null);
     }
@@ -57,7 +56,6 @@ const SearchPage = () => {
         loadSession(id);
       }
     } else {
-      // New chat — reset state.
       setMessages([]);
       setSessionId(null);
     }
@@ -120,7 +118,7 @@ const SearchPage = () => {
   return (
     <AppLayout>
       <div className="flex flex-col h-full">
-        {/* Messages area */}
+        {/* Messages area. */}
         <div className="flex-1 overflow-auto px-6 py-8 max-w-3xl mx-auto w-full">
           {messages.length === 0 && !loading && (
             <div className="flex flex-col items-center justify-center h-full text-center">
@@ -170,7 +168,7 @@ const SearchPage = () => {
           </div>
         </div>
 
-        {/* Chat input fixed at bottom */}
+        {/* Chat input fixed at bottom. */}
         <div className="px-6 py-5">
           <div className="max-w-3xl mx-auto">
             <ChatInput onSend={handleSend} disabled={loading} />

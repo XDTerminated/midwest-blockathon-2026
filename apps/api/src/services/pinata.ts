@@ -5,13 +5,13 @@ import { fileURLToPath } from "url";
 
 import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
 
-// Ensure env vars are loaded before initializing SDK
+// Ensure env vars are loaded before initializing SDK.
 if (!process.env.PINATA_JWT) {
   const __dirname = dirname(fileURLToPath(import.meta.url));
   config({ path: resolve(__dirname, "../../../../.env") });
 }
 
-export const pinata = new PinataSDK({
+const pinata = new PinataSDK({
   pinataJwt: process.env.PINATA_JWT!,
   pinataGateway: process.env.PINATA_GATEWAY!,
 });
@@ -52,7 +52,7 @@ const groupIdForCaseType = (caseType: CaseType): string | undefined => {
   return slug ? groups[slug] : undefined;
 };
 
-// --- In-memory cache for case data fetched from IPFS gateway ---
+// In-memory cache for case data fetched from IPFS gateway.
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const CACHE_MAX_SIZE = 200;
 
@@ -74,7 +74,7 @@ const getCached = (cid: string): CaseRecord | null => {
 };
 
 const setCache = (cid: string, data: CaseRecord): void => {
-  // Evict oldest entries if cache is full
+  // Evict oldest entries if cache is full.
   if (caseCache.size >= CACHE_MAX_SIZE) {
     const firstKey = caseCache.keys().next().value;
     if (firstKey) caseCache.delete(firstKey);
@@ -160,7 +160,7 @@ export const pinataService = {
     try {
       return await builder.vectorize();
     } catch {
-      // vectorize may be in beta or not enabled
+      // Vectorize may be in beta or not enabled.
       return await pinata.upload.file(file).addMetadata({ name, keyvalues });
     }
   },
@@ -173,7 +173,7 @@ export const pinataService = {
       return this.listAllCaseData(limit).catch(() => []);
     }
 
-    // Query ALL groups in parallel instead of sequentially
+    // Query ALL groups in parallel instead of sequentially.
     const results = await Promise.allSettled(
       groupIds.map((groupId) =>
         pinata.files.queryVectors({ groupId, query, returnFile: false })
@@ -199,7 +199,7 @@ export const pinataService = {
       return this.listAllCaseData(limit);
     }
 
-    // Fetch all case data in parallel, using cache
+    // Fetch all case data in parallel, using cache.
     const cases = await Promise.all(
       topMatches.map((m) => this.getCase(m.cid).catch(() => null))
     );
@@ -252,7 +252,7 @@ export const pinataService = {
   },
 
   async getCase(cid: string): Promise<CaseRecord> {
-    // Check cache first
+    // Check cache first.
     const cached = getCached(cid);
     if (cached) return cached;
 
@@ -272,12 +272,12 @@ export const pinataService = {
   },
 
   async signCase(_cid: string): Promise<string | null> {
-    // File signatures are a Pinata beta feature not in SDK v1 — skip gracefully
+    // File signatures are a Pinata beta feature not in SDK v1 — skip gracefully.
     return null;
   },
 
   async getSignature(_cid: string): Promise<{ isValid: boolean; signedAt?: string; signedBy?: string } | null> {
-    // Not in SDK v1 — return stub showing IPFS content-addressing provides integrity
+    // Not in SDK v1 — return stub showing IPFS content-addressing provides integrity.
     return { isValid: true, signedAt: undefined, signedBy: undefined };
   },
 

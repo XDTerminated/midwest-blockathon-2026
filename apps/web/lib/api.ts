@@ -1,12 +1,11 @@
 import type {
-  SearchResult,
   CaseRecord,
-  CaseListItem,
+  CategorySlug,
+  PaymentRequiredError,
+  PresignResult,
+  SearchResult,
   UploadResult,
   VerifyResult,
-  PresignResult,
-  PaymentRequiredError,
-  CategorySlug,
 } from "@immivault/shared";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
@@ -36,16 +35,6 @@ const apiFetch = async <T>(
 
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
-export const searchCases = async (
-  q: string,
-  params?: { caseType?: string; country?: string; outcome?: string; limit?: number }
-): Promise<SearchResult> => {
-  const query = new URLSearchParams({ q, ...Object.fromEntries(
-    Object.entries(params ?? {}).filter(([, v]) => v != null).map(([k, v]) => [k, String(v)])
-  )});
-  return apiFetch<SearchResult>(`/api/search?${query}`);
-};
-
 export const chatSearch = async (
   q: string,
   history: ChatMessage[] = []
@@ -54,10 +43,6 @@ export const chatSearch = async (
     method: "POST",
     body: JSON.stringify({ q, history }),
   });
-};
-
-export const listCases = async (page = 1, limit = 20): Promise<{ cases: CaseListItem[]; page: number; limit: number }> => {
-  return apiFetch(`/api/cases?page=${page}&limit=${limit}`);
 };
 
 export const listCasesByCategory = async (slug: CategorySlug): Promise<{ cases: CaseListItem[]; slug: string }> => {
