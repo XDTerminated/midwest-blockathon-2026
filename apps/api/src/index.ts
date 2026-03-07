@@ -41,7 +41,7 @@ app.onError((err, c) => {
 app.get("/health", (c) => c.json({ ok: true, service: "immivault-api" }));
 
 // BetterAuth handler — mount on /api/auth/*
-app.on(["POST", "GET"], "/api/auth/**", (c) => {
+app.all("/api/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
 

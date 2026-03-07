@@ -4,10 +4,12 @@ import { LEGAL_DISCLAIMER } from "@immivault/shared";
 
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 
-const client = new OpenAI({
-  baseURL: "https://api.groq.com/openai/v1",
-  apiKey: process.env.GROQ_API_KEY,
-});
+function getClient() {
+  return new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+}
 
 const SYSTEM_PROMPT = `You are a legal research assistant for ImmiVault, a platform that helps immigrants understand their legal options based on real, anonymized case data contributed by other immigrants.
 
@@ -73,7 +75,7 @@ ${caseContext}
 
 Based on the user's situation and the cases above, provide a comprehensive legal research summary. Cite specific cases by CID using the format [Case CID: <cid>]. Be compassionate and practical.`;
 
-    const completion = await client.chat.completions.create({
+    const completion = await getClient().chat.completions.create({
       model: GROQ_MODEL,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },

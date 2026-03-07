@@ -1,10 +1,24 @@
 @import "tailwindcss";
 
+@theme {
+  --font-questrial: "Questrial", sans-serif;
+  --font-crimson: "Crimson Text", serif;
+  --font-andika: "Andika", sans-serif;
+}
+
 body {
   background-color: #0C0F18;
   color: #e8e8f0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Andika", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Questrial", sans-serif;
+}
+
+p, blockquote, .font-crimson {
+  font-family: "Crimson Text", serif;
 }
 
 /* Scrollbar */
