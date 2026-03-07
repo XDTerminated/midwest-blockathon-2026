@@ -22,7 +22,7 @@ const RootLayout = ({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased min-h-screen bg-[#0C0F18] text-[#e8e8f0] font-andika">
+      <body className="antialiased min-h-screen bg-[#121620] text-[#e8e8f0] font-andika">
         <Providers>{children}</Providers>
       </body>
     </html>

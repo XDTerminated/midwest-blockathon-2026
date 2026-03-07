@@ -42,7 +42,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C0F18] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#121620] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold text-[#e8e8f0] text-center mb-8">
           Sign Up
@@ -50,38 +50,38 @@ const SignUpPage = () => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs text-[#8a8ea0] mb-1.5">Name</label>
+            <label className="block text-xs text-[#9CA3AF] mb-1.5">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full bg-[#161A24] border border-[#2E323A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#2E323A] outline-none focus:border-[#C9A54E] transition"
+              className="w-full bg-[#1C2030] border border-[#363C4A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6B7280] outline-none focus:border-[#D4AD5A] transition"
               placeholder="Your name"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-[#8a8ea0] mb-1.5">Email</label>
+            <label className="block text-xs text-[#9CA3AF] mb-1.5">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-[#161A24] border border-[#2E323A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#2E323A] outline-none focus:border-[#C9A54E] transition"
+              className="w-full bg-[#1C2030] border border-[#363C4A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6B7280] outline-none focus:border-[#D4AD5A] transition"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-[#8a8ea0] mb-1.5">Password</label>
+            <label className="block text-xs text-[#9CA3AF] mb-1.5">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full bg-[#161A24] border border-[#2E323A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#2E323A] outline-none focus:border-[#C9A54E] transition"
+              className="w-full bg-[#1C2030] border border-[#363C4A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6B7280] outline-none focus:border-[#D4AD5A] transition"
               placeholder="Min 8 characters"
             />
           </div>
@@ -93,15 +93,15 @@ const SignUpPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#C9A54E] text-[#0C0F18] font-medium text-sm py-2.5 rounded-[10px] hover:bg-[#d4b45e] transition disabled:opacity-50"
+            className="w-full bg-[#D4AD5A] text-[#121620] font-medium text-sm py-2.5 rounded-[10px] hover:bg-[#E0BD6A] transition disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
-        <p className="text-center text-xs text-[#2E323A] mt-6">
+        <p className="text-center text-xs text-[#6B7280] mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#C9A54E] hover:underline">
+          <Link href="/login" className="text-[#D4AD5A] hover:underline">
             Log in
           </Link>
         </p>

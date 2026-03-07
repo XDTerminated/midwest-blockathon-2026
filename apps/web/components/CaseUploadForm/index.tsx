@@ -46,28 +46,28 @@ export const CaseUploadForm = () => {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-[#e8e8f0] mb-2">Case Uploaded!</h2>
-        <p className="text-[#2E323A] mb-4">
+        <p className="text-[#6B7280] mb-4">
           Your anonymized case has been stored on Pinata Private IPFS.
         </p>
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-[14px] p-4 max-w-sm mx-auto mb-6">
-          <p className="text-xs text-[#2E323A] mb-1">Content ID (CID)</p>
-          <p className="font-mono text-sm text-[#C9A54E] break-all">{submitted.cid}</p>
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-[14px] p-4 max-w-sm mx-auto mb-6">
+          <p className="text-xs text-[#6B7280] mb-1">Content ID (CID)</p>
+          <p className="font-mono text-sm text-[#D4AD5A] break-all">{submitted.cid}</p>
         </div>
         <div className="flex justify-center gap-3">
           <a
             href={`/verify/${submitted.cid}`}
-            className="text-sm text-[#C9A54E] hover:underline"
+            className="text-sm text-[#D4AD5A] hover:underline"
           >
             Verify Case Integrity →
           </a>
-          <span className="text-[#2E323A]">|</span>
+          <span className="text-[#6B7280]">|</span>
           <button
             onClick={() => {
               setSubmitted(null);
               setFormData({});
               setStep(0);
             }}
-            className="text-sm text-[#2E323A] hover:text-[#e8e8f0]"
+            className="text-sm text-[#6B7280] hover:text-[#e8e8f0]"
           >
             Upload Another Case
           </button>
@@ -86,21 +86,21 @@ export const CaseUploadForm = () => {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                   i < step
-                    ? "bg-[#C9A54E] text-[#0C0F18]"
+                    ? "bg-[#D4AD5A] text-[#121620]"
                     : i === step
-                    ? "bg-[#C9A54E] text-[#0C0F18]"
-                    : "bg-[#161A24] text-[#2E323A]"
+                    ? "bg-[#D4AD5A] text-[#121620]"
+                    : "bg-[#1C2030] text-[#6B7280]"
                 }`}
               >
                 {i < step ? "✓" : i + 1}
               </div>
-              <span className={`text-xs mt-1 whitespace-nowrap hidden sm:block ${i <= step ? "text-[#e8e8f0]" : "text-[#2E323A]"}`}>
+              <span className={`text-xs mt-1 whitespace-nowrap hidden sm:block ${i <= step ? "text-[#e8e8f0]" : "text-[#6B7280]"}`}>
                 {label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={`flex-1 h-0.5 mx-2 ${i < step ? "bg-[#C9A54E]" : "bg-[#161A24]"}`}
+                className={`flex-1 h-0.5 mx-2 ${i < step ? "bg-[#D4AD5A]" : "bg-[#1C2030]"}`}
               />
             )}
           </div>

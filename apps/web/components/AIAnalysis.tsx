@@ -85,9 +85,9 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
   };
 
   return (
-    <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
+    <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs text-[#2E323A] bg-[#0C0F18] border border-[#2E323A] px-2 py-1 rounded">
+        <span className="text-xs text-[#9CA3AF] bg-[#121620] border border-[#363C4A] px-2 py-1 rounded">
           Lumina AI
         </span>
         <button
@@ -95,10 +95,10 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
           disabled={loading}
           className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium ${
             speaking
-              ? "text-[#C9A54E] bg-[#C9A54E]/10"
+              ? "text-[#D4AD5A] bg-[#D4AD5A]/10"
               : loading
-                ? "text-[#C9A54E] bg-[#C9A54E]/5 opacity-70"
-                : "text-[#5a5e6a] hover:text-[#C9A54E] hover:bg-[#C9A54E]/5"
+                ? "text-[#D4AD5A] bg-[#D4AD5A]/5 opacity-70"
+                : "text-[#7B8294] hover:text-[#D4AD5A] hover:bg-[#D4AD5A]/5"
           }`}
           title={loading ? "Generating audio..." : speaking ? "Stop listening" : "Listen to response"}
         >
@@ -133,8 +133,8 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
 
       {/* Cited cases */}
       {result.citedCases.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-[#2E323A]">
-          <p className="text-xs text-[#2E323A] uppercase tracking-wide mb-2">
+        <div className="mt-4 pt-4 border-t border-[#363C4A]">
+          <p className="text-xs text-[#6B7280] uppercase tracking-wide mb-2">
             Cases Referenced
           </p>
           <div className="flex flex-wrap gap-2">

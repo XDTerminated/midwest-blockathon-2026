@@ -14,9 +14,9 @@ interface Props {
 }
 
 const inputClass =
-  "w-full bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9A54E] transition";
+  "w-full bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4AD5A] transition";
 
-const labelClass = "block text-sm font-medium text-[#8a8ea0] mb-1";
+const labelClass = "block text-sm font-medium text-[#9CA3AF] mb-1";
 
 export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
   const [customDoc, setCustomDoc] = useState("");
@@ -45,14 +45,14 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <h2 className="text-xl font-semibold text-[#e8e8f0]">Case Details</h2>
-      <p className="text-[#2E323A] text-sm">
+      <p className="text-[#6B7280] text-sm">
         Help others by sharing what documents you used and what made a difference.
       </p>
 
       {/* Documents */}
       <div>
         <label className={labelClass}>
-          Documents Used <span className="text-[#C9A54E]">*</span>
+          Documents Used <span className="text-[#D4AD5A]">*</span>
         </label>
         <div className="flex flex-wrap gap-2 mb-3">
           {COMMON_DOCUMENTS.map((doc) => (
@@ -62,8 +62,8 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
               onClick={() => toggleDocument(doc)}
               className={`text-xs px-3 py-1.5 rounded-full border transition ${
                 documents.includes(doc)
-                  ? "bg-[#C9A54E] text-white border-[#C9A54E]"
-                  : "bg-transparent text-[#2E323A] border-[#2E323A] hover:border-[#C9A54E] hover:text-[#e8e8f0]"
+                  ? "bg-[#D4AD5A] text-white border-[#D4AD5A]"
+                  : "bg-transparent text-[#6B7280] border-[#363C4A] hover:border-[#D4AD5A] hover:text-[#e8e8f0]"
               }`}
             >
               {doc}
@@ -78,12 +78,12 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
             onChange={(e) => setCustomDoc(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomDoc())}
             placeholder="Add other document..."
-            className="flex-1 bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#C9A54E] transition"
+            className="flex-1 bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#D4AD5A] transition"
           />
           <button
             type="button"
             onClick={addCustomDoc}
-            className="text-sm border border-[#2E323A] text-[#2E323A] px-3 py-1.5 rounded-lg hover:border-[#C9A54E] hover:text-[#e8e8f0] transition"
+            className="text-sm border border-[#363C4A] text-[#6B7280] px-3 py-1.5 rounded-lg hover:border-[#D4AD5A] hover:text-[#e8e8f0] transition"
           >
             Add
           </button>
@@ -93,7 +93,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
             {documents.map((doc) => (
               <span
                 key={doc}
-                className="inline-flex items-center gap-1 bg-[#0f1a0f] border border-[#C9A54E] text-[#C9A54E] text-xs px-2 py-1 rounded-full"
+                className="inline-flex items-center gap-1 bg-[#0f1a0f] border border-[#D4AD5A] text-[#D4AD5A] text-xs px-2 py-1 rounded-full"
               >
                 {doc}
                 <button type="button" onClick={() => toggleDocument(doc)}>
@@ -108,7 +108,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
       {/* Timeline */}
       <div>
         <label className={labelClass}>
-          Timeline (months from filing to decision) <span className="text-[#C9A54E]">*</span>
+          Timeline (months from filing to decision) <span className="text-[#D4AD5A]">*</span>
         </label>
         <input
           required
@@ -125,7 +125,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
       {/* Key Factors */}
       <div>
         <label className={labelClass}>
-          Key Factors <span className="text-[#C9A54E]">*</span>
+          Key Factors <span className="text-[#D4AD5A]">*</span>
         </label>
         <textarea
           required
@@ -134,14 +134,14 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
           value={data.keyFactors ?? ""}
           onChange={(e) => onChange({ keyFactors: e.target.value })}
           placeholder="What do you think made the biggest difference in your case? What was most persuasive?"
-          className="w-full bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9A54E] transition resize-none"
+          className="w-full bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4AD5A] transition resize-none"
         />
       </div>
 
       {/* Lessons Learned */}
       <div>
         <label className={labelClass}>
-          Lessons Learned <span className="text-[#C9A54E]">*</span>
+          Lessons Learned <span className="text-[#D4AD5A]">*</span>
         </label>
         <textarea
           required
@@ -150,18 +150,18 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
           value={data.lessonsLearned ?? ""}
           onChange={(e) => onChange({ lessonsLearned: e.target.value })}
           placeholder="What advice would you give to someone in a similar situation? What do you wish you had known?"
-          className="w-full bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9A54E] transition resize-none"
+          className="w-full bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4AD5A] transition resize-none"
         />
       </div>
 
       <div className="flex justify-between pt-2">
-        <button type="button" onClick={onBack} className="text-[#2E323A] hover:text-[#e8e8f0] text-sm px-4 py-2 transition">
+        <button type="button" onClick={onBack} className="text-[#6B7280] hover:text-[#e8e8f0] text-sm px-4 py-2 transition">
           ← Back
         </button>
         <button
           type="submit"
           disabled={documents.length === 0}
-          className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
+          className="bg-[#D4AD5A] hover:bg-[#E0BD6A] disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
         >
           Continue →
         </button>

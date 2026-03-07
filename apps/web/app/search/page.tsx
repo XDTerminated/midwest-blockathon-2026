@@ -63,7 +63,7 @@ const SearchPage = () => {
         <div className="flex-1 overflow-auto px-6 py-8 max-w-3xl mx-auto w-full">
           {messages.length === 0 && !loading && (
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <p className="text-[#2E323A] text-base">
+              <p className="text-[#6B7280] text-base">
                 Describe your immigration situation to find relevant cases
               </p>
             </div>
@@ -73,7 +73,7 @@ const SearchPage = () => {
             {messages.map((msg, i) =>
               msg.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <div className="bg-[#1E2330] border border-[#2E323A] rounded-[14px] px-5 py-4 text-base text-[#e8e8f0] leading-relaxed max-w-[80%]">
+                  <div className="bg-[#242838] border border-[#363C4A] rounded-[14px] px-5 py-4 text-base text-[#e8e8f0] leading-relaxed max-w-[80%]">
                     {msg.content}
                   </div>
                 </div>
@@ -81,7 +81,7 @@ const SearchPage = () => {
                 <div key={i} className="flex justify-start">
                   <div className="max-w-[85%]">
                     {msg.error ? (
-                      <div className="bg-[#1a1015] border border-[#3a2020] text-red-400 rounded-[14px] px-5 py-4 text-base">
+                      <div className="bg-[#201518] border border-[#3a2020] text-red-400 rounded-[14px] px-5 py-4 text-base">
                         {msg.error}
                       </div>
                     ) : msg.result ? (
@@ -94,13 +94,17 @@ const SearchPage = () => {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-3 text-base py-3">
-                  <span className="inline-flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:300ms]" />
-                  </span>
-                  <span className="shimmer-text text-sm font-medium tracking-wide">Thinking...</span>
+                <div className="flex items-center gap-3 py-3">
+                  <div className="relative w-8 h-8 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full bg-[#D4AD5A]/10 thinking-ring" />
+                    <svg className="w-5 h-5 text-[#D4AD5A] thinking-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 3v19" />
+                      <path d="M5 7l7-4 7 4" />
+                      <path d="M3 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
+                      <path d="M17 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
+                    </svg>
+                  </div>
+                  <span className="shimmer-text text-sm font-medium tracking-wide">Analyzing cases...</span>
                 </div>
               </div>
             )}
@@ -113,7 +117,7 @@ const SearchPage = () => {
         <div className="px-6 py-5">
           <div className="max-w-3xl mx-auto">
             <ChatInput onSend={handleSend} disabled={loading} />
-            <p className="text-center text-[#2E323A] text-xs mt-3">
+            <p className="text-center text-[#6B7280] text-xs mt-3">
               Project utilizes real case data, not legal advice. Always verify with a qualified immigration attorney.
             </p>
           </div>

@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #0C0F18;
+  background-color: #121620;
   color: #e8e8f0;
   font-family: "Andika", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -30,9 +30,9 @@ p, blockquote, .font-crimson {
 .shimmer-text {
   background: linear-gradient(
     90deg,
-    #4a4e5a 0%,
+    #6B7280 0%,
     #ffffff 50%,
-    #4a4e5a 100%
+    #6B7280 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -41,7 +41,27 @@ p, blockquote, .font-crimson {
   animation: shimmer 2.5s linear infinite;
 }
 
+/* Thinking indicator — scale tipping */
+@keyframes scaleTip {
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(12deg); }
+}
+
+@keyframes pulseRing {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.15); }
+}
+
+.thinking-scale {
+  animation: scaleTip 1.8s ease-in-out infinite;
+  transform-origin: center 40%;
+}
+
+.thinking-ring {
+  animation: pulseRing 1.8s ease-in-out infinite;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0C0F18; }
-::-webkit-scrollbar-thumb { background: #2E323A; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #121620; }
+::-webkit-scrollbar-thumb { background: #3D4451; border-radius: 3px; }

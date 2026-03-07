@@ -17,8 +17,8 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (isPending || !session?.user) {
     return (
-      <div className="flex h-screen bg-[#0C0F18] overflow-hidden">
-        <aside className="shrink-0 h-screen bg-[#0C0F18] border-r border-[#2E323A] w-[220px] px-5 py-6" />
+      <div className="flex h-screen bg-[#121620] overflow-hidden">
+        <aside className="shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] w-[220px] px-5 py-6" />
         <main className="flex-1" />
       </div>
     );

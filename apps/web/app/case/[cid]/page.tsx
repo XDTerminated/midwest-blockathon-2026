@@ -76,7 +76,7 @@ const CasePage = ({ params }: CasePageProps) => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-8 h-8 animate-spin text-[#C9A54E]" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#D4AD5A]" />
         </div>
       </AppLayout>
     );
@@ -87,7 +87,7 @@ const CasePage = ({ params }: CasePageProps) => {
       <AppLayout>
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <p className="text-red-400 mb-4">{error}</p>
-          <button onClick={() => loadCase()} className="text-[#C9A54E] hover:underline text-sm">
+          <button onClick={() => loadCase()} className="text-[#D4AD5A] hover:underline text-sm">
             Try again
           </button>
         </div>
@@ -101,7 +101,7 @@ const CasePage = ({ params }: CasePageProps) => {
         <div className="max-w-2xl mx-auto px-4 py-12">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-[#e8e8f0] mb-2">Full Case Access</h1>
-            <p className="text-[#2E323A] text-sm">
+            <p className="text-[#6B7280] text-sm">
               This case is available for a small micropayment that goes directly to the contributor.
             </p>
           </div>
@@ -125,7 +125,7 @@ const CasePage = ({ params }: CasePageProps) => {
         {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
-            <span className="text-xs font-semibold text-[#C9A54E] uppercase tracking-wide">
+            <span className="text-xs font-semibold text-[#D4AD5A] uppercase tracking-wide">
               {caseTypeLabel}
             </span>
             <h1 className="text-2xl font-bold text-[#e8e8f0] mt-1">
@@ -141,7 +141,7 @@ const CasePage = ({ params }: CasePageProps) => {
 
         {/* Meta — only for structured cases */}
         {isStructuredCase && (
-          <div className="flex flex-wrap gap-4 text-sm text-[#2E323A] mb-6 pb-6 border-b border-[#2E323A]">
+          <div className="flex flex-wrap gap-4 text-sm text-[#6B7280] mb-6 pb-6 border-b border-[#363C4A]">
             {caseData.countryOfOrigin && <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />{caseData.countryOfOrigin}</span>}
             {caseData.court && <span className="flex items-center gap-1.5"><Scale className="w-4 h-4" />{caseData.court}</span>}
             {caseData.timelineMonths && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{caseData.timelineMonths} months</span>}
@@ -160,7 +160,7 @@ const CasePage = ({ params }: CasePageProps) => {
         {caseData.narrative && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Case Narrative</h2>
-            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-5 text-[#8a8ea0] text-sm leading-relaxed whitespace-pre-wrap">
+            <div className="bg-[#1C2030] border border-[#363C4A] rounded-lg p-5 text-[#9CA3AF] text-sm leading-relaxed whitespace-pre-wrap">
               {caseData.narrative}
             </div>
           </section>
@@ -170,7 +170,7 @@ const CasePage = ({ params }: CasePageProps) => {
         {caseData.keyFactors && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Key Factors</h2>
-            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 text-sm text-[#8a8ea0]">
+            <div className="bg-[#1C2030] border border-[#363C4A] rounded-lg p-4 text-sm text-[#9CA3AF]">
               {caseData.keyFactors}
             </div>
           </section>
@@ -192,7 +192,7 @@ const CasePage = ({ params }: CasePageProps) => {
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Documents & Forms Used</h2>
             <div className="flex flex-wrap gap-2">
               {caseData.documentsUsed.map((doc) => (
-                <span key={doc} className="bg-[#161A24] border border-[#2E323A] text-[#8a8ea0] text-xs px-3 py-1.5 rounded-full">
+                <span key={doc} className="bg-[#1C2030] border border-[#363C4A] text-[#9CA3AF] text-xs px-3 py-1.5 rounded-full">
                   {doc}
                 </span>
               ))}
@@ -201,17 +201,17 @@ const CasePage = ({ params }: CasePageProps) => {
         )}
 
         {/* CID + Share */}
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 mt-8">
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-lg p-4 mt-8">
           <div className="flex items-center justify-between gap-4 mb-3">
             <div>
-              <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-1">
                 Content ID (CID) — Tamper-Proof
               </p>
-              <p className="font-mono text-xs text-[#C9A54E] break-all">{caseData.cid}</p>
+              <p className="font-mono text-xs text-[#D4AD5A] break-all">{caseData.cid}</p>
             </div>
             <Link
               href={`/verify/${caseData.cid}`}
-              className="shrink-0 flex items-center gap-1 text-xs text-[#C9A54E] hover:underline"
+              className="shrink-0 flex items-center gap-1 text-xs text-[#D4AD5A] hover:underline"
             >
               <Shield className="w-3.5 h-3.5" />
               Verify
@@ -219,18 +219,18 @@ const CasePage = ({ params }: CasePageProps) => {
           </div>
 
           {/* Attorney share */}
-          <div className="border-t border-[#2E323A] pt-3">
-            <p className="text-xs text-[#2E323A] mb-2">Share with your attorney (link expires in 24 hours)</p>
+          <div className="border-t border-[#363C4A] pt-3">
+            <p className="text-xs text-[#6B7280] mb-2">Share with your attorney (link expires in 24 hours)</p>
             {shareUrl ? (
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={shareUrl}
-                  className="flex-1 text-xs border border-[#2E323A] bg-[#0C0F18] text-[#8a8ea0] rounded px-2 py-1.5 font-mono"
+                  className="flex-1 text-xs border border-[#363C4A] bg-[#121620] text-[#9CA3AF] rounded px-2 py-1.5 font-mono"
                 />
                 <button
                   onClick={copyShareUrl}
-                  className="text-xs flex items-center gap-1 bg-[#161A24] text-[#C9A54E] border border-[#2E323A] px-3 py-1.5 rounded hover:border-[#C9A54E] transition"
+                  className="text-xs flex items-center gap-1 bg-[#1C2030] text-[#D4AD5A] border border-[#363C4A] px-3 py-1.5 rounded hover:border-[#D4AD5A] transition"
                 >
                   {copied ? "Copied!" : <><Copy className="w-3 h-3" /> Copy</>}
                 </button>
@@ -239,7 +239,7 @@ const CasePage = ({ params }: CasePageProps) => {
               <button
                 onClick={handleShare}
                 disabled={sharing}
-                className="text-xs flex items-center gap-1.5 text-[#C9A54E] hover:text-[#e8e8f0] transition"
+                className="text-xs flex items-center gap-1.5 text-[#D4AD5A] hover:text-[#e8e8f0] transition"
               >
                 {sharing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
                 Generate Attorney Share Link
