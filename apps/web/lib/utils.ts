@@ -13,19 +13,19 @@ export const formatCID = (cid: string, chars = 8): string => {
 export const outcomeColor = (outcome: Outcome): string => {
   switch (outcome) {
     case "approved":
-      return "bg-[#0f1a0f] text-green-400";
+      return "bg-[#152515] text-green-400";
     case "denied":
-      return "bg-[#2a0f0f] text-red-400";
+      return "bg-[#2a1515] text-red-400";
     case "pending":
-      return "bg-[#2a230a] text-yellow-400";
+      return "bg-[#2a2510] text-yellow-400";
     case "appealed":
-      return "bg-[#0f1a2a] text-blue-400";
+      return "bg-[#152030] text-blue-400";
     case "withdrawn":
-      return "bg-[#161A24] text-[#8888aa]";
+      return "bg-[#1C2030] text-[#9CA3AF]";
     case "remanded":
-      return "bg-[#1a0f2a] text-purple-400";
+      return "bg-[#201530] text-purple-400";
     default:
-      return "bg-[#161A24] text-[#8888aa]";
+      return "bg-[#1C2030] text-[#9CA3AF]";
   }
 };
 

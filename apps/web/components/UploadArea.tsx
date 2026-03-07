@@ -64,11 +64,11 @@ export const UploadArea = () => {
       <div className="flex flex-col gap-6">
         <button
           onClick={() => setMode("choose")}
-          className="text-[#8a8ea0] hover:text-[#e8e8f0] text-sm self-start transition"
+          className="text-[#9CA3AF] hover:text-[#e8e8f0] text-sm self-start transition"
         >
           ← Back
         </button>
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-[14px] p-6">
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-[14px] p-6">
           <CaseUploadForm />
         </div>
       </div>
@@ -79,26 +79,26 @@ export const UploadArea = () => {
     return (
       <div className="text-center py-16">
         <div className="flex justify-center mb-4">
-          <div className="bg-[#0f1a0f] border border-green-800 rounded-full p-4">
+          <div className="bg-[#152015] border border-green-800 rounded-full p-4">
             <CheckCircle className="w-12 h-12 text-green-400" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-[#e8e8f0] mb-2">Uploaded!</h2>
-        <p className="text-[#8a8ea0] mb-4 text-sm">
+        <p className="text-[#9CA3AF] mb-4 text-sm">
           Your file has been stored on IPFS.
         </p>
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-[14px] p-4 max-w-sm mx-auto mb-6">
-          <p className="text-xs text-[#8a8ea0] mb-1">Content ID (CID)</p>
-          <p className="font-mono text-sm text-[#C9A54E] break-all">{uploaded.cid}</p>
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-[14px] p-4 max-w-sm mx-auto mb-6">
+          <p className="text-xs text-[#9CA3AF] mb-1">Content ID (CID)</p>
+          <p className="font-mono text-sm text-[#D4AD5A] break-all">{uploaded.cid}</p>
         </div>
         <div className="flex justify-center gap-3">
-          <a href={`/verify/${uploaded.cid}`} className="text-sm text-[#C9A54E] hover:underline">
+          <a href={`/verify/${uploaded.cid}`} className="text-sm text-[#D4AD5A] hover:underline">
             Verify Integrity →
           </a>
-          <span className="text-[#2E323A]">|</span>
+          <span className="text-[#363C4A]">|</span>
           <button
             onClick={() => { setUploaded(null); setMode("choose"); }}
-            className="text-sm text-[#8a8ea0] hover:text-[#e8e8f0]"
+            className="text-sm text-[#9CA3AF] hover:text-[#e8e8f0]"
           >
             Upload Another
           </button>
@@ -117,22 +117,22 @@ export const UploadArea = () => {
         onClick={() => fileInputRef.current?.click()}
         className={`w-full border-2 border-dashed rounded-[14px] flex flex-col items-center justify-center gap-3 py-16 transition cursor-pointer ${
           dragging
-            ? "border-[#C9A54E] bg-[#161A24]"
-            : "border-[#2E323A] hover:border-[#C9A54E]"
+            ? "border-[#D4AD5A] bg-[#1C2030]"
+            : "border-[#363C4A] hover:border-[#D4AD5A]"
         }`}
       >
         {uploading ? (
-          <Loader2 className="w-8 h-8 text-[#C9A54E] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#D4AD5A] animate-spin" />
         ) : (
           <>
-            <div className="w-12 h-12 rounded-lg bg-[#161A24] border border-[#2E323A] flex items-center justify-center">
-              <Upload className="w-6 h-6 text-[#C9A54E]" />
+            <div className="w-12 h-12 rounded-lg bg-[#1C2030] border border-[#363C4A] flex items-center justify-center">
+              <Upload className="w-6 h-6 text-[#D4AD5A]" />
             </div>
             <div className="text-center">
               <p className="text-sm text-[#e8e8f0]">
-                Drag & drop a file or <span className="text-[#C9A54E]">click to browse</span>
+                Drag & drop a file or <span className="text-[#D4AD5A]">click to browse</span>
               </p>
-              <p className="text-xs text-[#8a8ea0] mt-1">PDF, JSON, and other file types supported</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">PDF, JSON, and other file types supported</p>
             </div>
           </>
         )}
@@ -146,29 +146,29 @@ export const UploadArea = () => {
       </div>
 
       {error && (
-        <div className="bg-[#1a0f0f] border border-[#3a2020] text-red-400 rounded-lg px-4 py-3 text-sm">
+        <div className="bg-[#201515] border border-[#3a2020] text-red-400 rounded-lg px-4 py-3 text-sm">
           {error}
         </div>
       )}
 
       {/* Divider. */}
       <div className="flex items-center gap-4">
-        <div className="flex-1 h-px bg-[#2E323A]" />
-        <span className="text-xs text-[#8a8ea0]">or</span>
-        <div className="flex-1 h-px bg-[#2E323A]" />
+        <div className="flex-1 h-px bg-[#363C4A]" />
+        <span className="text-xs text-[#9CA3AF]">or</span>
+        <div className="flex-1 h-px bg-[#363C4A]" />
       </div>
 
       {/* Create case manually. */}
       <button
         onClick={() => setMode("form")}
-        className="w-full flex items-center justify-center gap-3 bg-[#161A24] border border-[#2E323A] hover:border-[#C9A54E] rounded-[14px] py-5 transition group cursor-pointer"
+        className="w-full flex items-center justify-center gap-3 bg-[#1C2030] border border-[#363C4A] hover:border-[#D4AD5A] rounded-[14px] py-5 transition group cursor-pointer"
       >
-        <div className="w-10 h-10 rounded-lg bg-[#0C0F18] border border-[#2E323A] group-hover:border-[#C9A54E] flex items-center justify-center transition">
-          <FileText className="w-5 h-5 text-[#C9A54E]" />
+        <div className="w-10 h-10 rounded-lg bg-[#121620] border border-[#363C4A] group-hover:border-[#D4AD5A] flex items-center justify-center transition">
+          <FileText className="w-5 h-5 text-[#D4AD5A]" />
         </div>
         <div className="text-left">
           <p className="text-sm text-[#e8e8f0] font-medium">Create a Case</p>
-          <p className="text-xs text-[#8a8ea0]">Fill out the form step by step</p>
+          <p className="text-xs text-[#9CA3AF]">Fill out the form step by step</p>
         </div>
       </button>
 
@@ -176,29 +176,29 @@ export const UploadArea = () => {
       <div className="mt-4">
         <h2 className="text-sm font-medium text-[#e8e8f0] mb-3">Your Files</h2>
         {loadingFiles ? (
-          <div className="flex items-center gap-2 text-[#8a8ea0] text-sm py-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] text-sm py-4">
             <Loader2 className="w-4 h-4 animate-spin" />
             Loading files...
           </div>
         ) : files.length === 0 ? (
-          <p className="text-sm text-[#8a8ea0] py-4">No files uploaded yet.</p>
+          <p className="text-sm text-[#9CA3AF] py-4">No files uploaded yet.</p>
         ) : (
-          <div className="flex flex-col divide-y divide-[#2E323A] border border-[#2E323A] rounded-[14px] overflow-hidden">
+          <div className="flex flex-col divide-y divide-[#363C4A] border border-[#363C4A] rounded-[14px] overflow-hidden">
             {files.map((f) => (
               <Link
                 key={f.cid}
                 href={`/case/${f.cid}`}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-[#161A24] transition"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-[#1C2030] transition"
               >
-                <FileIcon className="w-4 h-4 text-[#C9A54E] shrink-0" />
+                <FileIcon className="w-4 h-4 text-[#D4AD5A] shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-[#e8e8f0] truncate">{f.name}</p>
-                  <p className="text-xs text-[#8a8ea0]">
+                  <p className="text-xs text-[#9CA3AF]">
                     {new Date(f.createdAt).toLocaleDateString()}
                     {f.size ? ` · ${formatBytes(f.size)}` : ""}
                   </p>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-[#2E323A] shrink-0" />
+                <ExternalLink className="w-3.5 h-3.5 text-[#6B7280] shrink-0" />
               </Link>
             ))}
           </div>

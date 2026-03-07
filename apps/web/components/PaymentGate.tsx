@@ -80,19 +80,19 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
   }
 
   return (
-    <div className="bg-[#161A24] border border-[#2E323A] rounded-xl p-6 text-center max-w-md mx-auto">
+    <div className="bg-[#1C2030] border border-[#363C4A] rounded-xl p-6 text-center max-w-md mx-auto">
       <div className="flex justify-center mb-4">
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-full p-4">
-          <Lock className="w-8 h-8 text-[#C9A54E]" />
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-full p-4">
+          <Lock className="w-8 h-8 text-[#D4AD5A]" />
         </div>
       </div>
 
       <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">Full Case Access</h3>
-      <p className="text-[#2E323A] text-sm mb-1">
+      <p className="text-[#6B7280] text-sm mb-1">
         This case requires a micropayment to access.
       </p>
-      <p className="text-2xl font-bold text-[#C9A54E] mb-1">$0.10 USDC</p>
-      <p className="text-xs text-[#2E323A] mb-6">
+      <p className="text-2xl font-bold text-[#D4AD5A] mb-1">$0.10 USDC</p>
+      <p className="text-xs text-[#6B7280] mb-6">
         on Base network · paid directly to the contributor
       </p>
 
@@ -106,7 +106,7 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
         <button
           onClick={handleConnect}
           disabled={state === "connecting"}
-          className="w-full flex items-center justify-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
+          className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
         >
           {state === "connecting" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -117,13 +117,13 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
         </button>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-[#2E323A]">
-            Connected: <span className="font-mono text-[#8a8ea0]">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+          <p className="text-xs text-[#6B7280]">
+            Connected: <span className="font-mono text-[#9CA3AF]">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
           </p>
           <button
             onClick={handlePay}
             disabled={state === "paying"}
-            className="w-full flex items-center justify-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
+            className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
           >
             {state === "paying" ? (
               <>
@@ -140,7 +140,7 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
         </div>
       )}
 
-      <p className="text-xs text-[#2E323A] mt-4">
+      <p className="text-xs text-[#6B7280] mt-4">
         Payment powered by x402 protocol · Base network · USDC
       </p>
     </div>

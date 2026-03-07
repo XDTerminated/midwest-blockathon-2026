@@ -12,7 +12,12 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { cn, formatCID } from "@/lib/utils";
 
 export const Sidebar = () => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("sidebar-collapsed") === "true";
+        }
+        return false;
+    });
     const [mounted, setMounted] = useState(false);
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
     const pathname = usePathname();
@@ -22,10 +27,17 @@ export const Sidebar = () => {
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem("sidebar-collapsed", String(collapsed));
+    }, [collapsed]);
     const { address, isConnected } = useAccount();
     const { connect } = useConnect();
     const { disconnect } = useDisconnect();
     const { data: session } = useSession();
+
+    // CSS-only tooltip: the "group" class on the wrapper triggers "group-hover:opacity-100" on the tooltip span
+    const tooltipClass = "absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg bg-[#1C2030] border border-[#363C4A] text-[12px] text-[#e8e8f0] whitespace-nowrap z-50 pointer-events-none shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150";
 
     const loadSessions = useCallback(async () => {
         if (!session?.user) return;
@@ -55,24 +67,27 @@ export const Sidebar = () => {
     const isWalletActive = isConnected && address;
 
     return (
-        <aside className={cn("shrink-0 h-screen bg-[#0C0F18] border-r border-[#2E323A] flex flex-col py-6 sticky top-0", mounted && "transition-all duration-200", collapsed ? "w-15 px-3" : "w-55 px-5")}>
+        <aside className={cn("shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] flex flex-col py-6 sticky top-0 shadow-[4px_0_16px_rgba(0,0,0,0.3)]", mounted && "transition-all duration-200", collapsed ? "w-17 px-3" : "w-65 px-5")}>
             {/* Top row: collapse toggle. */}
             <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-end")}>
-                <button onClick={() => setCollapsed(!collapsed)} className="text-[#2E323A] hover:text-[#5a5a70] transition">
-                    {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-                </button>
+                <div className="relative group">
+                    <button onClick={() => setCollapsed(!collapsed)} className="p-2 rounded-lg text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition">
+                        {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+                    </button>
+                    {collapsed && <span className={tooltipClass}>Expand</span>}
+                </div>
             </div>
 
             {/* Nav. */}
             <nav className="flex flex-col gap-5 flex-1 overflow-hidden">
                 {/* New Chat */}
-                <Link href="/search" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/search" && !activeSessionId ? "text-[#C9A54E]" : "text-[#2E323A] hover:text-[#5a5a70]")} title={collapsed ? "New Chat" : undefined}>
+                <Link href="/search" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/search" && !activeSessionId ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "New Chat" : undefined}>
                     <MessageSquarePlus className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>New Chat</span>
                 </Link>
 
                 {/* Chats header */}
-                <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-3", "text-[#2E323A]")}>
+                <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-3", "text-[#6B7280]")}>
                     <MessageSquare className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Chats</span>
                 </div>
@@ -81,9 +96,9 @@ export const Sidebar = () => {
                 {!collapsed && chatSessions.length > 0 && (
                     <div className="flex flex-col gap-1 pl-8 overflow-y-auto max-h-50 -mt-2">
                         {chatSessions.map((cs) => (
-                            <Link key={cs.id} href={`/search?session=${cs.id}`} className={cn("group flex items-center justify-between text-[12px] py-1.5 px-2 rounded-md transition truncate", activeSessionId === String(cs.id) ? "text-[#C9A54E] bg-[#161A24]" : "text-[#5a5a70] hover:text-[#8a8ea0] hover:bg-[#161A24]")}>
+                            <Link key={cs.id} href={`/search?session=${cs.id}`} className={cn("group flex items-center justify-between text-[12px] py-1.5 px-2 rounded-md transition truncate", activeSessionId === String(cs.id) ? "text-[#D4AD5A] bg-[#1C2030]" : "text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030]")}>
                                 <span className="truncate">{cs.title}</span>
-                                <button onClick={(e) => handleDeleteSession(cs.id, e)} className="opacity-0 group-hover:opacity-100 text-[#5a5a70] hover:text-red-400 transition shrink-0 ml-1">
+                                <button onClick={(e) => handleDeleteSession(cs.id, e)} className="opacity-0 group-hover:opacity-100 text-[#6B7280] hover:text-red-400 transition shrink-0 ml-1">
                                     <Trash2 className="w-3 h-3" />
                                 </button>
                             </Link>
@@ -92,47 +107,59 @@ export const Sidebar = () => {
                 )}
 
                 {/* Upload */}
-                <Link href="/upload" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#C9A54E]" : "text-[#2E323A] hover:text-[#5a5a70]")} title={collapsed ? "Upload a File" : undefined}>
+                <Link href="/upload" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Upload a File" : undefined}>
                     <Upload className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Upload a File</span>
                 </Link>
 
                 {/* Dashboard */}
-                <Link href="/dashboard" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/dashboard" ? "text-[#C9A54E]" : "text-[#2E323A] hover:text-[#5a5a70]")} title={collapsed ? "Dashboard" : undefined}>
+                <Link href="/dashboard" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/dashboard" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Dashboard" : undefined}>
                     <LayoutDashboard className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
                 </Link>
 
                 {/* Wallet */}
-                <button onClick={() => (isWalletActive ? disconnect() : connect({ connector: injected() }))} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#C9A54E]" : "text-[#2E323A] hover:text-[#5a5a70]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}>
+                <button onClick={() => (isWalletActive ? disconnect() : connect({ connector: injected() }))} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}>
                     <Wallet className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : "Wallet"}</span>
                 </button>
             </nav>
 
             {/* Auth. */}
-            <div className="flex flex-col gap-3 pt-4 border-t border-[#2E323A]">
+            <div className="flex flex-col gap-3 pt-4 border-t border-[#363C4A]">
                 {session?.user ? (
                     <>
-                        <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-3")}>
-                            <div className="w-5 h-5 rounded-full bg-[#C9A54E] flex items-center justify-center text-[10px] font-bold text-[#0C0F18] shrink-0">{session.user.name?.charAt(0).toUpperCase() ?? "U"}</div>
-                            <span className={cn("text-[13px] text-[#8a8ea0] truncate whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{session.user.name ?? session.user.email}</span>
+                        <div className="relative group">
+                            <div className={cn("flex items-center rounded-lg px-3 py-2.5", collapsed ? "justify-center" : "gap-3")}>
+                                <div className="w-5 h-5 rounded-full bg-[#D4AD5A] flex items-center justify-center text-[10px] font-bold text-[#121620] shrink-0">{session.user.name?.charAt(0).toUpperCase() ?? "U"}</div>
+                                <span className={cn("text-[13px] text-[#9CA3AF] truncate whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{session.user.name ?? session.user.email}</span>
+                            </div>
+                            {collapsed && <span className={tooltipClass}>{session.user.name ?? session.user.email ?? "User"}</span>}
                         </div>
-                        <button onClick={() => signOut()} className={cn("flex items-center text-[#2E323A] hover:text-[#5a5a70] transition", collapsed ? "justify-center" : "gap-3")} title={collapsed ? "Log out" : undefined}>
-                            <LogOut className="w-5 h-5 shrink-0" />
-                            <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
-                        </button>
+                        <div className="relative group">
+                            <button onClick={() => signOut()} className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5 w-full", collapsed ? "justify-center" : "gap-3")}>
+                                <LogOut className="w-5 h-5 shrink-0" />
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
+                            </button>
+                            {collapsed && <span className={tooltipClass}>Log out</span>}
+                        </div>
                     </>
                 ) : (
                     <>
-                        <Link href="/login" className={cn("flex items-center text-[#2E323A] hover:text-[#5a5a70] transition", collapsed ? "justify-center" : "gap-3", pathname === "/login" && "text-[#C9A54E]")} title={collapsed ? "Log in" : undefined}>
-                            <LogIn className="w-5 h-5 shrink-0" />
-                            <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
-                        </Link>
-                        <Link href="/signup" className={cn("flex items-center text-[#2E323A] hover:text-[#5a5a70] transition", collapsed ? "justify-center" : "gap-3", pathname === "/signup" && "text-[#C9A54E]")} title={collapsed ? "Sign up" : undefined}>
-                            <UserPlus className="w-5 h-5 shrink-0" />
-                            <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
-                        </Link>
+                        <div className="relative group">
+                            <Link href="/login" className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5", collapsed ? "justify-center" : "gap-3", pathname === "/login" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator")}>
+                                <LogIn className="w-5 h-5 shrink-0" />
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
+                            </Link>
+                            {collapsed && <span className={tooltipClass}>Log in</span>}
+                        </div>
+                        <div className="relative group">
+                            <Link href="/signup" className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5", collapsed ? "justify-center" : "gap-3", pathname === "/signup" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator")}>
+                                <UserPlus className="w-5 h-5 shrink-0" />
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
+                            </Link>
+                            {collapsed && <span className={tooltipClass}>Sign up</span>}
+                        </div>
                     </>
                 )}
             </div>

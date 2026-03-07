@@ -86,20 +86,30 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
   };
 
   return (
-    <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
+    <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5 shadow-elevated">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs text-[#2E323A] bg-[#0C0F18] border border-[#2E323A] px-2 py-1 rounded">
-          Lumina AI
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AD5A] to-[#B8942E] flex items-center justify-center shadow-surface">
+            <svg className="w-3 h-3 text-[#121620]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3v19" />
+              <path d="M5 7l7-4 7 4" />
+              <path d="M3 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
+              <path d="M17 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
+            </svg>
+          </div>
+          <span className="text-xs text-[#9CA3AF] bg-[#121620] border border-[#363C4A] px-2 py-1 rounded">
+            Lumina AI
+          </span>
+        </div>
         <button
           onClick={toggleSpeak}
           disabled={loading}
           className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium cursor-pointer ${
             speaking
-              ? "text-[#C9A54E] bg-[#C9A54E]/10"
+              ? "text-[#D4AD5A] bg-[#D4AD5A]/10"
               : loading
-                ? "text-[#C9A54E] bg-[#C9A54E]/5 opacity-70"
-                : "text-[#5a5e6a] hover:text-[#C9A54E] hover:bg-[#C9A54E]/5"
+                ? "text-[#D4AD5A] bg-[#D4AD5A]/5 opacity-70"
+                : "text-[#7B8294] hover:text-[#D4AD5A] hover:bg-[#D4AD5A]/5"
           }`}
           title={loading ? "Generating audio..." : speaking ? "Stop listening" : "Listen to response"}
         >
@@ -134,8 +144,8 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
 
       {/* Cited cases. */}
       {result.citedCases.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-[#2E323A]">
-          <p className="text-xs text-[#2E323A] uppercase tracking-wide mb-2">
+        <div className="mt-4 pt-4 border-t border-[#D4AD5A]/20">
+          <p className="text-xs text-[#6B7280] uppercase tracking-wide mb-2">
             Cases Referenced
           </p>
           <div className="flex flex-wrap gap-2">

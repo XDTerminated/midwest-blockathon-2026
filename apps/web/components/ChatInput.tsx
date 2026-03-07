@@ -94,15 +94,15 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-end gap-0 bg-[#161A24] border border-[#2E323A] rounded-[14px] px-4 py-3"
+      className="flex items-end gap-0 bg-[#1C2030] border border-[#363C4A] rounded-[14px] px-4 py-3 shadow-floating"
     >
       <button
         type="button"
         onClick={toggleMic}
         className={`shrink-0 flex items-center gap-1.5 transition mr-1 rounded-lg px-2 py-1.5 ${
           listening
-            ? "text-[#C9A54E] bg-[#C9A54E]/10 animate-pulse"
-            : "text-[#5a5e6a] hover:text-[#C9A54E]"
+            ? "text-[#D4AD5A] bg-[#D4AD5A]/10 animate-pulse"
+            : "text-[#7B8294] hover:text-[#D4AD5A]"
         }`}
         title={listening ? "Stop recording" : "Start voice input"}
       >
@@ -115,7 +115,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
       <button
         type="button"
         onClick={() => window.location.href = "/upload"}
-        className="w-8 h-8 shrink-0 flex items-center justify-center text-[#2E323A] hover:text-[#C9A54E] transition mr-3 rounded-lg"
+        className="w-8 h-8 shrink-0 flex items-center justify-center text-[#6B7280] hover:text-[#D4AD5A] transition mr-3 rounded-lg"
         title="Upload a document"
       >
         <Plus className="w-5 h-5" />
@@ -130,7 +130,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
         onKeyDown={handleKeyDown}
         placeholder={listening ? "Listening..." : "Describe your situation..."}
         rows={1}
-        className="flex-1 bg-transparent text-[#e8e8f0] placeholder-[#2E323A] text-sm resize-none focus:outline-none leading-relaxed py-1"
+        className="flex-1 bg-transparent text-[#e8e8f0] placeholder-[#6B7280] text-sm resize-none focus:outline-none leading-relaxed py-1"
         style={{ maxHeight: "120px", overflowY: "auto" }}
         autoFocus
       />
@@ -138,7 +138,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
       <button
         type="submit"
         disabled={disabled || !query.trim()}
-        className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-30 text-[#0C0F18] rounded-lg transition ml-3"
+        className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#D4AD5A] hover:bg-[#E0BD6A] disabled:opacity-30 text-[#121620] rounded-lg transition ml-3"
       >
         {disabled ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
       </button>
