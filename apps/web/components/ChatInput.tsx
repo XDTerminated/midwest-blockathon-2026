@@ -94,7 +94,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-end gap-0 bg-[#1C2030] border border-[#363C4A] rounded-[14px] px-4 py-3"
+      className="flex items-end gap-0 bg-[#1C2030] border border-[#363C4A] rounded-[14px] px-4 py-3 shadow-floating"
     >
       <button
         type="button"

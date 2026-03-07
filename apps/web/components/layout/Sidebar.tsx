@@ -68,7 +68,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        "shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] flex flex-col py-6 sticky top-0",
+        "shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] flex flex-col py-6 sticky top-0 shadow-[4px_0_16px_rgba(0,0,0,0.3)]",
         mounted && "transition-all duration-200",
         collapsed ? "w-[68px] px-3" : "w-[260px] px-5"
       )}
@@ -213,7 +213,7 @@ export const Sidebar = () => {
                 )}
               >
                 <LogOut className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
               </button>
               {collapsed && <span className={tooltipClass}>Log out</span>}
             </div>
@@ -226,11 +226,11 @@ export const Sidebar = () => {
                 className={cn(
                   "flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5",
                   collapsed ? "justify-center" : "gap-3",
-                  pathname === "/login" && "text-[#D4AD5A] bg-[#D4AD5A]/10"
+                  pathname === "/login" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator"
                 )}
               >
                 <LogIn className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
               </Link>
               {collapsed && <span className={tooltipClass}>Log in</span>}
             </div>
@@ -240,11 +240,11 @@ export const Sidebar = () => {
                 className={cn(
                   "flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5",
                   collapsed ? "justify-center" : "gap-3",
-                  pathname === "/signup" && "text-[#D4AD5A] bg-[#D4AD5A]/10"
+                  pathname === "/signup" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator"
                 )}
               >
                 <UserPlus className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
               </Link>
               {collapsed && <span className={tooltipClass}>Sign up</span>}
             </div>

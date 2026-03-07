@@ -15,7 +15,7 @@ export const CitedCase = ({ ref_ }: CitedCaseProps) => {
   return (
     <Link
       href={`/case/${ref_.cid}`}
-      className="inline-flex items-center gap-1.5 bg-[#121620] hover:bg-[#1E2433] border border-[#363C4A] rounded-md px-2 py-1 text-xs font-medium text-[#9CA3AF] transition mx-0.5"
+      className="inline-flex items-center gap-1.5 bg-[#121620] hover:bg-[#1E2433] border border-[#363C4A] rounded-md px-2 py-1 text-xs font-medium text-[#9CA3AF] mx-0.5 shadow-surface hover-lift"
     >
       <span className="text-[#D4AD5A]">{typeLabel}</span>
       {ref_.country && <span className="text-[#6B7280]">· {ref_.country}</span>}

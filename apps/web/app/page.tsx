@@ -10,7 +10,10 @@ const Home = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-[#121620] flex flex-col">
+    <div className="min-h-screen flex flex-col relative" style={{ background: "linear-gradient(180deg, #1a1e2e 0%, #1c2133 8%, #1a1f30 20%, #151a26 40%, #121620 60%)" }}>
+      {/* Subtle warm glow at top. */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse at center top, rgba(212,173,90,0.06) 0%, rgba(212,173,90,0.02) 40%, transparent 70%)" }} />
+
       {/* Top-right nav. */}
       <div className="fixed top-6 right-6 z-10 flex items-center gap-3">
         {session?.user ? (

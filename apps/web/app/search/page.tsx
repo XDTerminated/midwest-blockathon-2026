@@ -121,7 +121,7 @@ const SearchPage = () => {
         {/* Messages area. */}
         <div className="flex-1 overflow-auto px-6 py-8 max-w-3xl mx-auto w-full">
           {messages.length === 0 && !loading && (
-            <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
               <p className="text-[#6B7280] text-base">
                 Describe your immigration situation to find relevant cases
               </p>
@@ -131,13 +131,13 @@ const SearchPage = () => {
           <div className="space-y-5">
             {messages.map((msg, i) =>
               msg.role === "user" ? (
-                <div key={i} className="flex justify-end">
-                  <div className="bg-[#242838] border border-[#363C4A] rounded-[14px] px-5 py-4 text-base text-[#e8e8f0] leading-relaxed max-w-[80%]">
+                <div key={i} className="flex justify-end animate-fade-in-up">
+                  <div className="bg-[#242838] border border-[#363C4A] rounded-[14px] px-5 py-4 text-base text-[#e8e8f0] leading-relaxed max-w-[80%] shadow-surface">
                     {msg.content}
                   </div>
                 </div>
               ) : (
-                <div key={i} className="flex justify-start">
+                <div key={i} className="flex justify-start animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
                   <div className="max-w-[85%]">
                     {msg.error ? (
                       <div className="bg-[#201518] border border-[#3a2020] text-red-400 rounded-[14px] px-5 py-4 text-base">
@@ -152,17 +152,9 @@ const SearchPage = () => {
             )}
 
             {loading && (
-              <div className="flex justify-start">
+              <div className="flex justify-start animate-fade-in">
                 <div className="flex items-center gap-3 py-3">
-                  <div className="relative w-8 h-8 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full bg-[#D4AD5A]/10 thinking-ring" />
-                    <svg className="w-5 h-5 text-[#D4AD5A] thinking-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 3v19" />
-                      <path d="M5 7l7-4 7 4" />
-                      <path d="M3 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
-                      <path d="M17 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
-                    </svg>
-                  </div>
+                  <span className="pulse-ring" />
                   <span className="shimmer-text text-sm font-medium tracking-wide">Analyzing cases...</span>
                 </div>
               </div>
@@ -173,7 +165,7 @@ const SearchPage = () => {
         </div>
 
         {/* Chat input fixed at bottom. */}
-        <div className="px-6 py-5">
+        <div className="px-6 py-5 relative before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-gradient-to-t before:from-[#121620] before:to-transparent before:pointer-events-none">
           <div className="max-w-3xl mx-auto">
             <ChatInput onSend={handleSend} disabled={loading} />
             <p className="text-center text-[#6B7280] text-xs mt-3">

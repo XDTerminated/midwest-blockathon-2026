@@ -8,7 +8,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
     <AuthGuard>
       <div className="flex h-screen bg-[#121620] overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto animate-fade-in">{children}</main>
       </div>
     </AuthGuard>
   );

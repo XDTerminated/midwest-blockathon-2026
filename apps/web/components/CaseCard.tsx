@@ -15,7 +15,7 @@ export const CaseCard = ({ item, showLink = true }: CaseCardProps) => {
     CASE_TYPES.find((t) => t.value === item.caseType)?.label ?? item.caseType;
 
   const card = (
-    <div className="bg-[#1C2030] rounded-xl border border-[#363C4A] p-5 hover:border-[#4A5060] transition group">
+    <div className="bg-[#1C2030] rounded-xl border border-[#363C4A] p-5 hover:border-[#4A5060] transition group shadow-surface hover-lift">
       <div className="flex items-start justify-between gap-3 mb-3">
         <span className="text-xs font-medium text-[#D4AD5A] uppercase tracking-wide">
           {caseTypeLabel}
