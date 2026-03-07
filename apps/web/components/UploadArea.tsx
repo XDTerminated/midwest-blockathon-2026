@@ -160,7 +160,7 @@ export function UploadArea() {
       {/* Create case manually */}
       <button
         onClick={() => setMode("form")}
-        className="w-full flex items-center justify-center gap-3 bg-[#161A24] border border-[#2E323A] hover:border-[#C9A54E] rounded-[14px] py-5 transition group"
+        className="w-full flex items-center justify-center gap-3 bg-[#161A24] border border-[#2E323A] hover:border-[#C9A54E] rounded-[14px] py-5 transition group cursor-pointer"
       >
         <div className="w-10 h-10 rounded-lg bg-[#0C0F18] border border-[#2E323A] group-hover:border-[#C9A54E] flex items-center justify-center transition">
           <FileText className="w-5 h-5 text-[#C9A54E]" />

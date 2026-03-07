@@ -57,14 +57,13 @@ export default function Home() {
         </h1>
 
         <p className="text-[#8a8ea0] text-lg text-center max-w-xl mb-12 leading-relaxed">
-          Real case outcomes from real immigrants — stored on tamper-proof
-          infrastructure. Cite any case by its IPFS CID. No one can alter or
-          delete it.
+          Real case outcomes from real immigrants stored on tamper-proof
+          blockchain infrastructure. Cite any case by its IPFS CID. Nobody can
+          alter or delete it.
         </p>
 
         <LandingSearchBar />
       </div>
-
     </div>
   );
 }
