@@ -11,6 +11,7 @@ import { EB_CASES } from "./cases-eb.js";
 import { L1_O1_CASES } from "./cases-l1-o1.js";
 import { K1_CASES } from "./cases-k1.js";
 import { FAMILY_GC_CASES } from "./cases-family-gc.js";
+import { ASYLUM_CASES } from "./cases-asylum.js";
 
 const ALL_CASES = [
   ...SEED_CASES,
@@ -23,13 +24,14 @@ const ALL_CASES = [
   ...L1_O1_CASES,
   ...K1_CASES,
   ...FAMILY_GC_CASES,
+  ...ASYLUM_CASES,
 ];
 
 const DEMO_WALLET =
   process.env.FALLBACK_WALLET ?? "0x0000000000000000000000000000000000000000";
 
 const seed = async () => {
-  console.log(`Seeding ${SEED_CASES.length} cases to Pinata...\n`);
+  console.log(`Seeding ${ALL_CASES.length} cases to Pinata...\n`);
 
   const results: { caseType: string; country: string; cid: string }[] = [];
 
