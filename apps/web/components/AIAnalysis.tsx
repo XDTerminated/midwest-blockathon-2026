@@ -94,7 +94,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
         <button
           onClick={toggleSpeak}
           disabled={loading}
-          className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium ${
+          className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium cursor-pointer ${
             speaking
               ? "text-[#C9A54E] bg-[#C9A54E]/10"
               : loading

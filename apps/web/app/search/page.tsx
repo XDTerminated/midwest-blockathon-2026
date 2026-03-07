@@ -1,8 +1,8 @@
 "use client";
 
 import type { SearchResult } from "@immivault/shared";
-import { useRef, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
@@ -23,12 +23,14 @@ interface Message {
 }
 
 const SearchPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const initialQuerySent = useRef(false);
+  const messagesRef = useRef<Message[]>([]);
 
   // Load existing session if ?session= param is present.
   const paramSessionId = searchParams.get("session");
@@ -41,9 +43,11 @@ const SearchPage = () => {
         content: m.content,
         ...(m.role === "assistant" ? { result: { analysis: m.content, citedCases: [], disclaimer: "" } } : {}),
       }));
+      messagesRef.current = loaded;
       setMessages(loaded);
       setSessionId(id);
     } catch {
+      messagesRef.current = [];
       setMessages([]);
       setSessionId(null);
     }
@@ -55,9 +59,6 @@ const SearchPage = () => {
       if (!isNaN(id) && id !== sessionId) {
         loadSession(id);
       }
-    } else {
-      setMessages([]);
-      setSessionId(null);
     }
   }, [paramSessionId, loadSession, sessionId]);
 
@@ -65,9 +66,16 @@ const SearchPage = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleSend = async (text: string) => {
+  const handleSend = useCallback(async (text: string) => {
     const userMsg: Message = { role: "user", content: text };
-    setMessages((prev) => [...prev, userMsg]);
+    const history: ChatMessage[] = messagesRef.current.map((m) => ({
+      role: m.role,
+      content: m.role === "assistant" ? (m.result?.analysis ?? m.content) : m.content,
+    }));
+
+    const updated = [...messagesRef.current, userMsg];
+    messagesRef.current = updated;
+    setMessages(updated);
     setLoading(true);
 
     // Create session on first message if needed.
@@ -88,32 +96,36 @@ const SearchPage = () => {
       addChatMessage(activeSessionId, "user", text).catch(() => {});
     }
 
-    // Build history for the API (prior messages only).
-    const history: ChatMessage[] = messages.map((m) => ({
-      role: m.role,
-      content: m.role === "assistant" ? (m.result?.analysis ?? m.content) : m.content,
-    }));
-
     try {
       const result = await chatSearch(text, history);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: result.analysis, result },
-      ]);
+      const next = [...messagesRef.current, { role: "assistant" as const, content: result.analysis, result }];
+      messagesRef.current = next;
+      setMessages(next);
       // Persist assistant message.
       if (activeSessionId) {
         addChatMessage(activeSessionId, "assistant", result.analysis).catch(() => {});
       }
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Something went wrong.";
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "", error: errorMsg },
-      ]);
+      const next = [...messagesRef.current, {
+        role: "assistant" as const,
+        content: "",
+        error: err instanceof Error ? err.message : "Something went wrong.",
+      }];
+      messagesRef.current = next;
+      setMessages(next);
     } finally {
       setLoading(false);
     }
-  };
+  }, [sessionId, router]);
+
+  // Auto-send the initial query from the URL (?q=...)
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && !initialQuerySent.current) {
+      initialQuerySent.current = true;
+      handleSend(q);
+    }
+  }, [searchParams, handleSend]);
 
   return (
     <AppLayout>

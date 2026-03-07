@@ -77,10 +77,7 @@ ttsRoutes.post("/", zValidator("json", ttsSchema), async (c) => {
 
   const audioBuffer = await response.arrayBuffer();
 
-  return new Response(audioBuffer, {
-    headers: {
-      "Content-Type": "audio/mpeg",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+  c.header("Content-Type", "audio/mpeg");
+  c.header("Cache-Control", "public, max-age=3600");
+  return c.body(audioBuffer);
 });
