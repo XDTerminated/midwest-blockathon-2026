@@ -14,22 +14,27 @@ caseRoutes.use("*", async (c, next) => {
 
 // List all cases (metadata only, no full content)
 caseRoutes.get("/", async (c) => {
+  const user = await getUser(c);
   const page = Number(c.req.query("page") ?? 1);
   const limit = Math.min(Number(c.req.query("limit") ?? 20), 50);
-  const cases = await pinataService.listCases(limit);
+  const cases = await pinataService.listCases(user!.id, limit);
   return c.json({ cases, page, limit });
 });
 
 // List cases by category
 caseRoutes.get("/category/:slug", async (c) => {
+  const user = await getUser(c);
   const slug = c.req.param("slug") as CategorySlug;
-  const cases = await pinataService.listByCategory(slug);
+  const cases = await pinataService.listByCategory(slug, user!.id);
   return c.json({ cases, slug });
 });
 
-// Get full case content
+// Get full case content — only if user owns it
 caseRoutes.get("/:cid", async (c) => {
+  const user = await getUser(c);
   const cid = c.req.param("cid") ?? "";
+  const isOwner = await pinataService.isFileOwnedByUser(cid, user!.id);
+  if (!isOwner) return c.json({ error: "Not found" }, 404);
   const caseData = await pinataService.getCase(cid);
   return c.json({ ...caseData, cid });
 });

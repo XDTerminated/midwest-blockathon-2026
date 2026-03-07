@@ -71,17 +71,20 @@ export const pinataService = {
     return await pinata.upload.file(file).addMetadata({ name, keyvalues: { userId } });
   },
 
-  async listFilesByUser(_userId: string, limit = 50): Promise<{ cid: string; name: string; mimeType?: string; size?: number; createdAt: string }[]> {
+  async listFilesByUser(userId: string, limit = 50): Promise<{ cid: string; name: string; mimeType?: string; size?: number; createdAt: string }[]> {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await pinata.files.list().limit(limit);
-      return (result.files ?? []).map((f: any) => ({
-        cid: f.cid,
-        name: f.name ?? "",
-        mimeType: f.mime_type,
-        size: f.size,
-        createdAt: f.created_at,
-      }));
+      const result: any = await pinata.files.list().limit(200);
+      return (result.files ?? [])
+        .filter((f: any) => f.keyvalues?.userId === userId)
+        .slice(0, limit)
+        .map((f: any) => ({
+          cid: f.cid,
+          name: f.name ?? "",
+          mimeType: f.mime_type,
+          size: f.size,
+          createdAt: f.created_at,
+        }));
     } catch {
       return [];
     }
@@ -131,12 +134,14 @@ export const pinataService = {
     }
   },
 
-  async searchCases(query: string, _userId: string, limit = 10): Promise<CaseRecord[]> {
+  async searchCases(query: string, userId: string, limit = 10): Promise<CaseRecord[]> {
+    if (!userId) return [];
+
     const groups = getGroups();
     const groupIds = Object.values(groups);
 
     if (groupIds.length === 0) {
-      return this.listAllCaseData(limit).catch(() => []);
+      return this.listAllCaseData(userId, limit).catch(() => []);
     }
 
     // Search each group with vector query, collect all matches
@@ -160,21 +165,28 @@ export const pinataService = {
     const topMatches = matches.slice(0, limit);
 
     if (topMatches.length === 0) {
-      return this.listAllCaseData(limit);
+      return this.listAllCaseData(userId, limit);
     }
 
+    // Filter to only files owned by this user
     const cases = await Promise.all(
-      topMatches.map((m) => this.getCase(m.cid).catch(() => null))
+      topMatches.map(async (m) => {
+        const owned = await this.isFileOwnedByUser(m.cid, userId);
+        if (!owned) return null;
+        return this.getCase(m.cid).catch(() => null);
+      })
     );
     return cases.filter(Boolean) as CaseRecord[];
   },
 
-  async listAllCaseData(limit = 20): Promise<CaseRecord[]> {
+  async listAllCaseData(userId: string, limit = 20): Promise<CaseRecord[]> {
+    if (!userId) return [];
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await pinata.files.list().limit(limit);
+      const result: any = await pinata.files.list().limit(200);
+      const userFiles = (result.files ?? []).filter((f: any) => f.keyvalues?.userId === userId).slice(0, limit);
       const cases = await Promise.all(
-        (result.files ?? []).map((f: { cid: string }) => this.getCase(f.cid).catch(() => null))
+        userFiles.map((f: { cid: string }) => this.getCase(f.cid).catch(() => null))
       );
       return cases.filter(Boolean) as CaseRecord[];
     } catch {
@@ -182,24 +194,32 @@ export const pinataService = {
     }
   },
 
-  async listCases(limit = 20): Promise<CaseListItem[]> {
+  async listCases(userId: string, limit = 20): Promise<CaseListItem[]> {
+    if (!userId) return [];
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await pinata.files.list().limit(limit);
-      return (result.files ?? []).map(fileListItemToCaseListItem);
+      const result: any = await pinata.files.list().limit(200);
+      return (result.files ?? [])
+        .filter((f: any) => f.keyvalues?.userId === userId)
+        .slice(0, limit)
+        .map(fileListItemToCaseListItem);
     } catch {
       return [];
     }
   },
 
-  async listByCategory(slug: CategorySlug, limit = 20): Promise<CaseListItem[]> {
+  async listByCategory(slug: CategorySlug, userId: string, limit = 20): Promise<CaseListItem[]> {
+    if (!userId) return [];
     const groups = getGroups();
     const groupId = groups[slug];
     if (!groupId) return [];
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await pinata.files.list().group(groupId).limit(limit);
-      return (result.files ?? []).map(fileListItemToCaseListItem);
+      const result: any = await pinata.files.list().group(groupId).limit(200);
+      return (result.files ?? [])
+        .filter((f: any) => f.keyvalues?.userId === userId)
+        .slice(0, limit)
+        .map(fileListItemToCaseListItem);
     } catch {
       return [];
     }
