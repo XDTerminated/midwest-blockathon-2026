@@ -65,15 +65,6 @@ export default function Home() {
         <LandingSearchBar />
       </div>
 
-      {/* Bottom example bar */}
-      <div className="border-t border-[#2E323A] px-6 py-4">
-        <div className="max-w-2xl mx-auto">
-          <LandingSearchBar
-            defaultValue="I'm from Guatemala. I've been in the US for 8 years. I just got a notice to appear. What are my options?"
-            compact
-          />
-        </div>
-      </div>
     </div>
   );
 }

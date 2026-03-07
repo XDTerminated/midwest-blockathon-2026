@@ -8,16 +8,16 @@ import { signUp, useSession } from "@/lib/auth-client";
 export default function SignUpPage() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
-
-  if (!isPending && session?.user) {
-    router.replace("/search");
-    return null;
-  }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (!isPending && session?.user) {
+    router.replace("/search");
+    return null;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

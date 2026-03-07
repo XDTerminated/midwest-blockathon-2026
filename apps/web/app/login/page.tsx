@@ -8,15 +8,15 @@ import { signIn, useSession } from "@/lib/auth-client";
 export default function LoginPage() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!isPending && session?.user) {
     router.replace("/search");
     return null;
   }
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
