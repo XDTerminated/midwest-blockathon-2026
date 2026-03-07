@@ -29,14 +29,13 @@ const SearchPage = () => {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const initialQuerySent = useRef(false);
   const messagesRef = useRef<Message[]>([]);
-  const justCreatedSession = useRef<number | null>(null);
+  const sessionIdRef = useRef<number | null>(null);
+  const lastLoadedSession = useRef<number | null>(null);
   const { t, language, promptLanguageSwitch } = useLanguage();
 
-  // Load existing session if ?session= param is present.
   const paramSessionId = searchParams.get("session");
 
   const loadSession = useCallback(async (id: number) => {
@@ -49,32 +48,34 @@ const SearchPage = () => {
       }));
       messagesRef.current = loaded;
       setMessages(loaded);
-      setSessionId(id);
+      sessionIdRef.current = id;
+      lastLoadedSession.current = id;
     } catch {
       messagesRef.current = [];
       setMessages([]);
-      setSessionId(null);
+      sessionIdRef.current = null;
+      lastLoadedSession.current = null;
     }
   }, []);
 
   useEffect(() => {
     if (paramSessionId) {
       const id = Number(paramSessionId);
-      // Skip loading if we just created this session (messages are already in state).
-      if (justCreatedSession.current === id) {
-        justCreatedSession.current = null;
-        return;
+      if (isNaN(id)) return;
+      // Don't reload if we already have this session loaded (either from creation or prior load).
+      if (lastLoadedSession.current === id || sessionIdRef.current === id) return;
+      loadSession(id);
+    } else {
+      // Navigated to /search without session — clear chat.
+      if (sessionIdRef.current !== null) {
+        messagesRef.current = [];
+        setMessages([]);
+        sessionIdRef.current = null;
+        lastLoadedSession.current = null;
+        initialQuerySent.current = false;
       }
-      if (!isNaN(id) && id !== sessionId) {
-        loadSession(id);
-      }
-    } else if (sessionId !== null) {
-      messagesRef.current = [];
-      setMessages([]);
-      setSessionId(null);
-      initialQuerySent.current = false;
     }
-  }, [paramSessionId, loadSession, sessionId]);
+  }, [paramSessionId, loadSession]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,13 +93,13 @@ const SearchPage = () => {
     setMessages(updated);
     setLoading(true);
 
-    let activeSessionId = sessionId;
+    let activeSessionId = sessionIdRef.current;
     if (!activeSessionId) {
       try {
         const created = await createChatSession();
         activeSessionId = created.id;
-        justCreatedSession.current = created.id;
-        setSessionId(created.id);
+        sessionIdRef.current = created.id;
+        lastLoadedSession.current = created.id;
         router.replace(`/search?session=${created.id}`);
       } catch {
         // Non-fatal.
@@ -117,7 +118,6 @@ const SearchPage = () => {
       if (activeSessionId) {
         addChatMessage(activeSessionId, "assistant", result.analysis).catch(() => {});
       }
-      // Prompt language switch if detected language differs.
       if (result.detectedLanguage && result.detectedLanguage !== language) {
         promptLanguageSwitch(result.detectedLanguage);
       }
@@ -132,7 +132,7 @@ const SearchPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [sessionId, router, promptLanguageSwitch]);
+  }, [router, language, promptLanguageSwitch]);
 
   useEffect(() => {
     const q = searchParams.get("q");
