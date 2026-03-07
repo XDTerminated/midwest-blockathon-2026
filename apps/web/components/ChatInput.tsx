@@ -17,7 +17,9 @@ export function ChatInput({ defaultValue = "" }: ChatInputProps) {
     e.preventDefault();
     if (!query.trim()) return;
     setLoading(true);
-    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    const q = query.trim();
+    setQuery("");
+    router.push(`/search?q=${encodeURIComponent(q)}`);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {

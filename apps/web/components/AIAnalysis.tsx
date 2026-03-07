@@ -18,11 +18,11 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
       </div>
 
       {/* AI Analysis — markdown rendered */}
-      <div className="text-sm text-[#8a8ea0] leading-relaxed space-y-3">
+      <div className="text-base text-[#c0c2d0] leading-loose space-y-4">
         <ReactMarkdown
           components={{
             p: ({ children }) => (
-              <p className="leading-relaxed">
+              <p className="leading-loose">
                 {processCitations(children as string, result.citedCases)}
               </p>
             ),

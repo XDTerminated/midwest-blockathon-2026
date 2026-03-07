@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
@@ -19,7 +19,10 @@ const navItems = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => { setMounted(true); }, []);
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
@@ -28,7 +31,8 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "shrink-0 h-screen bg-[#0C0F18] border-r border-[#2E323A] flex flex-col py-6 sticky top-0 transition-all duration-200",
+        "shrink-0 h-screen bg-[#0C0F18] border-r border-[#2E323A] flex flex-col py-6 sticky top-0",
+        mounted && "transition-all duration-200",
         collapsed ? "w-[60px] px-3" : "w-[220px] px-5"
       )}
     >
@@ -73,9 +77,7 @@ export function Sidebar() {
                 title={collapsed ? (walletActive ? formatCID(address, 4) : "Wallet") : undefined}
               >
                 <Icon className="w-5 h-5 shrink-0" />
-                {!collapsed && (
-                  <span className="text-[13px]">{walletActive ? formatCID(address, 4) : "Wallet"}</span>
-                )}
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{walletActive ? formatCID(address, 4) : "Wallet"}</span>
               </button>
             );
           }
@@ -88,7 +90,7 @@ export function Sidebar() {
               title={collapsed ? label : undefined}
             >
               <Icon className="w-5 h-5 shrink-0" />
-              {!collapsed && <span className="text-[13px]">{label}</span>}
+              <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{label}</span>
             </Link>
           );
         })}
@@ -102,9 +104,7 @@ export function Sidebar() {
               <div className="w-5 h-5 rounded-full bg-[#C9A54E] flex items-center justify-center text-[10px] font-bold text-[#0C0F18] shrink-0">
                 {session.user.name?.charAt(0).toUpperCase() ?? "U"}
               </div>
-              {!collapsed && (
-                <span className="text-[13px] text-[#8a8ea0] truncate">{session.user.name ?? session.user.email}</span>
-              )}
+              <span className={cn("text-[13px] text-[#8a8ea0] truncate whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{session.user.name ?? session.user.email}</span>
             </div>
             <button
               onClick={() => signOut()}
@@ -115,7 +115,7 @@ export function Sidebar() {
               title={collapsed ? "Log out" : undefined}
             >
               <LogOut className="w-5 h-5 shrink-0" />
-              {!collapsed && <span className="text-[13px]">Log out</span>}
+              <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
             </button>
           </>
         ) : (
@@ -130,7 +130,7 @@ export function Sidebar() {
               title={collapsed ? "Log in" : undefined}
             >
               <LogIn className="w-5 h-5 shrink-0" />
-              {!collapsed && <span className="text-[13px]">Log in</span>}
+              <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
             </Link>
             <Link
               href="/signup"
@@ -142,7 +142,7 @@ export function Sidebar() {
               title={collapsed ? "Sign up" : undefined}
             >
               <UserPlus className="w-5 h-5 shrink-0" />
-              {!collapsed && <span className="text-[13px]">Sign up</span>}
+              <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
             </Link>
           </>
         )}

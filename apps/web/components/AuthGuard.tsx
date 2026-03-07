@@ -14,16 +14,13 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isPending, session, router]);
 
-  if (isPending) {
+  if (isPending || !session?.user) {
     return (
-      <div className="min-h-screen bg-[#0C0F18] flex items-center justify-center">
-        <span className="text-[#2E323A] text-sm">Loading...</span>
+      <div className="flex h-screen bg-[#0C0F18] overflow-hidden">
+        <aside className="shrink-0 h-screen bg-[#0C0F18] border-r border-[#2E323A] w-[220px] px-5 py-6" />
+        <main className="flex-1" />
       </div>
     );
-  }
-
-  if (!session?.user) {
-    return null;
   }
 
   return <>{children}</>;
