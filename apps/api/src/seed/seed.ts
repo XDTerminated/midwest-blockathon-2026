@@ -1,10 +1,11 @@
 import "dotenv/config";
+
 import { pinataService } from "../services/pinata";
 import { SEED_CASES } from "./cases.js";
 
 const DEMO_WALLET = process.env.FALLBACK_WALLET ?? "0x0000000000000000000000000000000000000000";
 
-async function seed() {
+const seed = async () => {
   console.log(`Seeding ${SEED_CASES.length} cases to Pinata...\n`);
 
   const results: { caseType: string; country: string; cid: string }[] = [];
@@ -25,6 +26,6 @@ async function seed() {
   console.log("\n✅ Seed complete!");
   console.log("\nSeed CIDs (save these for testing):");
   console.table(results);
-}
+};
 
 seed().catch(console.error);

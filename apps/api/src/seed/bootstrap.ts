@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import { pinata } from "../services/pinata";
 
 const CATEGORIES = [
@@ -13,7 +14,7 @@ const CATEGORIES = [
   "family-reunification",
 ] as const;
 
-async function bootstrap() {
+const bootstrap = async () => {
   console.log("Creating Pinata groups for ImmiVault...\n");
 
   const groups: Record<string, string> = {};
@@ -33,6 +34,6 @@ async function bootstrap() {
   console.log(
     "\nAlso add to apps/web/.env.local:\nNEXT_PUBLIC_API_URL=http://localhost:3001"
   );
-}
+};
 
 bootstrap().catch(console.error);

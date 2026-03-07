@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Mic, MicOff, Plus, Send, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface ChatInputProps {
   defaultValue?: string;
@@ -10,7 +10,7 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
-export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProps) {
+export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProps) => {
   const [query, setQuery] = useState(defaultValue);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -26,7 +26,7 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || disabled) return;
-    // Stop mic if active
+    // Stop mic if active.
     if (listening) {
       recognitionRef.current?.stop();
       setListening(false);
@@ -41,14 +41,14 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
     }
   }, [query, disabled, listening, onSend, router]);
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e as unknown as React.FormEvent);
     }
-  }
+  };
 
-  function toggleMic() {
+  const toggleMic = () => {
     if (listening) {
       recognitionRef.current?.stop();
       setListening(false);
@@ -63,7 +63,7 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
 
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = false; // Only show final results — no flickering
+    recognition.interimResults = false; // Only show final results, no flickering
     recognition.lang = "";
 
     finalTranscriptRef.current = query;
@@ -89,7 +89,7 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
     recognitionRef.current = recognition;
     recognition.start();
     setListening(true);
-  }
+  };
 
   return (
     <form
@@ -141,4 +141,4 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
       </button>
     </form>
   );
-}
+};

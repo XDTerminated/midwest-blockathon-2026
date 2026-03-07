@@ -1,9 +1,10 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
 import { z } from "zod";
-import { pinataService } from "../services/pinata";
-import { stripPII } from "../services/anonymize";
+
 import { getUser } from "../lib/auth";
+import { stripPII } from "../services/anonymize";
+import { pinataService } from "../services/pinata";
 
 export const uploadRoutes = new Hono();
 
@@ -27,7 +28,7 @@ const caseUploadSchema = z.object({
   contributorWallet: z.string().default(""),
 });
 
-// List current user's uploaded files
+// List current user's uploaded files.
 uploadRoutes.get("/files", async (c) => {
   const user = await getUser(c);
   if (!user) return c.json({ files: [] });
@@ -35,7 +36,7 @@ uploadRoutes.get("/files", async (c) => {
   return c.json({ files });
 });
 
-// Raw file upload (PDF, JSON, etc.) — stores directly on IPFS
+// Raw file upload (PDF, JSON, etc.) — stores directly on IPFS.
 uploadRoutes.post("/file", async (c) => {
   const user = await getUser(c);
   if (!user) return c.json({ error: "Unauthorized" }, 401);
@@ -61,7 +62,7 @@ uploadRoutes.post("/case", zValidator("json", caseUploadSchema), async (c) => {
   const userId = user?.id ?? "";
   const data = c.req.valid("json");
 
-  // Strip PII from text fields
+  // Strip PII from text fields.
   const { redacted: narrative } = stripPII(data.narrative);
   const { redacted: keyFactors } = stripPII(data.keyFactors);
   const { redacted: lessonsLearned } = stripPII(data.lessonsLearned);
@@ -78,7 +79,7 @@ uploadRoutes.post("/case", zValidator("json", caseUploadSchema), async (c) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const upload = await pinataService.uploadCase(caseData as any, contributorWallet, userId);
 
-  // Sign the case file
+  // Sign the case file.
   const signature = await pinataService.signCase(upload.cid);
 
   return c.json({

@@ -1,18 +1,19 @@
 import { Hono } from "hono";
-import { pinataService } from "../services/pinata";
-import { getUser } from "../lib/auth";
+
 import type { CategorySlug } from "@immivault/shared";
+import { getUser } from "../lib/auth";
+import { pinataService } from "../services/pinata";
 
 export const caseRoutes = new Hono();
 
-// Require auth for all case routes
+// Require auth for all case routes.
 caseRoutes.use("*", async (c, next) => {
   const user = await getUser(c);
   if (!user) return c.json({ error: "Unauthorized" }, 401);
   await next();
 });
 
-// List all cases (metadata only, no full content)
+// List all cases (metadata only, no full content).
 caseRoutes.get("/", async (c) => {
   const user = await getUser(c);
   const page = Number(c.req.query("page") ?? 1);
@@ -21,7 +22,7 @@ caseRoutes.get("/", async (c) => {
   return c.json({ cases, page, limit });
 });
 
-// List cases by category
+// List cases by category.
 caseRoutes.get("/category/:slug", async (c) => {
   const user = await getUser(c);
   const slug = c.req.param("slug") as CategorySlug;
@@ -29,7 +30,7 @@ caseRoutes.get("/category/:slug", async (c) => {
   return c.json({ cases, slug });
 });
 
-// Get full case content — only if user owns it
+// Get full case content — only if user owns it.
 caseRoutes.get("/:cid", async (c) => {
   const user = await getUser(c);
   const cid = c.req.param("cid") ?? "";

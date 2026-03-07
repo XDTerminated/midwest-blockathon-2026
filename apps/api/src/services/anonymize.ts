@@ -26,7 +26,7 @@ const PII_PATTERNS: { pattern: RegExp; replacement: string }[] = [
 ];
 
 // Returns redacted text + whether PII was detected
-export function stripPII(text: string): { redacted: string; hadPII: boolean } {
+const stripPII = (text: string): { redacted: string; hadPII: boolean } => {
   let redacted = text;
   let hadPII = false;
 
@@ -37,12 +37,14 @@ export function stripPII(text: string): { redacted: string; hadPII: boolean } {
   }
 
   return { redacted, hadPII };
-}
+};
 
-// Checks if text contains likely PII (for frontend warning)
-export function detectPII(text: string): boolean {
+// Checks if text contains likely PII (for frontend warning).
+const detectPII = (text: string): boolean => {
   return PII_PATTERNS.some(({ pattern }) => {
     pattern.lastIndex = 0; // reset for global patterns
     return pattern.test(text);
   });
-}
+};
+
+export { stripPII, detectPII };

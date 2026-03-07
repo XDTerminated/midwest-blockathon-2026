@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import type { FormData } from "./index";
 import { AlertTriangle } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import type { FormData } from "./index";
 
 interface Props {
   data: FormData;
@@ -11,7 +12,7 @@ interface Props {
   onBack: () => void;
 }
 
-// Simple PII detection patterns (mirrors the API-side logic)
+// Simple PII detection patterns (mirrors the API-side logic).
 const PII_PATTERNS = [
   /\bA[-\s]?\d{8,9}\b/gi,           // A-numbers
   /\b\d{3}-\d{2}-\d{4}\b/g,          // SSNs
@@ -19,14 +20,14 @@ const PII_PATTERNS = [
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/gi,   // emails
 ];
 
-function hasPII(text: string): boolean {
+const hasPII = (text: string): boolean => {
   return PII_PATTERNS.some((p) => {
     p.lastIndex = 0;
     return p.test(text);
   });
-}
+};
 
-export function Step2Narrative({ data, onChange, onNext, onBack }: Props) {
+export const Step2Narrative = ({ data, onChange, onNext, onBack }: Props) => {
   const [piiWarning, setPiiWarning] = useState(false);
   const narrative = data.narrative ?? "";
 
@@ -34,10 +35,10 @@ export function Step2Narrative({ data, onChange, onNext, onBack }: Props) {
     setPiiWarning(hasPII(narrative));
   }, [narrative]);
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -95,4 +96,4 @@ export function Step2Narrative({ data, onChange, onNext, onBack }: Props) {
       </div>
     </form>
   );
-}
+};

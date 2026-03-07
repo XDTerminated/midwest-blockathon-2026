@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
-export default defineConfig({
+const drizzleConfig = defineConfig({
   out: "./drizzle",
   schema: "./src/db/schema.ts",
   dialect: "postgresql",
@@ -9,3 +9,5 @@ export default defineConfig({
     url: process.env.DATABASE_URL!,
   },
 });
+
+export default drizzleConfig;

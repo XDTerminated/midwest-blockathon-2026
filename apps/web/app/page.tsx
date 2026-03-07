@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { Upload } from "lucide-react";
-import { LandingSearchBar } from "@/components/LandingSearchBar";
-import { useSession, signOut } from "@/lib/auth-client";
+import Link from "next/link";
 
-export default function Home() {
+import { LandingSearchBar } from "@/components/LandingSearchBar";
+import { signOut, useSession } from "@/lib/auth-client";
+
+const Home = () => {
   const { data: session } = useSession();
 
   return (
@@ -66,4 +67,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

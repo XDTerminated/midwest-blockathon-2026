@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { getCase, presignCase, isPaymentRequired } from "@/lib/api";
-import { PaymentGate } from "@/components/PaymentGate";
-import { Disclaimer } from "@/components/Disclaimer";
-import { AppLayout } from "@/components/layout/AppLayout";
 import type { CaseRecord } from "@immivault/shared";
 import { CASE_TYPES } from "@immivault/shared";
-import { outcomeColor, outcomeLabel, formatCID } from "@/lib/utils";
 import { Shield, Clock, Globe, Scale, Loader2, Share2, Copy } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useState, useEffect, use } from "react";
+
+import { Disclaimer } from "@/components/Disclaimer";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { PaymentGate } from "@/components/PaymentGate";
+import { getCase, presignCase, isPaymentRequired } from "@/lib/api";
+import { outcomeColor, outcomeLabel, formatCID, cn } from "@/lib/utils";
 
 type State = "loading" | "requires_payment" | "loaded" | "error";
 
@@ -18,7 +18,7 @@ interface CasePageProps {
   params: Promise<{ cid: string }>;
 }
 
-export default function CasePage({ params }: CasePageProps) {
+const CasePage = ({ params }: CasePageProps) => {
   const { cid } = use(params);
   const [state, setState] = useState<State>("loading");
   const [caseData, setCaseData] = useState<(CaseRecord & { cid: string }) | null>(null);
@@ -27,7 +27,7 @@ export default function CasePage({ params }: CasePageProps) {
   const [sharing, setSharing] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  async function loadCase(paymentProof?: string) {
+  const loadCase = async (paymentProof?: string) => {
     setState("loading");
     try {
       const result = await getCase(cid, paymentProof);
@@ -41,18 +41,18 @@ export default function CasePage({ params }: CasePageProps) {
       setError(err instanceof Error ? err.message : "Failed to load case");
       setState("error");
     }
-  }
+  };
 
   useEffect(() => {
     loadCase();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cid]);
 
-  async function handlePaymentSuccess(txHash: string) {
+  const handlePaymentSuccess = async (txHash: string) => {
     await loadCase(txHash);
-  }
+  };
 
-  async function handleShare() {
+  const handleShare = async () => {
     setSharing(true);
     try {
       const result = await presignCase(cid, 1440);
@@ -62,15 +62,15 @@ export default function CasePage({ params }: CasePageProps) {
     } finally {
       setSharing(false);
     }
-  }
+  };
 
-  function copyShareUrl() {
+  const copyShareUrl = () => {
     if (shareUrl) {
       navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
-  }
+  };
 
   if (state === "loading") {
     return (
@@ -252,4 +252,6 @@ export default function CasePage({ params }: CasePageProps) {
       </div>
     </AppLayout>
   );
-}
+};
+
+export default CasePage;

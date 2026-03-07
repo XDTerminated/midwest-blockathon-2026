@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { signIn, useSession } from "@/lib/auth-client";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ export default function LoginPage() {
     return null;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -41,7 +42,7 @@ export default function LoginPage() {
     }
 
     router.push("/search");
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#0C0F18] flex items-center justify-center px-4">
@@ -97,4 +98,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { formatCID } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+
 import { useSession, signOut } from "@/lib/auth-client";
+import { formatCID, cn } from "@/lib/utils";
 
 const navItems = [
   { icon: MessageSquarePlus, label: "New Chat", href: "/search" },
@@ -17,7 +17,7 @@ const navItems = [
   { icon: Wallet, label: "Wallet", href: "#wallet" },
 ];
 
-export function Sidebar() {
+export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -149,4 +149,4 @@ export function Sidebar() {
       </div>
     </aside>
   );
-}
+};

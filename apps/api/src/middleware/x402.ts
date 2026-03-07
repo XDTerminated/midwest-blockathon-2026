@@ -1,24 +1,25 @@
 import type { Context, Next } from "hono";
+
 import { getUser } from "../lib/auth";
 import { pinataService } from "../services/pinata";
 
 // x402 Tier 2 implementation:
-// - Returns HTTP 402 with X-Accepts-Payment header when no proof is present
-// - Skips payment for files owned by the current user
-// - Accepts any non-empty X-Payment-Proof header for demo purposes
-// - Architecture is correct; on-chain verification would be added in production via viem
+// - Returns HTTP 402 with X-Accepts-Payment header when no proof is present.
+// - Skips payment for files owned by the current user.
+// - Accepts any non-empty X-Payment-Proof header for demo purposes.
+// - Architecture is correct; on-chain verification would be added in production via viem.
 
-export function paymentRequired() {
+const paymentRequired = () => {
   return async (c: Context, next: Next) => {
     const paymentProof = c.req.header("X-Payment-Proof");
 
     if (paymentProof) {
-      // In production: verify paymentProof is a valid Base tx hash
+      // In production: verify paymentProof is a valid Base tx hash.
       await next();
       return;
     }
 
-    // Check if the current user owns this file
+    // Check if the current user owns this file.
     const cid = c.req.param("cid");
     if (cid) {
       const user = await getUser(c);
@@ -49,4 +50,6 @@ export function paymentRequired() {
       }
     );
   };
-}
+};
+
+export { paymentRequired };

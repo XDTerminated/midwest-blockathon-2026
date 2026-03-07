@@ -1,21 +1,22 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
 import { Upload, FileText, Loader2, CheckCircle, File as FileIcon, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { useState, useRef, useCallback, useEffect } from "react";
+
 import { CaseUploadForm } from "@/components/CaseUploadForm";
 import { uploadFile, listFiles, type UploadedFile } from "@/lib/api";
-import Link from "next/link";
 
 type Mode = "choose" | "file" | "form";
 
-function formatBytes(bytes?: number) {
+const formatBytes = (bytes?: number) => {
   if (!bytes) return "";
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+};
 
-export function UploadArea() {
+export const UploadArea = () => {
   const [mode, setMode] = useState<Mode>("choose");
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -46,17 +47,17 @@ export function UploadArea() {
     }
   }, []);
 
-  function handleDrop(e: React.DragEvent) {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
-  }
+  };
 
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
-  }
+  };
 
   if (mode === "form") {
     return (
@@ -205,4 +206,4 @@ export function UploadArea() {
       </div>
     </div>
   );
-}
+};

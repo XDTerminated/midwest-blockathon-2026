@@ -1,9 +1,10 @@
-import OpenAI from "openai";
-import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
-import { LEGAL_DISCLAIMER } from "@immivault/shared";
 import { config } from "dotenv";
+import OpenAI from "openai";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+
+import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
+import { LEGAL_DISCLAIMER } from "@immivault/shared";
 
 // Ensure env vars are loaded before using GROQ_API_KEY
 if (!process.env.GROQ_API_KEY) {
@@ -13,12 +14,12 @@ if (!process.env.GROQ_API_KEY) {
 
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 
-function getClient() {
+const getClient = () => {
   return new OpenAI({
     baseURL: "https://api.groq.com/openai/v1",
     apiKey: process.env.GROQ_API_KEY,
   });
-}
+};
 
 const SYSTEM_PROMPT = `You are Lumina, an AI assistant on an immigration legal research platform. You can answer general questions AND help with immigration research.
 
@@ -47,7 +48,7 @@ ALL RESPONSES:
 - NO headers. NO bold. NO bullet points. NO lists. NO markdown formatting at all.
 - Just 1-2 short paragraphs of plain text.`;
 
-function formatCaseForContext(c: CaseRecord & { cid?: string }, index: number): string {
+const formatCaseForContext = (c: CaseRecord & { cid?: string }, index: number): string => {
   return `
 CASE ${index + 1} [CID: ${c.cid ?? "unknown"}]:
 Type: ${c.caseType ?? "unknown"}
@@ -62,7 +63,7 @@ Key Factors: ${c.keyFactors ?? "N/A"}
 Documents Used: ${(c.documentsUsed ?? []).join(", ") || "N/A"}
 Lessons Learned: ${c.lessonsLearned ?? "N/A"}
 `.trim();
-}
+};
 
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 

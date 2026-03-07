@@ -1,7 +1,8 @@
 "use client";
 
-import type { FormData } from "./index";
 import { CASE_TYPES, OUTCOMES } from "@immivault/shared";
+
+import type { FormData } from "./index";
 
 interface Props {
   data: FormData;
@@ -14,14 +15,14 @@ const inputClass =
 
 const labelClass = "block text-sm font-medium text-[#8a8ea0] mb-1";
 
-export function Step1BasicInfo({ data, onChange, onNext }: Props) {
+export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 15 }, (_, i) => String(currentYear - i));
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -139,4 +140,4 @@ export function Step1BasicInfo({ data, onChange, onNext }: Props) {
       </div>
     </form>
   );
-}
+};

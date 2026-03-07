@@ -1,9 +1,10 @@
 "use client";
 
-import type { FormData } from "./index";
+import { Wallet } from "lucide-react";
 import { useAccount, useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { Wallet } from "lucide-react";
+
+import type { FormData } from "./index";
 
 interface Props {
   data: FormData;
@@ -12,18 +13,18 @@ interface Props {
   onBack: () => void;
 }
 
-export function Step4Wallet({ data, onChange, onNext, onBack }: Props) {
+export const Step4Wallet = ({ data, onChange, onNext, onBack }: Props) => {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
 
-  function useConnectedWallet() {
+  const useConnectedWallet = () => {
     if (address) onChange({ contributorWallet: address });
-  }
+  };
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -94,4 +95,4 @@ export function Step4Wallet({ data, onChange, onNext, onBack }: Props) {
       </div>
     </form>
   );
-}
+};

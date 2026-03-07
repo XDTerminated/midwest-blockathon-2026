@@ -1,8 +1,9 @@
-import { PinataSDK } from "pinata";
-import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
+import { PinataSDK } from "pinata";
 import { fileURLToPath } from "url";
+
+import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
 
 // Ensure env vars are loaded before initializing SDK
 if (!process.env.PINATA_JWT) {
@@ -15,13 +16,13 @@ export const pinata = new PinataSDK({
   pinataGateway: process.env.PINATA_GATEWAY!,
 });
 
-function getGroups(): Record<string, string> {
+const getGroups = (): Record<string, string> => {
   try {
     return JSON.parse(process.env.PINATA_GROUPS ?? "{}");
   } catch {
     return {};
   }
-}
+};
 
 const CASE_TYPE_TO_SLUG: Record<CaseType, CategorySlug> = {
   asylum: "asylum-refugee",
@@ -45,11 +46,11 @@ const CASE_TYPE_TO_SLUG: Record<CaseType, CategorySlug> = {
   "k1-fiance": "family-reunification",
 };
 
-function groupIdForCaseType(caseType: CaseType): string | undefined {
+const groupIdForCaseType = (caseType: CaseType): string | undefined => {
   const groups = getGroups();
   const slug = CASE_TYPE_TO_SLUG[caseType];
   return slug ? groups[slug] : undefined;
-}
+};
 
 // --- In-memory cache for case data fetched from IPFS gateway ---
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -62,7 +63,7 @@ interface CacheEntry {
 
 const caseCache = new Map<string, CacheEntry>();
 
-function getCached(cid: string): CaseRecord | null {
+const getCached = (cid: string): CaseRecord | null => {
   const entry = caseCache.get(cid);
   if (!entry) return null;
   if (Date.now() > entry.expiresAt) {
@@ -70,19 +71,19 @@ function getCached(cid: string): CaseRecord | null {
     return null;
   }
   return entry.data;
-}
+};
 
-function setCache(cid: string, data: CaseRecord): void {
+const setCache = (cid: string, data: CaseRecord): void => {
   // Evict oldest entries if cache is full
   if (caseCache.size >= CACHE_MAX_SIZE) {
     const firstKey = caseCache.keys().next().value;
     if (firstKey) caseCache.delete(firstKey);
   }
   caseCache.set(cid, { data, expiresAt: Date.now() + CACHE_TTL_MS });
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fileListItemToCaseListItem(f: any): CaseListItem {
+const fileListItemToCaseListItem = (f: any): CaseListItem => {
   return {
     cid: f.cid,
     name: f.name ?? "",
@@ -94,7 +95,7 @@ function fileListItemToCaseListItem(f: any): CaseListItem {
     lawyerUsed: f.keyvalues?.lawyerUsed,
     createdAt: f.created_at,
   };
-}
+};
 
 export const pinataService = {
   async uploadRawFile(file: File, name: string, userId: string) {

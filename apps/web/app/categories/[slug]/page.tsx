@@ -1,17 +1,18 @@
-import { listCasesByCategory } from "@/lib/api";
-import { CaseCard } from "@/components/CaseCard";
 import { CATEGORIES } from "@immivault/shared";
 import type { CategorySlug, CaseListItem } from "@immivault/shared";
-import Link from "next/link";
-import { SearchBar } from "@/components/SearchBar";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+import { listCasesByCategory } from "@/lib/api";
+import { CaseCard } from "@/components/CaseCard";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { SearchBar } from "@/components/SearchBar";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { slug } = await params;
   const category = CATEGORIES.find((c) => c.slug === slug);
 
@@ -33,7 +34,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     const result = await listCasesByCategory(slug as CategorySlug);
     cases = result.cases;
   } catch {
-    // API may not be running; show empty state
+    // API may not be running; show empty state.
   }
 
   return (
@@ -75,4 +76,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </div>
     </AppLayout>
   );
-}
+};
+
+export default CategoryPage;
