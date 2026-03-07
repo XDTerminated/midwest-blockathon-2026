@@ -99,14 +99,17 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
       <button
         type="button"
         onClick={toggleMic}
-        className={`w-8 h-8 shrink-0 flex items-center justify-center transition mr-1 rounded-lg ${
+        className={`shrink-0 flex items-center gap-1.5 transition mr-1 rounded-lg px-2 py-1.5 ${
           listening
             ? "text-[#C9A54E] bg-[#C9A54E]/10 animate-pulse"
-            : "text-[#2E323A] hover:text-[#C9A54E]"
+            : "text-[#5a5e6a] hover:text-[#C9A54E]"
         }`}
         title={listening ? "Stop recording" : "Start voice input"}
       >
         {listening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+        <span className="text-[10px] font-medium hidden sm:inline">
+          {listening ? "Stop" : "Speak"}
+        </span>
       </button>
 
       <button

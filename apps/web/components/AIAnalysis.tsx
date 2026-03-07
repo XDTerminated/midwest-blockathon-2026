@@ -4,8 +4,35 @@ import type { SearchResult } from "@immivault/shared";
 import { Volume2, Square } from "lucide-react";
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+<<<<<<< Updated upstream
 
+=======
+import { Volume2, Square, Loader2 } from "lucide-react";
+import type { SearchResult } from "@immivault/shared";
+>>>>>>> Stashed changes
 import { CitedCase } from "@/components/CitedCase";
+import { textToSpeech } from "@/lib/api";
+
+// Simple language detection based on Unicode ranges and common words
+function detectLang(text: string): string {
+  if (/[\u4e00-\u9fff]/.test(text)) return "zh";
+  if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return "ja";
+  if (/[\uac00-\ud7af]/.test(text)) return "ko";
+  if (/[\u0600-\u06ff]/.test(text)) return "ar";
+  if (/[\u0900-\u097f]/.test(text)) return "hi";
+  if (/[\u0400-\u04ff]/.test(text)) return "ru";
+  if (/[\u0e00-\u0e7f]/.test(text)) return "th";
+  if (/[\u1000-\u109f]/.test(text)) return "my";
+  const lower = text.toLowerCase();
+  if (/\b(el|la|los|las|es|está|puede|también|pero)\b/.test(lower)) return "es";
+  if (/\b(le|la|les|est|sont|peut|aussi|mais|avec)\b/.test(lower)) return "fr";
+  if (/\b(o|os|as|é|são|pode|também|mas|com)\b/.test(lower)) return "pt";
+  if (/\b(mwen|ou|li|yo|nan|pou|pa|ak)\b/.test(lower)) return "ht";
+  if (/\b(ang|ng|mga|sa|na|ay|at|ko)\b/.test(lower)) return "tl";
+  if (/\b(là|của|và|có|không|được|này|những)\b/.test(lower)) return "vi";
+  if (/\b(і|є|що|але|або|та|це|до)\b/.test(lower)) return "uk";
+  return "en";
+}
 
 interface AIAnalysisProps {
   result: SearchResult;
@@ -13,18 +40,28 @@ interface AIAnalysisProps {
 
 export const AIAnalysis = ({ result }: AIAnalysisProps) => {
   const [speaking, setSpeaking] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const [loading, setLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const blobUrlRef = useRef<string | null>(null);
 
+<<<<<<< Updated upstream
   const toggleSpeak = () => {
+=======
+  async function toggleSpeak() {
+>>>>>>> Stashed changes
     if (speaking) {
-      window.speechSynthesis.cancel();
+      audioRef.current?.pause();
+      audioRef.current = null;
+      if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
       setSpeaking(false);
       return;
     }
 
     const text = result.analysis.replace(/\[Case CID: [^\]]+\]/g, "");
-    const utterance = new SpeechSynthesisUtterance(text);
+    const lang = detectLang(text);
 
+<<<<<<< Updated upstream
     // Try to auto-detect language from the text for proper pronunciation.
     // The browser will use the appropriate voice if available.
     utterance.rate = 0.9;
@@ -35,6 +72,40 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
     window.speechSynthesis.speak(utterance);
     setSpeaking(true);
   };
+=======
+    setLoading(true);
+    try {
+      const blob = await textToSpeech(text, lang);
+      const url = URL.createObjectURL(blob);
+      blobUrlRef.current = url;
+
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setSpeaking(false);
+        URL.revokeObjectURL(url);
+        blobUrlRef.current = null;
+      };
+      audio.onerror = () => {
+        setSpeaking(false);
+        URL.revokeObjectURL(url);
+        blobUrlRef.current = null;
+      };
+      await audio.play();
+      setSpeaking(true);
+    } catch {
+      console.error("ElevenLabs TTS failed, falling back to browser TTS");
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9;
+      utterance.onend = () => setSpeaking(false);
+      utterance.onerror = () => setSpeaking(false);
+      window.speechSynthesis.speak(utterance);
+      setSpeaking(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+>>>>>>> Stashed changes
 
   return (
     <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
@@ -44,14 +115,18 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
         </span>
         <button
           onClick={toggleSpeak}
-          className={`w-7 h-7 flex items-center justify-center rounded-md transition ${
+          disabled={loading}
+          className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium ${
             speaking
               ? "text-[#C9A54E] bg-[#C9A54E]/10"
-              : "text-[#2E323A] hover:text-[#8a8ea0]"
+              : loading
+                ? "text-[#C9A54E] bg-[#C9A54E]/5 opacity-70"
+                : "text-[#5a5e6a] hover:text-[#C9A54E] hover:bg-[#C9A54E]/5"
           }`}
-          title={speaking ? "Stop listening" : "Listen to response"}
+          title={loading ? "Generating audio..." : speaking ? "Stop listening" : "Listen to response"}
         >
-          {speaking ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-4 h-4" />}
+          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : speaking ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+          {loading ? "Loading..." : speaking ? "Stop" : "Listen"}
         </button>
       </div>
 

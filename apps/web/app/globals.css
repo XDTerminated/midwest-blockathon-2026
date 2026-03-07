@@ -21,6 +21,26 @@ p, blockquote, .font-crimson {
   font-family: "Crimson Text", serif;
 }
 
+/* Shimmer text animation */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #4a4e5a 0%,
+    #ffffff 50%,
+    #4a4e5a 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.5s linear infinite;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0C0F18; }

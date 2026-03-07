@@ -122,7 +122,26 @@ export const presignCase = async (cid: string, expiresMinutes = 1440): Promise<P
   });
 };
 
+<<<<<<< Updated upstream
 export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => {
+=======
+export async function textToSpeech(text: string, lang = "en"): Promise<Blob> {
+  const res = await fetch(`${API_URL}/api/tts`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, lang }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`TTS error ${res.status}`);
+  }
+
+  return res.blob();
+}
+
+export function isPaymentRequired(res: unknown): res is PaymentRequiredError {
+>>>>>>> Stashed changes
   return (
     typeof res === "object" &&
     res !== null &&
