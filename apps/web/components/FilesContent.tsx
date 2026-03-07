@@ -78,11 +78,11 @@ export function FilesContent() {
         <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] shadow-surface overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[1fr_140px_120px_100px_80px_32px] gap-4 px-5 py-3 border-b border-[#363C4A] text-xs text-[#6B7280] uppercase tracking-wide">
-            <span>Name</span>
-            <span>Type</span>
-            <span>Country</span>
-            <span>Court</span>
-            <span>Status</span>
+            <span>{t("colName")}</span>
+            <span>{t("colType")}</span>
+            <span>{t("colCountry")}</span>
+            <span>{t("colCourt")}</span>
+            <span>{t("colStatus")}</span>
             <span />
           </div>
 
