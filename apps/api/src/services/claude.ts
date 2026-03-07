@@ -1,6 +1,15 @@
 import OpenAI from "openai";
 import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
 import { LEGAL_DISCLAIMER } from "@immivault/shared";
+import { config } from "dotenv";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+// Ensure env vars are loaded before using GROQ_API_KEY
+if (!process.env.GROQ_API_KEY) {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  config({ path: resolve(__dirname, "../../../../.env") });
+}
 
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 
@@ -31,17 +40,17 @@ Tone: helpful, direct, and welcoming. Informative first, warm second.`;
 function formatCaseForContext(c: CaseRecord & { cid?: string }, index: number): string {
   return `
 CASE ${index + 1} [CID: ${c.cid ?? "unknown"}]:
-Type: ${c.caseType}
-Country of Origin: ${c.countryOfOrigin}
-Outcome: ${c.outcome}
-Year: ${c.year}
+Type: ${c.caseType ?? "unknown"}
+Country of Origin: ${c.countryOfOrigin ?? "unknown"}
+Outcome: ${c.outcome ?? "unknown"}
+Year: ${c.year ?? "unknown"}
 Court/Office: ${c.court ?? "Not specified"}
-Timeline: ${c.timelineMonths} months
+Timeline: ${c.timelineMonths ?? "unknown"} months
 Had Attorney: ${c.lawyerUsed ? "Yes" : "No"}
-Narrative: ${c.narrative}
-Key Factors: ${c.keyFactors}
-Documents Used: ${c.documentsUsed.join(", ")}
-Lessons Learned: ${c.lessonsLearned}
+Narrative: ${c.narrative ?? "N/A"}
+Key Factors: ${c.keyFactors ?? "N/A"}
+Documents Used: ${(c.documentsUsed ?? []).join(", ") || "N/A"}
+Lessons Learned: ${c.lessonsLearned ?? "N/A"}
 `.trim();
 }
 
