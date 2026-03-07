@@ -105,11 +105,11 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
 
     // Extract detected language from LANG:xx tag anywhere in the response.
     let detectedLanguage = "en";
-    const langMatch = analysis.match(/\bLANG:([a-z]{2,3})\b/i);
+    const langMatch = analysis.match(/\bLANG:\s*([a-z]{2,3})\b/i);
     if (langMatch) {
       detectedLanguage = langMatch[1].toLowerCase();
       // Strip all occurrences of the LANG tag (may appear inline or on its own line).
-      analysis = analysis.replace(/\s*\bLANG:[a-z]{2,3}\b\s*/gi, " ").trim();
+      analysis = analysis.replace(/\s*\bLANG:\s*[a-z]{2,3}\b\s*/gi, " ").trim();
     }
 
     // Collect valid CIDs from the cases we actually provided.

@@ -1,7 +1,7 @@
 "use client";
 
 import { CASE_TYPES } from "@immivault/shared";
-import { Loader2, Globe, Clock, Scale, ArrowRight, Search, X } from "lucide-react";
+import { Loader2, Search, X, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -46,7 +46,7 @@ export function FilesContent() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <div>
         <h1 className="text-2xl font-semibold text-[#e8e8f0] mb-1">{t("allFiles")}</h1>
         <p className="text-sm text-[#6B7280]">
@@ -56,7 +56,7 @@ export function FilesContent() {
 
       {/* Search bar */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280] pointer-events-none" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
         <input
           type="text"
           value={search}
@@ -75,51 +75,59 @@ export function FilesContent() {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] shadow-surface overflow-hidden">
+          {/* Table header */}
+          <div className="grid grid-cols-[1fr_140px_120px_100px_80px_32px] gap-4 px-5 py-3 border-b border-[#363C4A] text-xs text-[#6B7280] uppercase tracking-wide">
+            <span>Name</span>
+            <span>Type</span>
+            <span>Country</span>
+            <span>Court</span>
+            <span>Status</span>
+            <span />
+          </div>
+
+          {/* Rows */}
           {filtered.map((item, i) => {
             const caseTypeLabel = CASE_TYPES.find((ct) => ct.value === item.caseType)?.label ?? item.caseType;
             return (
               <Link key={item.cid} href={`/case/${item.cid}`}>
                 <div
-                  className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5 hover:border-[#D4AD5A] transition group shadow-surface animate-fade-in-up"
-                  style={{ animationDelay: `${Math.min(i * 0.03, 0.3)}s` }}
+                  className={cn(
+                    "grid grid-cols-[1fr_140px_120px_100px_80px_32px] gap-4 px-5 py-4 items-center group hover:bg-[#242838] transition cursor-pointer animate-fade-in-up",
+                    i !== filtered.length - 1 && "border-b border-[#363C4A]/50"
+                  )}
+                  style={{ animationDelay: `${Math.min(i * 0.02, 0.3)}s` }}
                 >
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <span className="text-xs font-medium text-[#D4AD5A] uppercase tracking-wide">
-                      {caseTypeLabel}
-                    </span>
-                    <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-full shrink-0", outcomeColor(item.outcome as import("@immivault/shared").Outcome))}>
-                      {outcomeLabel(item.outcome as import("@immivault/shared").Outcome)}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-[#e8e8f0] truncate mb-3 leading-relaxed">{item.name}</p>
-
-                  <div className="flex flex-wrap gap-3 text-xs text-[#9CA3AF]">
-                    {item.countryOfOrigin && (
-                      <span className="flex items-center gap-1.5">
-                        <Globe className="w-3.5 h-3.5" />
-                        {item.countryOfOrigin}
-                      </span>
-                    )}
-                    {item.court && (
-                      <span className="flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5" />
-                        {item.court}
-                      </span>
-                    )}
+                  {/* Name + year */}
+                  <div className="min-w-0">
+                    <p className="text-sm text-[#e8e8f0] truncate leading-snug">{item.name}</p>
                     {item.year && (
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {item.year}
-                      </span>
+                      <span className="text-[11px] text-[#6B7280]">{item.year}</span>
                     )}
                   </div>
 
-                  <div className="mt-4 flex items-center gap-1.5 text-xs text-[#D4AD5A] font-medium group-hover:text-[#f0c860] transition">
-                    {t("viewCase")}
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
+                  {/* Type */}
+                  <span className="text-xs text-[#D4AD5A] font-medium truncate">
+                    {caseTypeLabel}
+                  </span>
+
+                  {/* Country */}
+                  <span className="text-xs text-[#9CA3AF] truncate">
+                    {item.countryOfOrigin || "—"}
+                  </span>
+
+                  {/* Court */}
+                  <span className="text-xs text-[#9CA3AF] truncate">
+                    {item.court || "—"}
+                  </span>
+
+                  {/* Outcome */}
+                  <span className={cn("text-[11px] font-semibold px-2 py-0.5 rounded-full text-center w-fit", outcomeColor(item.outcome as import("@immivault/shared").Outcome))}>
+                    {outcomeLabel(item.outcome as import("@immivault/shared").Outcome)}
+                  </span>
+
+                  {/* Arrow */}
+                  <ChevronRight className="w-4 h-4 text-[#363C4A] group-hover:text-[#D4AD5A] transition shrink-0" />
                 </div>
               </Link>
             );
