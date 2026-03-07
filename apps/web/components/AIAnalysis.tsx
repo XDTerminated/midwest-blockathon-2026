@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import { Volume2, Square } from "lucide-react";
 import type { SearchResult } from "@immivault/shared";
 import { CitedCase } from "@/components/CitedCase";
 
@@ -9,12 +11,47 @@ interface AIAnalysisProps {
 }
 
 export function AIAnalysis({ result }: AIAnalysisProps) {
+  const [speaking, setSpeaking] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  function toggleSpeak() {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+
+    const text = result.analysis.replace(/\[Case CID: [^\]]+\]/g, "");
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Try to auto-detect language from the text for proper pronunciation
+    // The browser will use the appropriate voice if available
+    utterance.rate = 0.9;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setSpeaking(true);
+  }
+
   return (
     <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-[#2E323A] bg-[#0C0F18] border border-[#2E323A] px-2 py-1 rounded">
           Lumina AI
         </span>
+        <button
+          onClick={toggleSpeak}
+          className={`w-7 h-7 flex items-center justify-center rounded-md transition ${
+            speaking
+              ? "text-[#C9A54E] bg-[#C9A54E]/10"
+              : "text-[#2E323A] hover:text-[#8a8ea0]"
+          }`}
+          title={speaking ? "Stop listening" : "Listen to response"}
+        >
+          {speaking ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-4 h-4" />}
+        </button>
       </div>
 
       {/* AI Analysis — markdown rendered */}

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Send, Loader2 } from "lucide-react";
+import { Mic, MicOff, Plus, Send, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   defaultValue?: string;
@@ -12,25 +12,83 @@ interface ChatInputProps {
 
 export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProps) {
   const [query, setQuery] = useState(defaultValue);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const finalTranscriptRef = useRef("");
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || disabled) return;
+    // Stop mic if active
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+    }
     const q = query.trim();
     setQuery("");
+    finalTranscriptRef.current = "";
     if (onSend) {
       onSend(q);
     } else {
       router.push(`/search?q=${encodeURIComponent(q)}`);
     }
-  }
+  }, [query, disabled, listening, onSend, router]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e as unknown as React.FormEvent);
     }
+  }
+
+  function toggleMic() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false; // Only show final results — no flickering
+    recognition.lang = "";
+
+    finalTranscriptRef.current = query;
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          const transcript = event.results[i][0].transcript;
+          finalTranscriptRef.current += (finalTranscriptRef.current ? " " : "") + transcript;
+          setQuery(finalTranscriptRef.current);
+        }
+      }
+    };
+
+    recognition.onerror = () => {
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setListening(true);
   }
 
   return (
@@ -40,16 +98,34 @@ export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProp
     >
       <button
         type="button"
-        className="w-8 h-8 shrink-0 flex items-center justify-center text-[#2E323A] hover:text-[#5a5a70] transition mr-3"
+        onClick={toggleMic}
+        className={`w-8 h-8 shrink-0 flex items-center justify-center transition mr-1 rounded-lg ${
+          listening
+            ? "text-[#C9A54E] bg-[#C9A54E]/10 animate-pulse"
+            : "text-[#2E323A] hover:text-[#C9A54E]"
+        }`}
+        title={listening ? "Stop recording" : "Start voice input"}
+      >
+        {listening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => window.location.href = "/upload"}
+        className="w-8 h-8 shrink-0 flex items-center justify-center text-[#2E323A] hover:text-[#C9A54E] transition mr-3 rounded-lg"
+        title="Upload a document"
       >
         <Plus className="w-5 h-5" />
       </button>
 
       <textarea
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          finalTranscriptRef.current = e.target.value;
+        }}
         onKeyDown={handleKeyDown}
-        placeholder="Describe your situation..."
+        placeholder={listening ? "Listening..." : "Describe your situation..."}
         rows={1}
         className="flex-1 bg-transparent text-[#e8e8f0] placeholder-[#2E323A] text-sm resize-none focus:outline-none leading-relaxed py-1"
         style={{ maxHeight: "120px", overflowY: "auto" }}
