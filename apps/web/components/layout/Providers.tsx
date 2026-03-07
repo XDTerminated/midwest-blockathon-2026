@@ -1,9 +1,11 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
+import { NavigationProgress } from "@/components/NavigationProgress";
+import { LanguageProvider } from "@/lib/i18n";
 import { wagmiConfig } from "@/lib/wagmi-config";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
@@ -11,7 +13,14 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 };

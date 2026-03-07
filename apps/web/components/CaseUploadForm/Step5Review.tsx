@@ -47,12 +47,12 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <h2 className="text-xl font-semibold text-[#e8e8f0]">Review & Submit</h2>
-      <p className="text-[#2E323A] text-sm">
+      <p className="text-[#6B7280] text-sm">
         Please review your case before submitting. PII will be automatically redacted.
       </p>
 
       {/* Review summary. */}
-      <div className="bg-[#161A24] rounded-lg border border-[#2E323A] divide-y divide-[#2E323A]">
+      <div className="bg-[#1C2030] rounded-lg border border-[#363C4A] divide-y divide-[#363C4A]">
         {[
           { label: "Case Type", value: caseTypeLabel },
           { label: "Country", value: data.countryOfOrigin },
@@ -70,7 +70,7 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
           },
         ].map(({ label, value }) => (
           <div key={label} className="flex gap-3 px-4 py-3 text-sm">
-            <span className="text-[#2E323A] w-32 shrink-0">{label}</span>
+            <span className="text-[#6B7280] w-32 shrink-0">{label}</span>
             <span className="text-[#e8e8f0] font-medium">{value}</span>
           </div>
         ))}
@@ -78,8 +78,8 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
 
       {/* Narrative preview. */}
       <div>
-        <p className="text-sm font-medium text-[#8a8ea0] mb-1">Narrative Preview</p>
-        <div className="bg-[#0C0F18] border border-[#2E323A] rounded-lg p-3 text-sm text-[#8a8ea0] max-h-32 overflow-y-auto">
+        <p className="text-sm font-medium text-[#9CA3AF] mb-1">Narrative Preview</p>
+        <div className="bg-[#121620] border border-[#363C4A] rounded-lg p-3 text-sm text-[#9CA3AF] max-h-32 overflow-y-auto">
           {data.narrative ?? "—"}
         </div>
       </div>
@@ -98,9 +98,9 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 accent-[#C9A54E]"
+          className="mt-0.5 accent-[#D4AD5A]"
         />
-        <span className="text-sm text-[#8a8ea0]">
+        <span className="text-sm text-[#9CA3AF]">
           I confirm that this case is anonymized and does not contain personally identifiable
           information. I consent to this anonymized case being searchable by others on Lumina.
           I understand that contributors earn USDC micropayments when their cases help others.
@@ -108,13 +108,13 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
       </label>
 
       <div className="flex justify-between pt-2">
-        <button type="button" onClick={onBack} className="text-[#2E323A] hover:text-[#e8e8f0] text-sm px-4 py-2 transition" disabled={loading}>
+        <button type="button" onClick={onBack} className="text-[#6B7280] hover:text-[#e8e8f0] text-sm px-4 py-2 transition" disabled={loading}>
           ← Back
         </button>
         <button
           type="submit"
           disabled={!consent || loading}
-          className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2"
+          className="bg-[#D4AD5A] hover:bg-[#E0BD6A] disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2"
         >
           {loading ? (
             <>

@@ -1,4 +1,4 @@
-// ImmiVaultRegistry contract ABI and addresses
+// ImmiVaultRegistry contract ABI and addresses.
 
 export const REGISTRY_ABI = [
   {
@@ -218,7 +218,7 @@ export const ACCESS_PRICE_DISPLAY = "0.10";
 export const STAKE_AMOUNT_USDC = BigInt(100000);
 export const STAKE_AMOUNT_DISPLAY = "0.10";
 
-// Contract addresses — update after deployment
+// Contract addresses — update after deployment.
 export const CONTRACT_ADDRESSES = {
   baseSepolia: {
     registry: "0xcfa2eE64080F031Dbfcf9F04EAf04EBeA98EC3EE" as `0x${string}`,
@@ -228,7 +228,7 @@ export const CONTRACT_ADDRESSES = {
   base: {
     registry: "" as `0x${string}`,
     escrow: "" as `0x${string}`,
-    usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`, // official USDC on Base
+    usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`, // Official USDC on Base.
   },
 } as const;
 

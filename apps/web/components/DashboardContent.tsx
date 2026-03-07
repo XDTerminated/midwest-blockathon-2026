@@ -1,31 +1,20 @@
 "use client";
 
+import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@immivault/shared";
+import type { EscrowInfo, CreditInfo } from "@immivault/shared";
+import { CheckCircle, Clock, ExternalLink, Eye, FileText, Lock, Loader2, Star, TrendingUp, Wallet, XCircle } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
+
 import {
   getContributorStats,
   listFiles,
   getMyEscrows,
   getMyCredits,
   type UploadedFile,
-  type ContributorStats,
 } from "@/lib/api";
-import {
-  Wallet,
-  TrendingUp,
-  FileText,
-  Loader2,
-  ExternalLink,
-  Lock,
-  Star,
-  Clock,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
-import Link from "next/link";
-import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@immivault/shared";
-import type { EscrowInfo, CreditInfo } from "@immivault/shared";
 
 const statusBadge = (status: string) => {
   switch (status) {
@@ -55,10 +44,10 @@ const statusBadge = (status: string) => {
   }
 };
 
-export function DashboardContent() {
+export const DashboardContent = () => {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
-  const [stats, setStats] = useState<ContributorStats | null>(null);
+  const [stats, setStats] = useState<{ casesUploaded: number; totalEarned: number; totalAccesses: number; cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[] } | null>(null);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [escrows, setEscrows] = useState<EscrowInfo[]>([]);
   const [credits, setCredits] = useState<CreditInfo[]>([]);
@@ -313,4 +302,4 @@ export function DashboardContent() {
       )}
     </div>
   );
-}
+};

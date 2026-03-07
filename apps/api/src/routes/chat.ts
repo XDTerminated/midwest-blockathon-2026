@@ -1,5 +1,5 @@
+import { desc, eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { eq, desc } from "drizzle-orm";
 
 import { getUser } from "../lib/auth";
 import { db } from "../db";

@@ -1,4 +1,4 @@
-import { Shield, CheckCircle, XCircle, Clock, Key } from "lucide-react";
+import { CheckCircle, Clock, Key, Shield, XCircle } from "lucide-react";
 
 import { AppLayout } from "@/components/layout/AppLayout";
 import { verifyCase } from "@/lib/api";
@@ -25,26 +25,26 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
       <div className="max-w-xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-3">
-            <div className="bg-[#161A24] border border-[#2E323A] rounded-full p-3">
-              <Shield className="w-7 h-7 text-[#C9A54E]" />
+            <div className="bg-[#1C2030] border border-[#363C4A] rounded-full p-3">
+              <Shield className="w-7 h-7 text-[#D4AD5A]" />
             </div>
           </div>
           <h1 className="text-2xl font-bold text-[#e8e8f0] mb-2">Case Integrity Verification</h1>
-          <p className="text-[#2E323A] text-sm">
+          <p className="text-[#6B7280] text-sm">
             Cryptographic proof that this case file has not been altered since upload.
           </p>
         </div>
 
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-xl p-6 space-y-5">
+        <div className="bg-[#1C2030] border border-[#363C4A] rounded-xl p-6 space-y-5">
           {/* CID. */}
           <div>
-            <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide mb-1">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-1">
               Content ID (CID)
             </p>
-            <p className="font-mono text-sm text-[#C9A54E] break-all bg-[#0C0F18] border border-[#2E323A] rounded px-3 py-2">
+            <p className="font-mono text-sm text-[#D4AD5A] break-all bg-[#121620] border border-[#363C4A] rounded px-3 py-2">
               {cid}
             </p>
-            <p className="text-xs text-[#2E323A] mt-1">
+            <p className="text-xs text-[#6B7280] mt-1">
               This ID is a cryptographic hash of the file content. It changes if the file is modified.
             </p>
           </div>
@@ -89,9 +89,9 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
               {/* Metadata. */}
               {result.signedAt && (
                 <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-[#2E323A] mt-0.5 shrink-0" />
+                  <Clock className="w-4 h-4 text-[#6B7280] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide">Signed At</p>
+                    <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Signed At</p>
                     <p className="text-sm text-[#e8e8f0] mt-0.5">
                       {new Date(result.signedAt).toLocaleString()}
                     </p>
@@ -101,9 +101,9 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
 
               {result.signedBy && (
                 <div className="flex items-start gap-3">
-                  <Key className="w-4 h-4 text-[#2E323A] mt-0.5 shrink-0" />
+                  <Key className="w-4 h-4 text-[#6B7280] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide">Signed By</p>
+                    <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Signed By</p>
                     <p className="text-sm font-mono text-[#e8e8f0] mt-0.5">
                       {formatCID(result.signedBy, 8)}
                     </p>
@@ -114,8 +114,8 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
           )}
 
           {/* Explanation. */}
-          <div className="border-t border-[#2E323A] pt-4">
-            <p className="text-xs text-[#2E323A]">
+          <div className="border-t border-[#363C4A] pt-4">
+            <p className="text-xs text-[#6B7280]">
               Lumina stores case files on Pinata Private IPFS. Each file receives a content
               identifier (CID) — a cryptographic hash of its contents. If the file were modified,
               the CID would change. The file signature proves who uploaded the file and when,

@@ -1,5 +1,4 @@
-import type { CitedCaseRef } from "@immivault/shared";
-import { CASE_TYPES } from "@immivault/shared";
+import { CASE_TYPES, type CitedCaseRef } from "@immivault/shared";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 
@@ -15,15 +14,15 @@ export const CitedCase = ({ ref_ }: CitedCaseProps) => {
   return (
     <Link
       href={`/case/${ref_.cid}`}
-      className="inline-flex items-center gap-1.5 bg-[#0C0F18] hover:bg-[#1a1e28] border border-[#2E323A] rounded-md px-2 py-1 text-xs font-medium text-[#8a8ea0] transition mx-0.5"
+      className="inline-flex items-center gap-1.5 bg-[#121620] hover:bg-[#1E2433] border border-[#363C4A] rounded-md px-2 py-1 text-xs font-medium text-[#9CA3AF] mx-0.5 shadow-surface hover-lift"
     >
-      <span className="text-[#C9A54E]">{typeLabel}</span>
-      {ref_.country && <span className="text-[#2E323A]">· {ref_.country}</span>}
+      <span className="text-[#D4AD5A]">{typeLabel}</span>
+      {ref_.country && <span className="text-[#6B7280]">· {ref_.country}</span>}
       <span className={cn("px-1.5 py-0.5 rounded-full text-[10px]", outcomeColor(ref_.outcome))}>
         {outcomeLabel(ref_.outcome)}
       </span>
-      <span className="text-[#2E323A] font-mono text-[10px]">{formatCID(ref_.cid, 4)}</span>
-      <ExternalLink className="w-3 h-3 text-[#2E323A]" />
+      <span className="text-[#6B7280] font-mono text-[10px]">{formatCID(ref_.cid, 4)}</span>
+      <ExternalLink className="w-3 h-3 text-[#6B7280]" />
     </Link>
   );
 };

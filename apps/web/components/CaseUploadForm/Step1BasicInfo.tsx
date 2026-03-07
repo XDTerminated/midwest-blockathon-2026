@@ -11,9 +11,9 @@ interface Props {
 }
 
 const inputClass =
-  "w-full bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9A54E] transition";
+  "w-full bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4AD5A] transition";
 
-const labelClass = "block text-sm font-medium text-[#8a8ea0] mb-1";
+const labelClass = "block text-sm font-medium text-[#9CA3AF] mb-1";
 
 export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
   const currentYear = new Date().getFullYear();
@@ -27,11 +27,11 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <h2 className="text-xl font-semibold text-[#e8e8f0]">Basic Case Information</h2>
-      <p className="text-[#2E323A] text-sm">Tell us the fundamental details of your immigration case.</p>
+      <p className="text-[#6B7280] text-sm">Tell us the fundamental details of your immigration case.</p>
 
       <div>
         <label className={labelClass}>
-          Case Type <span className="text-[#C9A54E]">*</span>
+          Case Type <span className="text-[#D4AD5A]">*</span>
         </label>
         <select
           required
@@ -50,7 +50,7 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
 
       <div>
         <label className={labelClass}>
-          Country of Origin <span className="text-[#C9A54E]">*</span>
+          Country of Origin <span className="text-[#D4AD5A]">*</span>
         </label>
         <input
           required
@@ -65,7 +65,7 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>
-            Outcome <span className="text-[#C9A54E]">*</span>
+            Outcome <span className="text-[#D4AD5A]">*</span>
           </label>
           <select
             required
@@ -83,7 +83,7 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
         </div>
         <div>
           <label className={labelClass}>
-            Year <span className="text-[#C9A54E]">*</span>
+            Year <span className="text-[#D4AD5A]">*</span>
           </label>
           <select
             required
@@ -116,13 +116,13 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
         <label className={labelClass}>Did you have legal representation?</label>
         <div className="flex gap-4">
           {["Yes", "No"].map((opt) => (
-            <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm text-[#8a8ea0]">
+            <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm text-[#9CA3AF]">
               <input
                 type="radio"
                 name="lawyerUsed"
                 checked={data.lawyerUsed === (opt === "Yes")}
                 onChange={() => onChange({ lawyerUsed: opt === "Yes" })}
-                className="accent-[#C9A54E]"
+                className="accent-[#D4AD5A]"
               />
               {opt}
             </label>
@@ -133,7 +133,7 @@ export const Step1BasicInfo = ({ data, onChange, onNext }: Props) => {
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="bg-[#C9A54E] hover:bg-[#d4a030] text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
+          className="bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
         >
           Continue →
         </button>

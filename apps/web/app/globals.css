@@ -7,18 +7,10 @@
 }
 
 body {
-  background-color: #0C0F18;
+  background-color: #121620;
   color: #e8e8f0;
-  font-family: "Andika", sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
   font-family: "Questrial", sans-serif;
-}
-
-p, blockquote, .font-crimson {
-  font-family: "Crimson Text", serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Shimmer text animation */
@@ -30,9 +22,9 @@ p, blockquote, .font-crimson {
 .shimmer-text {
   background: linear-gradient(
     90deg,
-    #4a4e5a 0%,
+    #6B7280 0%,
     #ffffff 50%,
-    #4a4e5a 100%
+    #6B7280 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -41,7 +33,123 @@ p, blockquote, .font-crimson {
   animation: shimmer 2.5s linear infinite;
 }
 
+/* Thinking indicator — pulsing ring */
+@keyframes pulseRing {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.6; }
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.pulse-ring {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  border-radius: 50%;
+  border: 2px solid #D4AD5A;
+  animation: pulseRing 1.6s ease-in-out infinite;
+  position: relative;
+  box-shadow: 0 0 8px rgba(212, 173, 90, 0.3);
+}
+
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid #D4AD5A;
+  animation: ripple 1.6s ease-out infinite;
+}
+
+/* Depth utilities */
+.shadow-surface {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.shadow-elevated {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.shadow-floating {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Entrance animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* Hover lift for interactive cards */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar active route indicator */
+.active-indicator {
+  position: relative;
+}
+
+.active-indicator::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 2px;
+  background: #D4AD5A;
+  box-shadow: 0 0 8px rgba(212, 173, 90, 0.4);
+}
+
+/* Cycling text fade */
+@keyframes cycleFadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+
+.animate-cycle-text {
+  animation: cycleFadeIn 3s ease-in-out;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0C0F18; }
-::-webkit-scrollbar-thumb { background: #2E323A; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #121620; }
+::-webkit-scrollbar-thumb { background: #3D4451; border-radius: 3px; }

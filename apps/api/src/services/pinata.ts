@@ -1,9 +1,8 @@
+import type { CaseListItem, CaseRecord, CaseType, CategorySlug } from "@immivault/shared";
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { PinataSDK } from "pinata";
 import { fileURLToPath } from "url";
-
-import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
 
 // Ensure env vars are loaded before initializing SDK.
 if (!process.env.PINATA_JWT) {
@@ -229,6 +228,16 @@ export const pinataService = {
         .filter((f: any) => f.keyvalues?.userId === userId)
         .slice(0, limit)
         .map(fileListItemToCaseListItem);
+    } catch {
+      return [];
+    }
+  },
+
+  async listAllFiles(limit = 100): Promise<CaseListItem[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().limit(limit);
+      return (result.files ?? []).map(fileListItemToCaseListItem);
     } catch {
       return [];
     }

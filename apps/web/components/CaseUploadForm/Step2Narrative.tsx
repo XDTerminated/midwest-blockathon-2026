@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import type { FormData } from "./index";
 
@@ -43,16 +43,16 @@ export const Step2Narrative = ({ data, onChange, onNext, onBack }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <h2 className="text-xl font-semibold text-[#e8e8f0]">Your Case Story</h2>
-      <p className="text-[#2E323A] text-sm">
+      <p className="text-[#6B7280] text-sm">
         Describe your case in your own words.{" "}
-        <strong className="text-[#8a8ea0]">Do not include real names, A-numbers, SSNs,
+        <strong className="text-[#9CA3AF]">Do not include real names, A-numbers, SSNs,
         phone numbers, or addresses.</strong>{" "}
         Our system will also automatically redact PII before saving.
       </p>
 
       {piiWarning && (
-        <div className="flex items-start gap-2 bg-[#1a1500] border border-[#C9A54E] rounded-lg p-3 text-sm text-[#C9A54E]">
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#C9A54E]" />
+        <div className="flex items-start gap-2 bg-[#1a1500] border border-[#D4AD5A] rounded-lg p-3 text-sm text-[#D4AD5A]">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#D4AD5A]" />
           <div>
             <strong>Possible PII detected.</strong> Your narrative may contain personal identifiers
             (A-numbers, SSNs, phone numbers, or emails). These will be automatically redacted before
@@ -62,9 +62,9 @@ export const Step2Narrative = ({ data, onChange, onNext, onBack }: Props) => {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-[#8a8ea0] mb-1">
-          Case Narrative <span className="text-[#C9A54E]">*</span>
-          <span className="text-[#2E323A] font-normal ml-2">({narrative.length}/5000 characters)</span>
+        <label className="block text-sm font-medium text-[#9CA3AF] mb-1">
+          Case Narrative <span className="text-[#D4AD5A]">*</span>
+          <span className="text-[#6B7280] font-normal ml-2">({narrative.length}/5000 characters)</span>
         </label>
         <textarea
           required
@@ -74,22 +74,22 @@ export const Step2Narrative = ({ data, onChange, onNext, onBack }: Props) => {
           value={narrative}
           onChange={(e) => onChange({ narrative: e.target.value })}
           placeholder="Describe your situation: when you arrived, what type of case you had, what happened at each stage, how long it took, what the outcome was, and what you wish you had known..."
-          className="w-full bg-[#0C0F18] border border-[#2E323A] text-[#e8e8f0] placeholder-[#2E323A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9A54E] transition resize-none"
+          className="w-full bg-[#121620] border border-[#363C4A] text-[#e8e8f0] placeholder-[#6B7280] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4AD5A] transition resize-none"
         />
-        <p className="text-xs text-[#2E323A] mt-1">Minimum 50 characters. Be as detailed as you're comfortable sharing.</p>
+        <p className="text-xs text-[#6B7280] mt-1">Minimum 50 characters. Be as detailed as you're comfortable sharing.</p>
       </div>
 
       <div className="flex justify-between pt-2">
         <button
           type="button"
           onClick={onBack}
-          className="text-[#2E323A] hover:text-[#e8e8f0] text-sm px-4 py-2 transition"
+          className="text-[#6B7280] hover:text-[#e8e8f0] text-sm px-4 py-2 transition"
         >
           ← Back
         </button>
         <button
           type="submit"
-          className="bg-[#C9A54E] hover:bg-[#d4a030] text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
+          className="bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
         >
           Continue →
         </button>

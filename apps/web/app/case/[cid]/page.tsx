@@ -1,16 +1,14 @@
 "use client";
 
-import type { CaseRecord } from "@immivault/shared";
-import { CASE_TYPES } from "@immivault/shared";
-import { Shield, Clock, Globe, Scale, Loader2, Share2, Copy } from "lucide-react";
+import { CASE_TYPES, type CaseRecord } from "@immivault/shared";
+import { ArrowLeft, BookOpen, Clock, Copy, FileText, Globe, Lightbulb, Loader2, Paperclip, Scale, Share2, Shield } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect, use } from "react";
+import { use, useEffect, useState } from "react";
 
-import { Disclaimer } from "@/components/Disclaimer";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PaymentGate } from "@/components/PaymentGate";
-import { getCase, presignCase, isPaymentRequired } from "@/lib/api";
-import { outcomeColor, outcomeLabel, formatCID, cn } from "@/lib/utils";
+import { getCase, isPaymentRequired, presignCase } from "@/lib/api";
+import { cn, formatCID, outcomeColor, outcomeLabel } from "@/lib/utils";
 
 type State = "loading" | "requires_payment" | "loaded" | "error";
 
@@ -76,7 +74,7 @@ const CasePage = ({ params }: CasePageProps) => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-8 h-8 animate-spin text-[#C9A54E]" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#D4AD5A]" />
         </div>
       </AppLayout>
     );
@@ -87,7 +85,7 @@ const CasePage = ({ params }: CasePageProps) => {
       <AppLayout>
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <p className="text-red-400 mb-4">{error}</p>
-          <button onClick={() => loadCase()} className="text-[#C9A54E] hover:underline text-sm">
+          <button onClick={() => loadCase()} className="text-[#D4AD5A] hover:underline text-sm">
             Try again
           </button>
         </div>
@@ -101,14 +99,11 @@ const CasePage = ({ params }: CasePageProps) => {
         <div className="max-w-2xl mx-auto px-4 py-12">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-[#e8e8f0] mb-2">Full Case Access</h1>
-            <p className="text-[#2E323A] text-sm">
+            <p className="text-[#6B7280] text-sm">
               This case is available for a small micropayment that goes directly to the contributor.
             </p>
           </div>
           <PaymentGate cid={cid} onPaymentSuccess={handlePaymentSuccess} />
-          <div className="mt-6 text-center">
-            <Disclaimer mode="inline" />
-          </div>
         </div>
       </AppLayout>
     );
@@ -117,120 +112,133 @@ const CasePage = ({ params }: CasePageProps) => {
   if (!caseData) return null;
 
   const caseTypeLabel = CASE_TYPES.find((t) => t.value === caseData.caseType)?.label ?? caseData.caseType ?? "File";
-  const isStructuredCase = !!caseData.narrative;
 
   return (
     <AppLayout>
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        {/* Header. */}
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <span className="text-xs font-semibold text-[#C9A54E] uppercase tracking-wide">
-              {caseTypeLabel}
-            </span>
-            <h1 className="text-2xl font-bold text-[#e8e8f0] mt-1">
-              {caseData.countryOfOrigin ? `${caseData.countryOfOrigin} · ${caseData.year}` : formatCID(caseData.cid)}
-            </h1>
-          </div>
-          {caseData.outcome && (
-            <span className={cn("text-sm font-semibold px-3 py-1 rounded-full shrink-0", outcomeColor(caseData.outcome))}>
-              {outcomeLabel(caseData.outcome)}
-            </span>
-          )}
-        </div>
+      <div className="max-w-3xl mx-auto px-6 py-8 space-y-6 animate-fade-in">
+        {/* Back link */}
+        <Link href="/files" className="inline-flex items-center gap-1.5 text-sm text-[#6B7280] hover:text-[#D4AD5A] transition">
+          <ArrowLeft className="w-4 h-4" />
+          Back to Files
+        </Link>
 
-        {/* Meta — only for structured cases. */}
-        {isStructuredCase && (
-          <div className="flex flex-wrap gap-4 text-sm text-[#2E323A] mb-6 pb-6 border-b border-[#2E323A]">
-            {caseData.countryOfOrigin && <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />{caseData.countryOfOrigin}</span>}
-            {caseData.court && <span className="flex items-center gap-1.5"><Scale className="w-4 h-4" />{caseData.court}</span>}
-            {caseData.timelineMonths && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{caseData.timelineMonths} months</span>}
-            {caseData.lawyerUsed != null && (
-              <span className="flex items-center gap-1.5">
-                <Shield className="w-4 h-4" />
-                {caseData.lawyerUsed ? "Had attorney" : "Pro se (no attorney)"}
+        {/* Header card */}
+        <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-6 shadow-surface">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <span className="text-xs font-semibold text-[#D4AD5A] uppercase tracking-wide">
+                {caseTypeLabel}
+              </span>
+              <h1 className="text-xl font-semibold text-[#e8e8f0] mt-1">
+                {caseData.countryOfOrigin ? `${caseData.countryOfOrigin} · ${caseData.year}` : formatCID(caseData.cid)}
+              </h1>
+            </div>
+            {caseData.outcome && (
+              <span className={cn("text-xs font-semibold px-3 py-1 rounded-full shrink-0 mt-1", outcomeColor(caseData.outcome))}>
+                {outcomeLabel(caseData.outcome)}
               </span>
             )}
           </div>
-        )}
 
-        <Disclaimer mode="card" className="mb-6" />
+          {/* Meta row */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#9CA3AF]">
+            {caseData.countryOfOrigin && (
+              <span className="flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[#6B7280]" />
+                {caseData.countryOfOrigin}
+              </span>
+            )}
+            {caseData.court && (
+              <span className="flex items-center gap-1.5">
+                <Scale className="w-3.5 h-3.5 text-[#6B7280]" />
+                {caseData.court}
+              </span>
+            )}
+            {caseData.timelineMonths != null && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#6B7280]" />
+                {caseData.timelineMonths} months
+              </span>
+            )}
+            {caseData.lawyerUsed != null && (
+              <span className="flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-[#6B7280]" />
+                {caseData.lawyerUsed ? "Had attorney" : "Pro se"}
+              </span>
+            )}
+          </div>
+        </div>
 
-        {/* Narrative. */}
+        {/* Narrative */}
         {caseData.narrative && (
-          <section className="mb-6">
-            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Case Narrative</h2>
-            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-5 text-[#8a8ea0] text-sm leading-relaxed whitespace-pre-wrap">
+          <Section icon={<BookOpen className="w-4 h-4" />} title="Case Narrative">
+            <p className="text-sm text-[#9CA3AF] leading-relaxed whitespace-pre-wrap">
               {caseData.narrative}
-            </div>
-          </section>
+            </p>
+          </Section>
         )}
 
-        {/* Key Factors. */}
+        {/* Key Factors */}
         {caseData.keyFactors && (
-          <section className="mb-6">
-            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Key Factors</h2>
-            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 text-sm text-[#8a8ea0]">
+          <Section icon={<FileText className="w-4 h-4" />} title="Key Factors">
+            <p className="text-sm text-[#9CA3AF] leading-relaxed">
               {caseData.keyFactors}
-            </div>
-          </section>
+            </p>
+          </Section>
         )}
 
-        {/* Lessons Learned. */}
+        {/* Lessons Learned */}
         {caseData.lessonsLearned && (
-          <section className="mb-6">
-            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Lessons Learned</h2>
-            <div className="bg-[#0f1a0f] border border-[#0f2a0f] rounded-lg p-4 text-sm text-green-300">
+          <Section icon={<Lightbulb className="w-4 h-4" />} title="Lessons Learned">
+            <p className="text-sm text-[#9CA3AF] leading-relaxed">
               {caseData.lessonsLearned}
-            </div>
-          </section>
+            </p>
+          </Section>
         )}
 
-        {/* Documents Used. */}
+        {/* Documents & Forms */}
         {caseData.documentsUsed?.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Documents & Forms Used</h2>
+          <Section icon={<Paperclip className="w-4 h-4" />} title="Documents & Forms Used">
             <div className="flex flex-wrap gap-2">
               {caseData.documentsUsed.map((doc) => (
-                <span key={doc} className="bg-[#161A24] border border-[#2E323A] text-[#8a8ea0] text-xs px-3 py-1.5 rounded-full">
+                <span key={doc} className="bg-[#121620] border border-[#363C4A] text-[#9CA3AF] text-xs px-3 py-1.5 rounded-full">
                   {doc}
                 </span>
               ))}
             </div>
-          </section>
+          </Section>
         )}
 
-        {/* CID + Share. */}
-        <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 mt-8">
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <div>
-              <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide mb-1">
-                Content ID (CID) — Tamper-Proof
+        {/* CID + Share */}
+        <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5 shadow-surface space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs text-[#6B7280] uppercase tracking-wide mb-1">
+                Content ID (CID)
               </p>
-              <p className="font-mono text-xs text-[#C9A54E] break-all">{caseData.cid}</p>
+              <p className="font-mono text-xs text-[#D4AD5A] break-all">{caseData.cid}</p>
             </div>
             <Link
               href={`/verify/${caseData.cid}`}
-              className="shrink-0 flex items-center gap-1 text-xs text-[#C9A54E] hover:underline"
+              className="shrink-0 flex items-center gap-1.5 text-xs text-[#D4AD5A] hover:text-[#f0c860] transition bg-[#121620] border border-[#363C4A] px-3 py-1.5 rounded-lg"
             >
               <Shield className="w-3.5 h-3.5" />
               Verify
             </Link>
           </div>
 
-          {/* Attorney share. */}
-          <div className="border-t border-[#2E323A] pt-3">
-            <p className="text-xs text-[#2E323A] mb-2">Share with your attorney (link expires in 24 hours)</p>
+          <div className="border-t border-[#363C4A] pt-4">
+            <p className="text-xs text-[#6B7280] mb-2">Share with your attorney (expires in 24h)</p>
             {shareUrl ? (
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={shareUrl}
-                  className="flex-1 text-xs border border-[#2E323A] bg-[#0C0F18] text-[#8a8ea0] rounded px-2 py-1.5 font-mono"
+                  className="flex-1 text-xs border border-[#363C4A] bg-[#121620] text-[#9CA3AF] rounded-lg px-3 py-2 font-mono focus:outline-none"
                 />
                 <button
                   onClick={copyShareUrl}
-                  className="text-xs flex items-center gap-1 bg-[#161A24] text-[#C9A54E] border border-[#2E323A] px-3 py-1.5 rounded hover:border-[#C9A54E] transition"
+                  className="text-xs flex items-center gap-1.5 bg-[#121620] text-[#D4AD5A] border border-[#363C4A] px-3 py-2 rounded-lg hover:border-[#D4AD5A] transition"
                 >
                   {copied ? "Copied!" : <><Copy className="w-3 h-3" /> Copy</>}
                 </button>
@@ -239,19 +247,32 @@ const CasePage = ({ params }: CasePageProps) => {
               <button
                 onClick={handleShare}
                 disabled={sharing}
-                className="text-xs flex items-center gap-1.5 text-[#C9A54E] hover:text-[#e8e8f0] transition"
+                className="text-xs flex items-center gap-1.5 text-[#D4AD5A] hover:text-[#f0c860] transition"
               >
                 {sharing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
-                Generate Attorney Share Link
+                Generate Share Link
               </button>
             )}
           </div>
         </div>
 
-        <Disclaimer mode="inline" className="mt-6" />
+        {/* Disclaimer */}
+        <p className="text-center text-[#6B7280] text-xs py-2">
+          This is real case data, not legal advice. Always verify with a qualified immigration attorney.
+        </p>
       </div>
     </AppLayout>
   );
 };
+
+const Section = ({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) => (
+  <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5 shadow-surface">
+    <div className="flex items-center gap-2 mb-3">
+      <span className="text-[#D4AD5A]">{icon}</span>
+      <h2 className="text-sm font-semibold text-[#e8e8f0]">{title}</h2>
+    </div>
+    {children}
+  </div>
+);
 
 export default CasePage;

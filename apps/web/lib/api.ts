@@ -12,6 +12,8 @@ import type {
   VerifyResult,
 } from "@immivault/shared";
 
+export type { CaseListItem };
+
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
 
 const apiFetch = async <T>(
@@ -47,6 +49,10 @@ export const chatSearch = async (
     method: "POST",
     body: JSON.stringify({ q, history }),
   });
+};
+
+export const listAllFiles = async (limit = 100): Promise<{ cases: CaseListItem[] }> => {
+  return apiFetch(`/api/files?limit=${limit}`);
 };
 
 export const listCasesByCategory = async (slug: CategorySlug): Promise<{ cases: CaseListItem[]; slug: string }> => {
@@ -100,6 +106,15 @@ export const listFiles = async (): Promise<{ files: UploadedFile[] }> => {
   return apiFetch("/api/upload/files");
 };
 
+export const getContributorStats = async (walletAddress: string) => {
+  return apiFetch<{
+    casesUploaded: number;
+    totalEarned: number;
+    totalAccesses: number;
+    cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
+  }>(`/api/cases/contributor/${walletAddress}`);
+};
+
 export const verifyCase = async (cid: string): Promise<VerifyResult> => {
   return apiFetch<VerifyResult>(`/api/verify/${cid}`);
 };
@@ -124,17 +139,6 @@ export const textToSpeech = async (text: string, lang = "en"): Promise<Blob> => 
   }
 
   return res.blob();
-};
-
-export interface ContributorStats {
-  casesUploaded: number;
-  totalEarned: number;
-  totalAccesses: number;
-  cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
-}
-
-export const getContributorStats = async (walletAddress: string): Promise<ContributorStats> => {
-  return apiFetch(`/api/stats/${walletAddress}`);
 };
 
 export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => {

@@ -1,5 +1,4 @@
-import { CASE_TYPES } from "@immivault/shared";
-import type { CaseListItem } from "@immivault/shared";
+import { CASE_TYPES, type CaseListItem } from "@immivault/shared";
 import { ArrowRight, Clock, Globe, Scale } from "lucide-react";
 import Link from "next/link";
 
@@ -15,9 +14,9 @@ export const CaseCard = ({ item, showLink = true }: CaseCardProps) => {
     CASE_TYPES.find((t) => t.value === item.caseType)?.label ?? item.caseType;
 
   const card = (
-    <div className="bg-[#161A24] rounded-xl border border-[#2E323A] p-5 hover:border-[#2E323A] transition group">
+    <div className="bg-[#1C2030] rounded-xl border border-[#363C4A] p-5 hover:border-[#4A5060] transition group shadow-surface hover-lift">
       <div className="flex items-start justify-between gap-3 mb-3">
-        <span className="text-xs font-medium text-[#C9A54E] uppercase tracking-wide">
+        <span className="text-xs font-medium text-[#D4AD5A] uppercase tracking-wide">
           {caseTypeLabel}
         </span>
         <span
@@ -30,7 +29,7 @@ export const CaseCard = ({ item, showLink = true }: CaseCardProps) => {
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-3 text-sm text-[#2E323A]">
+      <div className="flex flex-wrap gap-3 text-sm text-[#9CA3AF]">
         <span className="flex items-center gap-1">
           <Globe className="w-3.5 h-3.5" />
           {item.countryOfOrigin}
@@ -48,7 +47,7 @@ export const CaseCard = ({ item, showLink = true }: CaseCardProps) => {
       </div>
 
       {showLink && (
-        <div className="mt-3 flex items-center gap-1 text-sm text-[#C9A54E] font-medium group-hover:text-[#f0c860]">
+        <div className="mt-3 flex items-center gap-1 text-sm text-[#D4AD5A] font-medium group-hover:text-[#f0c860]">
           View Case (requires $0.10 USDC)
           <ArrowRight className="w-3.5 h-3.5" />
         </div>

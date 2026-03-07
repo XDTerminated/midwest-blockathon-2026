@@ -74,6 +74,7 @@ export interface SearchResult {
   analysis: string;
   citedCases: CitedCaseRef[];
   disclaimer: string;
+  detectedLanguage?: string;
 }
 
 export interface CaseListItem {
@@ -158,5 +159,3 @@ export interface ContributorDashboardData {
     totalReferences: number;
   };
 }
-
-
