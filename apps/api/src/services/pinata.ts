@@ -1,9 +1,8 @@
+import type { CaseListItem, CaseRecord, CaseType, CategorySlug } from "@immivault/shared";
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { PinataSDK } from "pinata";
 import { fileURLToPath } from "url";
-
-import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
 
 // Ensure env vars are loaded before initializing SDK.
 if (!process.env.PINATA_JWT) {

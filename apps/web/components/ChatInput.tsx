@@ -1,8 +1,8 @@
 "use client";
 
-import { Mic, MicOff, Plus, Send, Loader2 } from "lucide-react";
+import { Loader2, Mic, MicOff, Plus, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ChatInputProps {
   defaultValue?: string;

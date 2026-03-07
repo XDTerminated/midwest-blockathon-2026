@@ -1,4 +1,4 @@
-import { Shield, CheckCircle, XCircle, Clock, Key } from "lucide-react";
+import { CheckCircle, Clock, Key, Shield, XCircle } from "lucide-react";
 
 import { AppLayout } from "@/components/layout/AppLayout";
 import { verifyCase } from "@/lib/api";

@@ -1,11 +1,11 @@
 "use client";
 
-import { Upload, FileText, Loader2, CheckCircle, File as FileIcon, ExternalLink } from "lucide-react";
+import { CheckCircle, ExternalLink, File as FileIcon, FileText, Loader2, Upload } from "lucide-react";
 import Link from "next/link";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CaseUploadForm } from "@/components/CaseUploadForm";
-import { uploadFile, listFiles, type UploadedFile } from "@/lib/api";
+import { listFiles, type UploadedFile, uploadFile } from "@/lib/api";
 
 type Mode = "choose" | "file" | "form";
 

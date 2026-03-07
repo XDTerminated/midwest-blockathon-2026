@@ -1,6 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
-
 import type { Outcome } from "@immivault/shared";
+import { clsx, type ClassValue } from "clsx";
 
 export const cn = (...inputs: ClassValue[]) => {
   return clsx(inputs);

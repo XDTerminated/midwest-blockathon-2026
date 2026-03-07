@@ -1,8 +1,8 @@
 "use client";
 
 import type { SearchResult } from "@immivault/shared";
-import { Volume2, Square, Loader2 } from "lucide-react";
-import { useState, useRef } from "react";
+import { Loader2, Square, Volume2 } from "lucide-react";
+import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 import { CitedCase } from "@/components/CitedCase";

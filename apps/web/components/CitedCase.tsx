@@ -1,5 +1,4 @@
-import type { CitedCaseRef } from "@immivault/shared";
-import { CASE_TYPES } from "@immivault/shared";
+import { CASE_TYPES, type CitedCaseRef } from "@immivault/shared";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 

@@ -1,16 +1,15 @@
 "use client";
 
-import type { CaseRecord } from "@immivault/shared";
-import { CASE_TYPES } from "@immivault/shared";
-import { Shield, Clock, Globe, Scale, Loader2, Share2, Copy } from "lucide-react";
+import { CASE_TYPES, type CaseRecord } from "@immivault/shared";
+import { Clock, Copy, Globe, Loader2, Scale, Share2, Shield } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect, use } from "react";
+import { use, useEffect, useState } from "react";
 
 import { Disclaimer } from "@/components/Disclaimer";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PaymentGate } from "@/components/PaymentGate";
-import { getCase, presignCase, isPaymentRequired } from "@/lib/api";
-import { outcomeColor, outcomeLabel, formatCID, cn } from "@/lib/utils";
+import { getCase, isPaymentRequired, presignCase } from "@/lib/api";
+import { cn, formatCID, outcomeColor, outcomeLabel } from "@/lib/utils";
 
 type State = "loading" | "requires_payment" | "loaded" | "error";
 

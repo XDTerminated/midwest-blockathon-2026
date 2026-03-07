@@ -1,9 +1,8 @@
+import { LEGAL_DISCLAIMER, type CaseRecord, type CitedCaseRef, type SearchResult } from "@immivault/shared";
 import { config } from "dotenv";
 import OpenAI from "openai";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
-
-import { LEGAL_DISCLAIMER, type CaseRecord, type CitedCaseRef, type SearchResult } from "@immivault/shared";
 
 // Ensure env vars are loaded before using GROQ_API_KEY.
 if (!process.env.GROQ_API_KEY) {

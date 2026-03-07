@@ -1,19 +1,19 @@
 "use client";
 
 import type { SearchResult } from "@immivault/shared";
-import { useRef, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
 import { AppLayout } from "@/components/layout/AppLayout";
 import {
+  addChatMessage,
   chatSearch,
+  type ChatMessage,
   createChatSession,
   getChatMessages,
-  addChatMessage,
 } from "@/lib/api";
-import type { ChatMessage } from "@/lib/api";
 
 interface Message {
   role: "user" | "assistant";
