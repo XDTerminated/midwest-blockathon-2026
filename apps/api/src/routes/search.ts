@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 
 import { getUser } from "../lib/auth";
-import { claudeService, type ChatMessage } from "../services/claude";
+import { type ChatMessage, claudeService } from "../services/claude";
 import { pinataService } from "../services/pinata";
 
 export const searchRoutes = new Hono();

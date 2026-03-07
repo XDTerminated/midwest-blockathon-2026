@@ -1,4 +1,4 @@
-import { LEGAL_DISCLAIMER, type CaseRecord, type CitedCaseRef, type SearchResult } from "@immivault/shared";
+import { type CaseRecord, type CitedCaseRef, LEGAL_DISCLAIMER, type SearchResult } from "@immivault/shared";
 import { config } from "dotenv";
 import OpenAI from "openai";
 import { dirname, resolve } from "path";
