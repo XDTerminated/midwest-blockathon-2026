@@ -1,4 +1,5 @@
 import type {
+  CaseListItem,
   CaseRecord,
   CategorySlug,
   PaymentRequiredError,
@@ -110,6 +111,15 @@ export interface UploadedFile {
 
 export const listFiles = async (): Promise<{ files: UploadedFile[] }> => {
   return apiFetch("/api/upload/files");
+};
+
+export const getContributorStats = async (walletAddress: string) => {
+  return apiFetch<{
+    casesUploaded: number;
+    totalEarned: number;
+    totalAccesses: number;
+    cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
+  }>(`/api/cases/contributor/${walletAddress}`);
 };
 
 export const verifyCase = async (cid: string): Promise<VerifyResult> => {

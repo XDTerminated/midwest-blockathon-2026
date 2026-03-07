@@ -1,12 +1,13 @@
 "use client";
 
+import { ACCESS_PRICE_DISPLAY } from "@immivault/shared";
+import { ExternalLink, Eye, FileText, Loader2, TrendingUp, Wallet } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
+
 import { getContributorStats, listFiles, type UploadedFile } from "@/lib/api";
-import { Wallet, TrendingUp, Eye, FileText, Loader2, ExternalLink } from "lucide-react";
-import Link from "next/link";
-import { ACCESS_PRICE_DISPLAY } from "@immivault/shared";
 
 interface ContributorStats {
   casesUploaded: number;
@@ -15,7 +16,7 @@ interface ContributorStats {
   cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
 }
 
-export function DashboardContent() {
+export const DashboardContent = () => {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const [stats, setStats] = useState<ContributorStats | null>(null);
@@ -78,7 +79,7 @@ export function DashboardContent() {
         </p>
       </div>
 
-      {/* Stats cards */}
+      {/* Stats cards. */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[#161A24] border border-[#2E323A] rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
@@ -106,7 +107,7 @@ export function DashboardContent() {
         </div>
       </div>
 
-      {/* On-chain cases */}
+      {/* On-chain cases. */}
       {stats && stats.cases.length > 0 && (
         <div>
           <h2 className="text-lg font-semibold text-[#e8e8f0] mb-4">On-Chain Cases</h2>
@@ -141,7 +142,7 @@ export function DashboardContent() {
         </div>
       )}
 
-      {/* Uploaded files from Pinata */}
+      {/* Uploaded files from Pinata. */}
       {files.length > 0 && (
         <div>
           <h2 className="text-lg font-semibold text-[#e8e8f0] mb-4">Your Uploaded Files</h2>
@@ -183,4 +184,4 @@ export function DashboardContent() {
       )}
     </div>
   );
-}
+};

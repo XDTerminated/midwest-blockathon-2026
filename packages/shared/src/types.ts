@@ -116,5 +116,3 @@ export interface PaymentRequiredError {
   description: string;
   paymentInstructions: string;
 }
-
-

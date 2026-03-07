@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Wallet, Loader2, CheckCircle } from "lucide-react";
+import { CheckCircle, Loader2, Lock, Wallet } from "lucide-react";
 import { useState } from "react";
 import { parseUnits } from "viem";
 import { useAccount, useConnect, useSendTransaction } from "wagmi";
