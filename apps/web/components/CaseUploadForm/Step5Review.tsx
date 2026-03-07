@@ -101,7 +101,7 @@ export function Step5Review({ data, onBack, onSubmitted }: Props) {
         />
         <span className="text-sm text-[#8a8ea0]">
           I confirm that this case is anonymized and does not contain personally identifiable
-          information. I consent to this anonymized case being searchable by others on ImmiVault.
+          information. I consent to this anonymized case being searchable by others on Lumina.
           I understand that contributors earn USDC micropayments when their cases help others.
         </span>
       </label>

@@ -13,7 +13,7 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
     <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-[#2E323A] bg-[#0C0F18] border border-[#2E323A] px-2 py-1 rounded">
-          ImmiVault AI · Legal Research
+          Lumina AI
         </span>
       </div>
 

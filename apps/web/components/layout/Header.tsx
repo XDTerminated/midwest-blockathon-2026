@@ -18,7 +18,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl text-blue-700">
             <Shield className="w-6 h-6" />
-            <span>ImmiVault</span>
+            <span>Lumina</span>
           </Link>
 
           {/* Nav */}

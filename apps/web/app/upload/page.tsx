@@ -2,7 +2,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { UploadArea } from "@/components/UploadArea";
 
 export const metadata = {
-  title: "Upload a File — ImmiVault",
+  title: "Upload a File — Lumina",
 };
 
 export default function UploadPage() {
