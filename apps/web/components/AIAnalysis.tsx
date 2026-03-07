@@ -1,20 +1,14 @@
 "use client";
 
 import type { SearchResult } from "@immivault/shared";
-import { Volume2, Square } from "lucide-react";
+import { Volume2, Square, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-<<<<<<< Updated upstream
-
-=======
-import { Volume2, Square, Loader2 } from "lucide-react";
-import type { SearchResult } from "@immivault/shared";
->>>>>>> Stashed changes
 import { CitedCase } from "@/components/CitedCase";
 import { textToSpeech } from "@/lib/api";
 
 // Simple language detection based on Unicode ranges and common words
-function detectLang(text: string): string {
+const detectLang = (text: string): string => {
   if (/[\u4e00-\u9fff]/.test(text)) return "zh";
   if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return "ja";
   if (/[\uac00-\ud7af]/.test(text)) return "ko";
@@ -32,7 +26,7 @@ function detectLang(text: string): string {
   if (/\b(là|của|và|có|không|được|này|những)\b/.test(lower)) return "vi";
   if (/\b(і|є|що|але|або|та|це|до)\b/.test(lower)) return "uk";
   return "en";
-}
+};
 
 interface AIAnalysisProps {
   result: SearchResult;
@@ -44,11 +38,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const blobUrlRef = useRef<string | null>(null);
 
-<<<<<<< Updated upstream
-  const toggleSpeak = () => {
-=======
-  async function toggleSpeak() {
->>>>>>> Stashed changes
+  const toggleSpeak = async () => {
     if (speaking) {
       audioRef.current?.pause();
       audioRef.current = null;
@@ -61,18 +51,6 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
     const text = result.analysis.replace(/\[Case CID: [^\]]+\]/g, "");
     const lang = detectLang(text);
 
-<<<<<<< Updated upstream
-    // Try to auto-detect language from the text for proper pronunciation.
-    // The browser will use the appropriate voice if available.
-    utterance.rate = 0.9;
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
-
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-    setSpeaking(true);
-  };
-=======
     setLoading(true);
     try {
       const blob = await textToSpeech(text, lang);
@@ -104,8 +82,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
     } finally {
       setLoading(false);
     }
-  }
->>>>>>> Stashed changes
+  };
 
   return (
     <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">

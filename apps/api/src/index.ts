@@ -14,14 +14,9 @@ import { auth } from "./lib/auth";
 import { caseRoutes } from "./routes/cases";
 import { searchRoutes } from "./routes/search";
 import { shareRoutes } from "./routes/share";
+import { ttsRoutes } from "./routes/tts";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
-<<<<<<< Updated upstream
-=======
-import { shareRoutes } from "./routes/share";
-import { ttsRoutes } from "./routes/tts";
-import { auth } from "./lib/auth";
->>>>>>> Stashed changes
 
 const app = new Hono();
 
@@ -63,4 +58,3 @@ const port = Number(process.env.PORT ?? 3001);
 console.log(`ImmiVault API running on http://localhost:${port}`);
 
 serve({ fetch: app.fetch, port });
-
