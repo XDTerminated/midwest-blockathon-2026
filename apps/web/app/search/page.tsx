@@ -1,12 +1,13 @@
 "use client";
 
 import type { SearchResult } from "@immivault/shared";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { Suspense, useRef, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { TrustFeedback } from "@/components/TrustFeedback";
 import {
   chatSearch,
   createChatSession,
@@ -144,7 +145,10 @@ const SearchPage = () => {
                         {msg.error}
                       </div>
                     ) : msg.result ? (
-                      <AIAnalysis result={msg.result} />
+                      <>
+                        <AIAnalysis result={msg.result} />
+                        <TrustFeedback citedCases={msg.result.citedCases} />
+                      </>
                     ) : null}
                   </div>
                 </div>
@@ -182,4 +186,10 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+const SearchPageWrapper = () => (
+  <Suspense>
+    <SearchPage />
+  </Suspense>
+);
+
+export default SearchPageWrapper;

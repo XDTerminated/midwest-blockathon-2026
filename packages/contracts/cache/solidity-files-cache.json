@@ -304,6 +304,44 @@
       "artifacts": [
         "MockUSDC"
       ]
+    },
+    "/Users/maxchen/midwest-blockathon-2026/packages/contracts/contracts/ImmiVaultEscrow.sol": {
+      "lastModificationDate": 1772920701752,
+      "contentHash": "3b30af5b319fd6f1d7f838790836db9b",
+      "sourceName": "contracts/ImmiVaultEscrow.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ImmiVaultEscrow"
+      ]
     }
   }
 }

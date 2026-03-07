@@ -112,18 +112,122 @@ export const ERC20_ABI = [
   },
 ] as const;
 
+// ImmiVaultEscrow ABI
+export const ESCROW_ABI = [
+  {
+    inputs: [{ name: "_usdc", type: "address" }, { name: "_treasury", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "cidHash", type: "bytes32" },
+      { indexed: true, name: "contributor", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+    name: "StakeDeposited",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "cidHash", type: "bytes32" },
+      { indexed: true, name: "voter", type: "address" },
+      { indexed: false, name: "approve", type: "bool" },
+    ],
+    name: "TrustVote",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "cidHash", type: "bytes32" },
+      { indexed: true, name: "contributor", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+    name: "EscrowReleased",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "cidHash", type: "bytes32" },
+      { indexed: true, name: "contributor", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+    name: "EscrowSlashed",
+    type: "event",
+  },
+  {
+    inputs: [{ name: "cidHash", type: "bytes32" }],
+    name: "stakeAndRegister",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "cidHash", type: "bytes32" }, { name: "approve", type: "bool" }],
+    name: "vote",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "cidHash", type: "bytes32" }],
+    name: "claimAutoRelease",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "cidHash", type: "bytes32" }],
+    name: "getEscrow",
+    outputs: [
+      { name: "contributor", type: "address" },
+      { name: "stakeAmount", type: "uint256" },
+      { name: "stakedAt", type: "uint256" },
+      { name: "status", type: "uint8" },
+      { name: "approvalCount", type: "uint256" },
+      { name: "flagCount", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ name: "contributor", type: "address" }],
+    name: "getContributorEscrows",
+    outputs: [{ name: "", type: "bytes32[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "STAKE_AMOUNT",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
 // Access price: $0.10 USDC (6 decimals)
 export const ACCESS_PRICE_USDC = BigInt(100000);
 export const ACCESS_PRICE_DISPLAY = "0.10";
 
+// Stake amount (same as access price for now)
+export const STAKE_AMOUNT_USDC = BigInt(100000);
+export const STAKE_AMOUNT_DISPLAY = "0.10";
+
 // Contract addresses — update after deployment
 export const CONTRACT_ADDRESSES = {
   baseSepolia: {
-    registry: "" as `0x${string}`,
-    usdc: "" as `0x${string}`,
+    registry: "0xcfa2eE64080F031Dbfcf9F04EAf04EBeA98EC3EE" as `0x${string}`,
+    escrow: "0x95ca1567938F1462e6b942af8dD94fB3E9623A4B" as `0x${string}`,
+    usdc: "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as `0x${string}`, // official USDC on Base Sepolia
   },
   base: {
     registry: "" as `0x${string}`,
+    escrow: "" as `0x${string}`,
     usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`, // official USDC on Base
   },
 } as const;

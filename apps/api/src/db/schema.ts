@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, serial, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -67,5 +67,55 @@ export const chatMessage = pgTable("chat_message", {
     .references(() => chatSession.id),
   role: text("role").notNull(), // "user" | "assistant"
   content: text("content").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Escrow tracking — mirrors on-chain ImmiVaultEscrow state for fast queries.
+export const caseEscrow = pgTable("case_escrow", {
+  id: serial("id").primaryKey(),
+  cid: text("cid").notNull().unique(),
+  cidHash: text("cid_hash").notNull(),
+  contributorId: text("contributor_id")
+    .notNull()
+    .references(() => user.id),
+  contributorWallet: text("contributor_wallet").notNull(),
+  stakeTxHash: text("stake_tx_hash"),
+  status: text("status").notNull().default("pending"), // pending | released | slashed
+  approvalCount: integer("approval_count").notNull().default(0),
+  flagCount: integer("flag_count").notNull().default(0),
+  stakedAt: timestamp("staked_at").notNull().defaultNow(),
+  releasedAt: timestamp("released_at"),
+});
+
+// Trust votes — who voted on which case.
+export const trustVote = pgTable("trust_vote", {
+  id: serial("id").primaryKey(),
+  cid: text("cid").notNull(),
+  voterId: text("voter_id")
+    .notNull()
+    .references(() => user.id),
+  voteType: text("vote_type").notNull(), // approve | flag
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Credit tracking — how many times a case was referenced by AI.
+export const caseCredit = pgTable("case_credit", {
+  id: serial("id").primaryKey(),
+  cid: text("cid").notNull().unique(),
+  contributorId: text("contributor_id")
+    .notNull()
+    .references(() => user.id),
+  credits: integer("credits").notNull().default(0),
+  referenceCount: integer("reference_count").notNull().default(0),
+});
+
+// Individual credit events — log each AI citation.
+export const creditEvent = pgTable("credit_event", {
+  id: serial("id").primaryKey(),
+  cid: text("cid").notNull(),
+  contributorId: text("contributor_id")
+    .notNull()
+    .references(() => user.id),
+  chatSessionId: integer("chat_session_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

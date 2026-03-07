@@ -1,9 +1,13 @@
 import type {
+  CaseListItem,
   CaseRecord,
   CategorySlug,
+  CreditInfo,
+  EscrowInfo,
   PaymentRequiredError,
   PresignResult,
   SearchResult,
+  TrustVoteSummary,
   UploadResult,
   VerifyResult,
 } from "@immivault/shared";
@@ -122,6 +126,17 @@ export const textToSpeech = async (text: string, lang = "en"): Promise<Blob> => 
   return res.blob();
 };
 
+export interface ContributorStats {
+  casesUploaded: number;
+  totalEarned: number;
+  totalAccesses: number;
+  cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
+}
+
+export const getContributorStats = async (walletAddress: string): Promise<ContributorStats> => {
+  return apiFetch(`/api/stats/${walletAddress}`);
+};
+
 export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => {
   return (
     typeof res === "object" &&
@@ -172,4 +187,48 @@ export const addChatMessage = async (sessionId: number, role: string, content: s
     method: "POST",
     body: JSON.stringify({ role, content }),
   });
+};
+
+// --- Escrow ---
+
+export const stakeCase = async (
+  cid: string,
+  cidHash: string,
+  contributorWallet: string,
+  stakeTxHash?: string,
+): Promise<EscrowInfo> => {
+  return apiFetch("/api/escrow/stake", {
+    method: "POST",
+    body: JSON.stringify({ cid, cidHash, contributorWallet, stakeTxHash }),
+  });
+};
+
+export const getMyEscrows = async (): Promise<EscrowInfo[]> => {
+  return apiFetch("/api/escrow/my");
+};
+
+export const getEscrowStatus = async (cid: string): Promise<EscrowInfo> => {
+  return apiFetch(`/api/escrow/${cid}`);
+};
+
+// --- Trust voting ---
+
+export const submitTrustVote = async (
+  cid: string,
+  voteType: "approve" | "flag",
+): Promise<{ ok?: boolean; error?: string; newStatus?: string }> => {
+  return apiFetch("/api/trust/vote", {
+    method: "POST",
+    body: JSON.stringify({ cid, voteType }),
+  });
+};
+
+export const getTrustStatus = async (cid: string): Promise<TrustVoteSummary> => {
+  return apiFetch(`/api/trust/status/${cid}`);
+};
+
+// --- Credits ---
+
+export const getMyCredits = async (): Promise<CreditInfo[]> => {
+  return apiFetch("/api/credits/my");
 };

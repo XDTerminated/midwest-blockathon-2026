@@ -4,7 +4,17 @@ import { z } from "zod";
 
 import { getUser } from "../lib/auth";
 import { claudeService, type ChatMessage } from "../services/claude";
+import { creditService } from "../services/credits";
 import { pinataService } from "../services/pinata";
+
+// Fire-and-forget: record credit for each cited case.
+const recordCredits = (citedCases: { cid: string }[]) => {
+  for (const cited of citedCases) {
+    if (cited.cid) {
+      creditService.recordReference(cited.cid).catch(() => {});
+    }
+  }
+};
 
 export const searchRoutes = new Hono();
 
@@ -37,6 +47,7 @@ searchRoutes.get("/", zValidator("query", searchQuerySchema), async (c) => {
 
   try {
     const result = await claudeService.synthesize(q, cases);
+    recordCredits(result.citedCases);
     return c.json(result);
   } catch (err) {
     console.error("Claude synthesis error:", err);
@@ -74,6 +85,7 @@ searchRoutes.post("/", zValidator("json", chatSchema), async (c) => {
 
   try {
     const result = await claudeService.synthesize(q, cases, history as ChatMessage[]);
+    recordCredits(result.citedCases);
     return c.json(result);
   } catch (err) {
     console.error("Claude synthesis error:", err);
