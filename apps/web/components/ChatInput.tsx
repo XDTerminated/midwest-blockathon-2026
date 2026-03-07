@@ -4,6 +4,8 @@ import { Mic, MicOff, Plus, Send, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useCallback } from "react";
 
+import { useLanguage } from "@/lib/i18n";
+
 interface ChatInputProps {
   defaultValue?: string;
   onSend?: (message: string) => void;
@@ -16,6 +18,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const finalTranscriptRef = useRef("");
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     return () => {
@@ -64,7 +67,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = false; // Only show final results, no flickering.
-    recognition.lang = "";
+    // Don't set recognition.lang — let the browser auto-detect any language.
 
     finalTranscriptRef.current = query;
 
@@ -108,7 +111,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
       >
         {listening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
         <span className="text-[10px] font-medium hidden sm:inline">
-          {listening ? "Stop" : "Speak"}
+          {listening ? t("stop") : t("speak")}
         </span>
       </button>
 
@@ -128,7 +131,7 @@ export const ChatInput = ({ defaultValue = "", onSend, disabled }: ChatInputProp
           finalTranscriptRef.current = e.target.value;
         }}
         onKeyDown={handleKeyDown}
-        placeholder={listening ? "Listening..." : "Describe your situation..."}
+        placeholder={listening ? t("listening") : t("describeYourSituation")}
         rows={1}
         className="flex-1 bg-transparent text-[#e8e8f0] placeholder-[#6B7280] text-sm resize-none focus:outline-none leading-relaxed py-1"
         style={{ maxHeight: "120px", overflowY: "auto" }}

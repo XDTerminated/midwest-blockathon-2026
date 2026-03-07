@@ -9,16 +9,8 @@
 body {
   background-color: #121620;
   color: #e8e8f0;
-  font-family: "Andika", sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
   font-family: "Questrial", sans-serif;
-}
-
-p, blockquote, .font-crimson {
-  font-family: "Crimson Text", serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Shimmer text animation */
@@ -143,6 +135,18 @@ p, blockquote, .font-crimson {
   border-radius: 2px;
   background: #D4AD5A;
   box-shadow: 0 0 8px rgba(212, 173, 90, 0.4);
+}
+
+/* Cycling text fade */
+@keyframes cycleFadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+
+.animate-cycle-text {
+  animation: cycleFadeIn 3s ease-in-out;
 }
 
 /* Scrollbar */

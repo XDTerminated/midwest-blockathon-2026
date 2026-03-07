@@ -1,8 +1,8 @@
 "use client";
 
-import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut, LayoutDashboard, Trash2 } from "lucide-react";
+import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut, FileText, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
@@ -11,6 +11,7 @@ import { useSession, signOut } from "@/lib/auth-client";
 import { cn, formatCID } from "@/lib/utils";
 import { listChatSessions, deleteChatSession } from "@/lib/api";
 import type { ChatSession } from "@/lib/api";
+import { useLanguage } from "@/lib/i18n";
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(() => {
@@ -22,8 +23,10 @@ export const Sidebar = () => {
   const [mounted, setMounted] = useState(false);
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const activeSessionId = searchParams.get("session");
+  const { t } = useLanguage();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -35,7 +38,6 @@ export const Sidebar = () => {
   const { disconnect } = useDisconnect();
   const { data: session } = useSession();
 
-  // CSS-only tooltip: the "group" class on the wrapper triggers "group-hover:opacity-100" on the tooltip span
   const tooltipClass = "absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg bg-[#1C2030] border border-[#363C4A] text-[12px] text-[#e8e8f0] whitespace-nowrap z-50 pointer-events-none shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150";
 
   const loadSessions = useCallback(async () => {
@@ -82,15 +84,15 @@ export const Sidebar = () => {
           >
             {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
           </button>
-          {collapsed && <span className={tooltipClass}>Expand</span>}
+          {collapsed && <span className={tooltipClass}>{t("expand")}</span>}
         </div>
       </div>
 
       {/* Nav. */}
       <nav className="flex flex-col gap-5 flex-1 overflow-hidden">
         {/* New Chat */}
-        <Link
-          href="/search"
+        <button
+          onClick={() => router.push("/search")}
           className={cn(
             "flex items-center transition cursor-pointer",
             collapsed ? "justify-center" : "gap-3",
@@ -98,11 +100,11 @@ export const Sidebar = () => {
               ? "text-[#D4AD5A]"
               : "text-[#6B7280] hover:text-[#9CA3AF]"
           )}
-          title={collapsed ? "New Chat" : undefined}
+          title={collapsed ? t("newChat") : undefined}
         >
           <MessageSquarePlus className="w-5 h-5 shrink-0" />
-          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>New Chat</span>
-        </Link>
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("newChat")}</span>
+        </button>
 
         {/* Chats header */}
         <div
@@ -113,7 +115,7 @@ export const Sidebar = () => {
           )}
         >
           <MessageSquare className="w-5 h-5 shrink-0" />
-          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Chats</span>
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("chats")}</span>
         </div>
 
         {/* Chat session list */}
@@ -152,26 +154,26 @@ export const Sidebar = () => {
               ? "text-[#D4AD5A]"
               : "text-[#6B7280] hover:text-[#9CA3AF]"
           )}
-          title={collapsed ? "Upload a File" : undefined}
+          title={collapsed ? t("uploadFile") : undefined}
         >
           <Upload className="w-5 h-5 shrink-0" />
-          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Upload a File</span>
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("uploadFile")}</span>
         </Link>
 
-        {/* Dashboard */}
+        {/* Files */}
         <Link
-          href="/dashboard"
+          href="/files"
           className={cn(
             "flex items-center transition cursor-pointer",
             collapsed ? "justify-center" : "gap-3",
-            pathname === "/dashboard"
+            pathname === "/files"
               ? "text-[#D4AD5A]"
               : "text-[#6B7280] hover:text-[#9CA3AF]"
           )}
-          title={collapsed ? "Dashboard" : undefined}
+          title={collapsed ? t("files") : undefined}
         >
-          <LayoutDashboard className="w-5 h-5 shrink-0" />
-          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
+          <FileText className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("files")}</span>
         </Link>
 
         {/* Wallet */}
@@ -184,10 +186,10 @@ export const Sidebar = () => {
               ? "text-[#D4AD5A]"
               : "text-[#6B7280] hover:text-[#9CA3AF]"
           )}
-          title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}
+          title={collapsed ? (isWalletActive ? formatCID(address, 4) : t("wallet")) : undefined}
         >
           <Wallet className="w-5 h-5 shrink-0" />
-          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : "Wallet"}</span>
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : t("wallet")}</span>
         </button>
       </nav>
 
@@ -213,9 +215,9 @@ export const Sidebar = () => {
                 )}
               >
                 <LogOut className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("logOut")}</span>
               </button>
-              {collapsed && <span className={tooltipClass}>Log out</span>}
+              {collapsed && <span className={tooltipClass}>{t("logOut")}</span>}
             </div>
           </>
         ) : (
@@ -230,9 +232,9 @@ export const Sidebar = () => {
                 )}
               >
                 <LogIn className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("logIn")}</span>
               </Link>
-              {collapsed && <span className={tooltipClass}>Log in</span>}
+              {collapsed && <span className={tooltipClass}>{t("logIn")}</span>}
             </div>
             <div className="relative group">
               <Link
@@ -244,9 +246,9 @@ export const Sidebar = () => {
                 )}
               >
                 <UserPlus className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
+                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("signUp")}</span>
               </Link>
-              {collapsed && <span className={tooltipClass}>Sign up</span>}
+              {collapsed && <span className={tooltipClass}>{t("signUp")}</span>}
             </div>
           </>
         )}

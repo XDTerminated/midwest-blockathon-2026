@@ -5,6 +5,7 @@ import { Suspense, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
 import { NavigationProgress } from "@/components/NavigationProgress";
+import { LanguageProvider } from "@/lib/i18n";
 import { wagmiConfig } from "@/lib/wagmi-config";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
@@ -16,7 +17,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

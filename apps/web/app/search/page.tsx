@@ -6,6 +6,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
+import { CyclingPlaceholder } from "@/components/CyclingPlaceholder";
 import { AppLayout } from "@/components/layout/AppLayout";
 import {
   chatSearch,
@@ -14,6 +15,7 @@ import {
   addChatMessage,
 } from "@/lib/api";
 import type { ChatMessage } from "@/lib/api";
+import { useLanguage } from "@/lib/i18n";
 
 interface Message {
   role: "user" | "assistant";
@@ -31,6 +33,8 @@ const SearchPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const initialQuerySent = useRef(false);
   const messagesRef = useRef<Message[]>([]);
+  const justCreatedSession = useRef<number | null>(null);
+  const { t, language, promptLanguageSwitch } = useLanguage();
 
   // Load existing session if ?session= param is present.
   const paramSessionId = searchParams.get("session");
@@ -56,9 +60,19 @@ const SearchPage = () => {
   useEffect(() => {
     if (paramSessionId) {
       const id = Number(paramSessionId);
+      // Skip loading if we just created this session (messages are already in state).
+      if (justCreatedSession.current === id) {
+        justCreatedSession.current = null;
+        return;
+      }
       if (!isNaN(id) && id !== sessionId) {
         loadSession(id);
       }
+    } else if (sessionId !== null) {
+      messagesRef.current = [];
+      setMessages([]);
+      setSessionId(null);
+      initialQuerySent.current = false;
     }
   }, [paramSessionId, loadSession, sessionId]);
 
@@ -78,20 +92,19 @@ const SearchPage = () => {
     setMessages(updated);
     setLoading(true);
 
-    // Create session on first message if needed.
     let activeSessionId = sessionId;
     if (!activeSessionId) {
       try {
         const created = await createChatSession();
         activeSessionId = created.id;
+        justCreatedSession.current = created.id;
         setSessionId(created.id);
         router.replace(`/search?session=${created.id}`);
       } catch {
-        // Non-fatal — continue without persistence.
+        // Non-fatal.
       }
     }
 
-    // Persist user message.
     if (activeSessionId) {
       addChatMessage(activeSessionId, "user", text).catch(() => {});
     }
@@ -101,9 +114,12 @@ const SearchPage = () => {
       const next = [...messagesRef.current, { role: "assistant" as const, content: result.analysis, result }];
       messagesRef.current = next;
       setMessages(next);
-      // Persist assistant message.
       if (activeSessionId) {
         addChatMessage(activeSessionId, "assistant", result.analysis).catch(() => {});
+      }
+      // Prompt language switch if detected language differs.
+      if (result.detectedLanguage && result.detectedLanguage !== language) {
+        promptLanguageSwitch(result.detectedLanguage);
       }
     } catch (err) {
       const next = [...messagesRef.current, {
@@ -116,9 +132,8 @@ const SearchPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [sessionId, router]);
+  }, [sessionId, router, promptLanguageSwitch]);
 
-  // Auto-send the initial query from the URL (?q=...)
   useEffect(() => {
     const q = searchParams.get("q");
     if (q && !initialQuerySent.current) {
@@ -130,13 +145,10 @@ const SearchPage = () => {
   return (
     <AppLayout>
       <div className="flex flex-col h-full">
-        {/* Messages area. */}
         <div className="flex-1 overflow-auto px-6 py-8 max-w-3xl mx-auto w-full">
           {messages.length === 0 && !loading && (
             <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
-              <p className="text-[#6B7280] text-base">
-                Describe your immigration situation to find relevant cases
-              </p>
+              <CyclingPlaceholder />
             </div>
           )}
 
@@ -167,7 +179,7 @@ const SearchPage = () => {
               <div className="flex justify-start animate-fade-in">
                 <div className="flex items-center gap-3 py-3">
                   <span className="pulse-ring" />
-                  <span className="shimmer-text text-sm font-medium tracking-wide">Analyzing cases...</span>
+                  <span className="shimmer-text text-sm font-medium tracking-wide">{t("analyzingCases")}</span>
                 </div>
               </div>
             )}
@@ -176,12 +188,11 @@ const SearchPage = () => {
           </div>
         </div>
 
-        {/* Chat input fixed at bottom. */}
         <div className="px-6 py-5 relative before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-gradient-to-t before:from-[#121620] before:to-transparent before:pointer-events-none">
           <div className="max-w-3xl mx-auto">
             <ChatInput onSend={handleSend} disabled={loading} />
             <p className="text-center text-[#6B7280] text-xs mt-3">
-              Project utilizes real case data, not legal advice. Always verify with a qualified immigration attorney.
+              {t("disclaimer")}
             </p>
           </div>
         </div>

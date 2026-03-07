@@ -234,6 +234,16 @@ export const pinataService = {
     }
   },
 
+  async listAllFiles(limit = 100): Promise<CaseListItem[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().limit(limit);
+      return (result.files ?? []).map(fileListItemToCaseListItem);
+    } catch {
+      return [];
+    }
+  },
+
   async listByCategory(slug: CategorySlug, userId: string, limit = 20): Promise<CaseListItem[]> {
     if (!userId) return [];
     const groups = getGroups();
