@@ -29,15 +29,15 @@ export function LandingSearchBar() {
         />
         <button
           type="submit"
-          disabled={loading || !query.trim()}
-          className="group m-2 w-10 h-10 hover:w-auto hover:px-4 flex items-center justify-center bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-40 text-[#0C0F18] rounded-lg transition-all duration-300 shrink-0 overflow-hidden"
+          disabled={loading}
+          className="group m-2 w-10 h-10 hover:w-40 hover:px-4 flex items-center justify-center bg-[#C9A54E] disabled:opacity-40 text-[#0C0F18] rounded-lg shrink-0 cursor-pointer overflow-hidden transition-all duration-300"
         >
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <>
-              <ArrowUp className="w-4 h-4 shrink-0 transition-all duration-300 group-hover:w-0 group-hover:opacity-0" />
-              <span className="max-w-0 overflow-hidden group-hover:max-w-32 opacity-0 group-hover:opacity-100 transition-all duration-300 text-sm font-medium whitespace-nowrap">Search Cases</span>
+              <ArrowUp className="w-4 h-4 shrink-0 transition-all duration-300 group-hover:mr-2" />
+              <span className="w-0 overflow-hidden group-hover:w-auto transition-all duration-300 text-sm font-medium whitespace-nowrap">Search Cases</span>
             </>
           )}
         </button>
