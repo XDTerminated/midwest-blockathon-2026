@@ -1,8 +1,16 @@
 import { Hono } from "hono";
 import { pinataService } from "../services/pinata";
+import { getUser } from "../lib/auth";
 import type { CategorySlug } from "@immivault/shared";
 
 export const caseRoutes = new Hono();
+
+// Require auth for all case routes
+caseRoutes.use("*", async (c, next) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ error: "Unauthorized" }, 401);
+  await next();
+});
 
 // List all cases (metadata only, no full content)
 caseRoutes.get("/", async (c) => {
@@ -23,6 +31,5 @@ caseRoutes.get("/category/:slug", async (c) => {
 caseRoutes.get("/:cid", async (c) => {
   const cid = c.req.param("cid") ?? "";
   const caseData = await pinataService.getCase(cid);
-  // Attach CID to the case data so frontend can display it
   return c.json({ ...caseData, cid });
 });
