@@ -14,6 +14,7 @@ import { auth } from "./lib/auth";
 import { caseRoutes } from "./routes/cases";
 import { searchRoutes } from "./routes/search";
 import { shareRoutes } from "./routes/share";
+import { ttsRoutes } from "./routes/tts";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
 
@@ -51,9 +52,9 @@ app.route("/api/cases", caseRoutes);
 app.route("/api/upload", uploadRoutes);
 app.route("/api/verify", verifyRoutes);
 app.route("/api/share", shareRoutes);
+app.route("/api/tts", ttsRoutes);
 
 const port = Number(process.env.PORT ?? 3001);
 console.log(`ImmiVault API running on http://localhost:${port}`);
 
 serve({ fetch: app.fetch, port });
-

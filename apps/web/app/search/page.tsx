@@ -94,13 +94,13 @@ const SearchPage = () => {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-2 text-[#2E323A] text-base py-3">
+                <div className="flex items-center gap-3 text-base py-3">
                   <span className="inline-flex gap-1">
                     <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:0ms]" />
                     <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:150ms]" />
                     <span className="w-1.5 h-1.5 bg-[#C9A54E] rounded-full animate-bounce [animation-delay:300ms]" />
                   </span>
-                  Thinking...
+                  <span className="shimmer-text text-sm font-medium tracking-wide">Thinking...</span>
                 </div>
               </div>
             )}
