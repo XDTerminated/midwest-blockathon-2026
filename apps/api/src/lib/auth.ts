@@ -1,3 +1,4 @@
+import type { Context } from "hono";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
@@ -18,3 +19,8 @@ export const auth = betterAuth({
     "http://localhost:3000",
   ],
 });
+
+export async function getUser(c: Context) {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  return session?.user ?? null;
+}

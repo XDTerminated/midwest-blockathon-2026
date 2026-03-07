@@ -116,7 +116,8 @@ export default function CasePage({ params }: CasePageProps) {
 
   if (!caseData) return null;
 
-  const caseTypeLabel = CASE_TYPES.find((t) => t.value === caseData.caseType)?.label ?? caseData.caseType;
+  const caseTypeLabel = CASE_TYPES.find((t) => t.value === caseData.caseType)?.label ?? caseData.caseType ?? "File";
+  const isStructuredCase = !!caseData.narrative;
 
   return (
     <AppLayout>
@@ -128,62 +129,76 @@ export default function CasePage({ params }: CasePageProps) {
               {caseTypeLabel}
             </span>
             <h1 className="text-2xl font-bold text-[#e8e8f0] mt-1">
-              {caseData.countryOfOrigin} · {caseData.year}
+              {caseData.countryOfOrigin ? `${caseData.countryOfOrigin} · ${caseData.year}` : formatCID(caseData.cid)}
             </h1>
           </div>
-          <span className={cn("text-sm font-semibold px-3 py-1 rounded-full shrink-0", outcomeColor(caseData.outcome))}>
-            {outcomeLabel(caseData.outcome)}
-          </span>
+          {caseData.outcome && (
+            <span className={cn("text-sm font-semibold px-3 py-1 rounded-full shrink-0", outcomeColor(caseData.outcome))}>
+              {outcomeLabel(caseData.outcome)}
+            </span>
+          )}
         </div>
 
-        {/* Meta */}
-        <div className="flex flex-wrap gap-4 text-sm text-[#2E323A] mb-6 pb-6 border-b border-[#2E323A]">
-          <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />{caseData.countryOfOrigin}</span>
-          {caseData.court && <span className="flex items-center gap-1.5"><Scale className="w-4 h-4" />{caseData.court}</span>}
-          <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{caseData.timelineMonths} months</span>
-          <span className="flex items-center gap-1.5">
-            <Shield className="w-4 h-4" />
-            {caseData.lawyerUsed ? "Had attorney" : "Pro se (no attorney)"}
-          </span>
-        </div>
+        {/* Meta — only for structured cases */}
+        {isStructuredCase && (
+          <div className="flex flex-wrap gap-4 text-sm text-[#2E323A] mb-6 pb-6 border-b border-[#2E323A]">
+            {caseData.countryOfOrigin && <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />{caseData.countryOfOrigin}</span>}
+            {caseData.court && <span className="flex items-center gap-1.5"><Scale className="w-4 h-4" />{caseData.court}</span>}
+            {caseData.timelineMonths && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{caseData.timelineMonths} months</span>}
+            {caseData.lawyerUsed != null && (
+              <span className="flex items-center gap-1.5">
+                <Shield className="w-4 h-4" />
+                {caseData.lawyerUsed ? "Had attorney" : "Pro se (no attorney)"}
+              </span>
+            )}
+          </div>
+        )}
 
         <Disclaimer mode="card" className="mb-6" />
 
         {/* Narrative */}
-        <section className="mb-6">
-          <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Case Narrative</h2>
-          <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-5 text-[#8a8ea0] text-sm leading-relaxed whitespace-pre-wrap">
-            {caseData.narrative}
-          </div>
-        </section>
+        {caseData.narrative && (
+          <section className="mb-6">
+            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Case Narrative</h2>
+            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-5 text-[#8a8ea0] text-sm leading-relaxed whitespace-pre-wrap">
+              {caseData.narrative}
+            </div>
+          </section>
+        )}
 
         {/* Key Factors */}
-        <section className="mb-6">
-          <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Key Factors</h2>
-          <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 text-sm text-[#8a8ea0]">
-            {caseData.keyFactors}
-          </div>
-        </section>
+        {caseData.keyFactors && (
+          <section className="mb-6">
+            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Key Factors</h2>
+            <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 text-sm text-[#8a8ea0]">
+              {caseData.keyFactors}
+            </div>
+          </section>
+        )}
 
         {/* Lessons Learned */}
-        <section className="mb-6">
-          <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Lessons Learned</h2>
-          <div className="bg-[#0f1a0f] border border-[#0f2a0f] rounded-lg p-4 text-sm text-green-300">
-            {caseData.lessonsLearned}
-          </div>
-        </section>
+        {caseData.lessonsLearned && (
+          <section className="mb-6">
+            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Lessons Learned</h2>
+            <div className="bg-[#0f1a0f] border border-[#0f2a0f] rounded-lg p-4 text-sm text-green-300">
+              {caseData.lessonsLearned}
+            </div>
+          </section>
+        )}
 
         {/* Documents Used */}
-        <section className="mb-6">
-          <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Documents & Forms Used</h2>
-          <div className="flex flex-wrap gap-2">
-            {caseData.documentsUsed.map((doc) => (
-              <span key={doc} className="bg-[#161A24] border border-[#2E323A] text-[#8a8ea0] text-xs px-3 py-1.5 rounded-full">
-                {doc}
-              </span>
-            ))}
-          </div>
-        </section>
+        {caseData.documentsUsed?.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Documents & Forms Used</h2>
+            <div className="flex flex-wrap gap-2">
+              {caseData.documentsUsed.map((doc) => (
+                <span key={doc} className="bg-[#161A24] border border-[#2E323A] text-[#8a8ea0] text-xs px-3 py-1.5 rounded-full">
+                  {doc}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CID + Share */}
         <div className="bg-[#161A24] border border-[#2E323A] rounded-lg p-4 mt-8">

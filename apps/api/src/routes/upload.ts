@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { pinataService } from "../services/pinata";
 import { stripPII } from "../services/anonymize";
+import { getUser } from "../lib/auth";
 
 export const uploadRoutes = new Hono();
 
@@ -26,7 +27,38 @@ const caseUploadSchema = z.object({
   contributorWallet: z.string().default(""),
 });
 
+// List current user's uploaded files
+uploadRoutes.get("/files", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ files: [] });
+  const files = await pinataService.listFilesByUser(user.id);
+  return c.json({ files });
+});
+
+// Raw file upload (PDF, JSON, etc.) — stores directly on IPFS
+uploadRoutes.post("/file", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ error: "Unauthorized" }, 401);
+
+  const body = await c.req.parseBody();
+  const file = body["file"];
+
+  if (!(file instanceof File)) {
+    return c.json({ error: "No file provided" }, 400);
+  }
+
+  const name = `upload-${Date.now()}-${file.name}`;
+  const upload = await pinataService.uploadRawFile(file, name, user.id);
+
+  return c.json({
+    cid: upload.cid,
+    name: upload.name ?? name,
+  });
+});
+
 uploadRoutes.post("/case", zValidator("json", caseUploadSchema), async (c) => {
+  const user = await getUser(c);
+  const userId = user?.id ?? "";
   const data = c.req.valid("json");
 
   // Strip PII from text fields
@@ -44,7 +76,7 @@ uploadRoutes.post("/case", zValidator("json", caseUploadSchema), async (c) => {
   const { contributorWallet, ...caseData } = sanitized;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const upload = await pinataService.uploadCase(caseData as any, contributorWallet);
+  const upload = await pinataService.uploadCase(caseData as any, contributorWallet, userId);
 
   // Sign the case file
   const signature = await pinataService.signCase(upload.cid);

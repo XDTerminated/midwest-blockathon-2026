@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquarePlus, MessageSquare, Upload, Wallet, LayoutGrid, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
+import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { formatCID } from "@/lib/utils";
@@ -32,27 +32,15 @@ export function Sidebar() {
         collapsed ? "w-[60px] px-3" : "w-[220px] px-5"
       )}
     >
-      {/* Top row: logo + collapse toggle */}
-      <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-between")}>
-        <Link href="/">
-          <LayoutGrid className="w-6 h-6 text-[#2E323A] hover:text-[#5a5a70] transition" />
-        </Link>
-        {!collapsed && (
-          <button onClick={() => setCollapsed(true)} className="text-[#2E323A] hover:text-[#5a5a70] transition">
-            <PanelLeftClose className="w-5 h-5" />
-          </button>
-        )}
-      </div>
-
-      {/* Expand button when collapsed */}
-      {collapsed && (
+      {/* Top row: collapse toggle */}
+      <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-end")}>
         <button
-          onClick={() => setCollapsed(false)}
-          className="flex justify-center mb-6 text-[#2E323A] hover:text-[#5a5a70] transition"
+          onClick={() => setCollapsed(!collapsed)}
+          className="text-[#2E323A] hover:text-[#5a5a70] transition"
         >
-          <PanelLeftOpen className="w-5 h-5" />
+          {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
         </button>
-      )}
+      </div>
 
       {/* Nav */}
       <nav className="flex flex-col gap-5 flex-1">

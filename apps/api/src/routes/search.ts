@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { pinataService } from "../services/pinata";
 import { claudeService } from "../services/claude";
+import { getUser } from "../lib/auth";
 
 export const searchRoutes = new Hono();
 
@@ -16,10 +17,12 @@ const searchQuerySchema = z.object({
 
 searchRoutes.get("/", zValidator("query", searchQuerySchema), async (c) => {
   const { q, limit } = c.req.valid("query");
+  const user = await getUser(c);
+  const userId = user?.id ?? "";
 
   let cases: Awaited<ReturnType<typeof pinataService.searchCases>> = [];
   try {
-    cases = await pinataService.searchCases(q, limit);
+    cases = await pinataService.searchCases(q, userId, limit);
   } catch (err) {
     console.error("Pinata search error (non-fatal):", err);
     // Continue with empty cases — Claude still synthesizes a general response

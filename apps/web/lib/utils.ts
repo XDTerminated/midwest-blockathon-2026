@@ -30,5 +30,6 @@ export function outcomeColor(outcome: Outcome): string {
 }
 
 export function outcomeLabel(outcome: Outcome): string {
+  if (!outcome) return "Unknown";
   return outcome.charAt(0).toUpperCase() + outcome.slice(1);
 }

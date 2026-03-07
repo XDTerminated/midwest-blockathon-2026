@@ -22,6 +22,7 @@ async function apiFetch<T>(
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: { ...headers, ...(options?.headers as Record<string, string>) },
   });
 
@@ -66,6 +67,36 @@ export async function uploadCase(data: Record<string, unknown>): Promise<UploadR
     method: "POST",
     body: JSON.stringify(data),
   });
+}
+
+export async function uploadFile(file: File): Promise<{ cid: string; name: string }> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${API_URL}/api/upload/file`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Upload failed: ${text}`);
+  }
+
+  return res.json();
+}
+
+export interface UploadedFile {
+  cid: string;
+  name: string;
+  mimeType?: string;
+  size?: number;
+  createdAt: string;
+}
+
+export async function listFiles(): Promise<{ files: UploadedFile[] }> {
+  return apiFetch("/api/upload/files");
 }
 
 export async function verifyCase(cid: string): Promise<VerifyResult> {

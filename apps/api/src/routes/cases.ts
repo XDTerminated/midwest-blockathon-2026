@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { pinataService } from "../services/pinata";
-import { paymentRequired } from "../middleware/x402";
 import type { CategorySlug } from "@immivault/shared";
 
 export const caseRoutes = new Hono();
@@ -20,8 +19,8 @@ caseRoutes.get("/category/:slug", async (c) => {
   return c.json({ cases, slug });
 });
 
-// Get full case content — x402 gated
-caseRoutes.get("/:cid", paymentRequired(), async (c) => {
+// Get full case content
+caseRoutes.get("/:cid", async (c) => {
   const cid = c.req.param("cid") ?? "";
   const caseData = await pinataService.getCase(cid);
   // Attach CID to the case data so frontend can display it

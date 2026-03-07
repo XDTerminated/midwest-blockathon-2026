@@ -1,5 +1,14 @@
 import { PinataSDK } from "pinata";
 import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
+import { config } from "dotenv";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+// Ensure env vars are loaded before initializing SDK
+if (!process.env.PINATA_JWT) {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  config({ path: resolve(__dirname, "../../../../.env") });
+}
 
 export const pinata = new PinataSDK({
   pinataJwt: process.env.PINATA_JWT!,
@@ -58,7 +67,38 @@ function fileListItemToCaseListItem(f: any): CaseListItem {
 }
 
 export const pinataService = {
-  async uploadCase(data: CaseRecord, contributorWallet: string) {
+  async uploadRawFile(file: File, name: string, userId: string) {
+    return await pinata.upload.file(file).addMetadata({ name, keyvalues: { userId } });
+  },
+
+  async listFilesByUser(_userId: string, limit = 50): Promise<{ cid: string; name: string; mimeType?: string; size?: number; createdAt: string }[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().limit(limit);
+      return (result.files ?? []).map((f: any) => ({
+        cid: f.cid,
+        name: f.name ?? "",
+        mimeType: f.mime_type,
+        size: f.size,
+        createdAt: f.created_at,
+      }));
+    } catch {
+      return [];
+    }
+  },
+
+  async isFileOwnedByUser(cid: string, userId: string): Promise<boolean> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().cid(cid).limit(1);
+      const file = result.files?.[0];
+      return file?.keyvalues?.userId === userId;
+    } catch {
+      return false;
+    }
+  },
+
+  async uploadCase(data: CaseRecord, contributorWallet: string, userId?: string) {
     const payload = { ...data, contributorWallet, uploadedAt: new Date().toISOString() };
     const file = new File(
       [JSON.stringify(payload)],
@@ -67,7 +107,7 @@ export const pinataService = {
     );
 
     const groupId = groupIdForCaseType(data.caseType);
-    const keyvalues = {
+    const keyvalues: Record<string, string> = {
       caseType: data.caseType,
       countryOfOrigin: data.countryOfOrigin,
       outcome: data.outcome,
@@ -76,6 +116,7 @@ export const pinataService = {
       contributorWallet,
       lawyerUsed: String(data.lawyerUsed),
       timelineMonths: String(data.timelineMonths),
+      ...(userId ? { userId } : {}),
     };
     const name = `${data.caseType}-${data.countryOfOrigin.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
 
@@ -90,7 +131,7 @@ export const pinataService = {
     }
   },
 
-  async searchCases(query: string, limit = 10): Promise<CaseRecord[]> {
+  async searchCases(query: string, _userId: string, limit = 10): Promise<CaseRecord[]> {
     const groups = getGroups();
     const groupIds = Object.values(groups);
 
