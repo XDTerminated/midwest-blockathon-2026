@@ -1,32 +1,57 @@
 "use client";
 
-import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
+import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut, LayoutDashboard, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 import { useSession, signOut } from "@/lib/auth-client";
 import { formatCID, cn } from "@/lib/utils";
-
-const navItems = [
-  { icon: MessageSquarePlus, label: "New Chat", href: "/search" },
-  { icon: MessageSquare, label: "Chats", href: "/search" },
-  { icon: Upload, label: "Upload a File", href: "/upload" },
-  { icon: Wallet, label: "Wallet", href: "#wallet" },
-];
+import { listChatSessions, deleteChatSession } from "@/lib/api";
+import type { ChatSession } from "@/lib/api";
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeSessionId = searchParams.get("session");
 
   useEffect(() => { setMounted(true); }, []);
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
   const { data: session } = useSession();
+
+  const loadSessions = useCallback(async () => {
+    if (!session?.user) return;
+    try {
+      const { sessions } = await listChatSessions();
+      setChatSessions(sessions);
+    } catch {
+      // Non-fatal.
+    }
+  }, [session?.user]);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions, pathname, activeSessionId]);
+
+  const handleDeleteSession = async (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await deleteChatSession(id);
+      setChatSessions((prev) => prev.filter((s) => s.id !== id));
+    } catch {
+      // Non-fatal.
+    }
+  };
+
+  const isWalletActive = isConnected && address;
 
   return (
     <aside
@@ -47,53 +72,108 @@ export const Sidebar = () => {
       </div>
 
       {/* Nav */}
-      <nav className="flex flex-col gap-5 flex-1">
-        {navItems.map(({ icon: Icon, label, href }) => {
-          const isWallet = label === "Wallet";
-          const active =
-            href === "/upload"
-              ? pathname === "/upload"
-              : href === "/search" && label === "New Chat"
-                ? pathname === "/search"
-                : false;
-
-          const itemClass = cn(
+      <nav className="flex flex-col gap-5 flex-1 overflow-hidden">
+        {/* New Chat */}
+        <Link
+          href="/search"
+          className={cn(
             "flex items-center transition cursor-pointer",
             collapsed ? "justify-center" : "gap-3",
-            isWallet && isConnected && address
+            pathname === "/search" && !activeSessionId
               ? "text-[#C9A54E]"
-              : active
-                ? "text-[#C9A54E]"
-                : "text-[#2E323A] hover:text-[#5a5a70]"
-          );
+              : "text-[#2E323A] hover:text-[#5a5a70]"
+          )}
+          title={collapsed ? "New Chat" : undefined}
+        >
+          <MessageSquarePlus className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>New Chat</span>
+        </Link>
 
-          if (isWallet) {
-            const walletActive = isConnected && address;
-            return (
-              <button
-                key={label}
-                onClick={() => walletActive ? disconnect() : connect({ connector: injected() })}
-                className={itemClass}
-                title={collapsed ? (walletActive ? formatCID(address, 4) : "Wallet") : undefined}
+        {/* Chats header */}
+        <div
+          className={cn(
+            "flex items-center",
+            collapsed ? "justify-center" : "gap-3",
+            "text-[#2E323A]"
+          )}
+        >
+          <MessageSquare className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Chats</span>
+        </div>
+
+        {/* Chat session list */}
+        {!collapsed && chatSessions.length > 0 && (
+          <div className="flex flex-col gap-1 pl-8 overflow-y-auto max-h-[200px] -mt-2">
+            {chatSessions.map((cs) => (
+              <Link
+                key={cs.id}
+                href={`/search?session=${cs.id}`}
+                className={cn(
+                  "group flex items-center justify-between text-[12px] py-1.5 px-2 rounded-md transition truncate",
+                  activeSessionId === String(cs.id)
+                    ? "text-[#C9A54E] bg-[#161A24]"
+                    : "text-[#5a5a70] hover:text-[#8a8ea0] hover:bg-[#161A24]"
+                )}
               >
-                <Icon className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{walletActive ? formatCID(address, 4) : "Wallet"}</span>
-              </button>
-            );
-          }
+                <span className="truncate">{cs.title}</span>
+                <button
+                  onClick={(e) => handleDeleteSession(cs.id, e)}
+                  className="opacity-0 group-hover:opacity-100 text-[#5a5a70] hover:text-red-400 transition shrink-0 ml-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </Link>
+            ))}
+          </div>
+        )}
 
-          return (
-            <Link
-              key={label}
-              href={href}
-              className={itemClass}
-              title={collapsed ? label : undefined}
-            >
-              <Icon className="w-5 h-5 shrink-0" />
-              <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{label}</span>
-            </Link>
-          );
-        })}
+        {/* Upload */}
+        <Link
+          href="/upload"
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            pathname === "/upload"
+              ? "text-[#C9A54E]"
+              : "text-[#2E323A] hover:text-[#5a5a70]"
+          )}
+          title={collapsed ? "Upload a File" : undefined}
+        >
+          <Upload className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Upload a File</span>
+        </Link>
+
+        {/* Dashboard */}
+        <Link
+          href="/dashboard"
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            pathname === "/dashboard"
+              ? "text-[#C9A54E]"
+              : "text-[#2E323A] hover:text-[#5a5a70]"
+          )}
+          title={collapsed ? "Dashboard" : undefined}
+        >
+          <LayoutDashboard className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
+        </Link>
+
+        {/* Wallet */}
+        <button
+          onClick={() => isWalletActive ? disconnect() : connect({ connector: injected() })}
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            isWalletActive
+              ? "text-[#C9A54E]"
+              : "text-[#2E323A] hover:text-[#5a5a70]"
+          )}
+          title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}
+        >
+          <Wallet className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : "Wallet"}</span>
+        </button>
       </nav>
 
       {/* Auth */}

@@ -144,3 +144,47 @@ export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => 
     (res as PaymentRequiredError).error === "Payment Required"
   );
 };
+
+// --- Chat sessions ---
+
+export interface ChatSession {
+  id: number;
+  userId: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatMessageRecord {
+  id: number;
+  sessionId: number;
+  role: string;
+  content: string;
+  createdAt: string;
+}
+
+export const listChatSessions = async (): Promise<{ sessions: ChatSession[] }> => {
+  return apiFetch("/api/chat/sessions");
+};
+
+export const createChatSession = async (title?: string): Promise<ChatSession> => {
+  return apiFetch("/api/chat/sessions", {
+    method: "POST",
+    body: JSON.stringify({ title }),
+  });
+};
+
+export const deleteChatSession = async (id: number): Promise<void> => {
+  await apiFetch(`/api/chat/sessions/${id}`, { method: "DELETE" });
+};
+
+export const getChatMessages = async (sessionId: number): Promise<{ messages: ChatMessageRecord[] }> => {
+  return apiFetch(`/api/chat/sessions/${sessionId}/messages`);
+};
+
+export const addChatMessage = async (sessionId: number, role: string, content: string): Promise<ChatMessageRecord> => {
+  return apiFetch(`/api/chat/sessions/${sessionId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ role, content }),
+  });
+};
