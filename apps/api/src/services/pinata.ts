@@ -51,6 +51,36 @@ function groupIdForCaseType(caseType: CaseType): string | undefined {
   return slug ? groups[slug] : undefined;
 }
 
+// --- In-memory cache for case data fetched from IPFS gateway ---
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_MAX_SIZE = 200;
+
+interface CacheEntry {
+  data: CaseRecord;
+  expiresAt: number;
+}
+
+const caseCache = new Map<string, CacheEntry>();
+
+function getCached(cid: string): CaseRecord | null {
+  const entry = caseCache.get(cid);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    caseCache.delete(cid);
+    return null;
+  }
+  return entry.data;
+}
+
+function setCache(cid: string, data: CaseRecord): void {
+  // Evict oldest entries if cache is full
+  if (caseCache.size >= CACHE_MAX_SIZE) {
+    const firstKey = caseCache.keys().next().value;
+    if (firstKey) caseCache.delete(firstKey);
+  }
+  caseCache.set(cid, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fileListItemToCaseListItem(f: any): CaseListItem {
   return {
@@ -134,30 +164,30 @@ export const pinataService = {
     }
   },
 
-  async searchCases(query: string, userId: string, limit = 10): Promise<CaseRecord[]> {
-    if (!userId) return [];
-
+  async searchCases(query: string, _userId: string, limit = 10): Promise<CaseRecord[]> {
     const groups = getGroups();
     const groupIds = Object.values(groups);
 
     if (groupIds.length === 0) {
-      return this.listAllCaseData(userId, limit).catch(() => []);
+      return this.listAllCaseData(limit).catch(() => []);
     }
 
-    // Search each group with vector query, collect all matches
-    const matches: { fileId: string; cid: string; score: number }[] = [];
+    // Query ALL groups in parallel instead of sequentially
+    const results = await Promise.allSettled(
+      groupIds.map((groupId) =>
+        pinata.files.queryVectors({ groupId, query, returnFile: false })
+      )
+    );
 
-    for (const groupId of groupIds) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const result: any = await pinata.files.queryVectors({ groupId, query, returnFile: false });
-        if (result?.matches) {
-          for (const m of result.matches) {
-            matches.push({ fileId: m.file_id, cid: m.cid, score: m.score });
-          }
+    const matches: { fileId: string; cid: string; score: number }[] = [];
+    for (const result of results) {
+      if (result.status !== "fulfilled") continue;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = result.value as any;
+      if (data?.matches) {
+        for (const m of data.matches) {
+          matches.push({ fileId: m.file_id, cid: m.cid, score: m.score });
         }
-      } catch {
-        // Group may not be vectorized; skip
       }
     }
 
@@ -165,28 +195,23 @@ export const pinataService = {
     const topMatches = matches.slice(0, limit);
 
     if (topMatches.length === 0) {
-      return this.listAllCaseData(userId, limit);
+      return this.listAllCaseData(limit);
     }
 
-    // Filter to only files owned by this user
+    // Fetch all case data in parallel, using cache
     const cases = await Promise.all(
-      topMatches.map(async (m) => {
-        const owned = await this.isFileOwnedByUser(m.cid, userId);
-        if (!owned) return null;
-        return this.getCase(m.cid).catch(() => null);
-      })
+      topMatches.map((m) => this.getCase(m.cid).catch(() => null))
     );
     return cases.filter(Boolean) as CaseRecord[];
   },
 
-  async listAllCaseData(userId: string, limit = 20): Promise<CaseRecord[]> {
-    if (!userId) return [];
+  async listAllCaseData(limit = 20): Promise<CaseRecord[]> {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await pinata.files.list().limit(200);
-      const userFiles = (result.files ?? []).filter((f: any) => f.keyvalues?.userId === userId).slice(0, limit);
+      const result: any = await pinata.files.list().limit(limit);
+      const files = (result.files ?? []).slice(0, limit);
       const cases = await Promise.all(
-        userFiles.map((f: { cid: string }) => this.getCase(f.cid).catch(() => null))
+        files.map((f: { cid: string }) => this.getCase(f.cid).catch(() => null))
       );
       return cases.filter(Boolean) as CaseRecord[];
     } catch {
@@ -226,11 +251,23 @@ export const pinataService = {
   },
 
   async getCase(cid: string): Promise<CaseRecord> {
+    // Check cache first
+    const cached = getCached(cid);
+    if (cached) return cached;
+
     const response = await pinata.gateways.get(cid);
     const raw = response.data;
-    if (typeof raw === "string") return { ...JSON.parse(raw), cid } as CaseRecord;
-    if (raw && typeof raw === "object") return { ...(raw as object), cid } as unknown as CaseRecord;
-    throw new Error(`Unexpected response type for CID ${cid}`);
+    let caseData: CaseRecord;
+    if (typeof raw === "string") {
+      caseData = { ...JSON.parse(raw), cid } as CaseRecord;
+    } else if (raw && typeof raw === "object") {
+      caseData = { ...(raw as object), cid } as unknown as CaseRecord;
+    } else {
+      throw new Error(`Unexpected response type for CID ${cid}`);
+    }
+
+    setCache(cid, caseData);
+    return caseData;
   },
 
   async signCase(_cid: string): Promise<string | null> {

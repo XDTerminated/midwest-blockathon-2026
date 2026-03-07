@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "@/lib/auth-client";
@@ -13,8 +13,13 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!isPending && session?.user) {
+      router.replace("/search");
+    }
+  }, [isPending, session, router]);
+
   if (!isPending && session?.user) {
-    router.replace("/search");
     return null;
   }
 

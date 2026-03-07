@@ -25,7 +25,7 @@ const SYSTEM_PROMPT = `You are Lumina, an immigration legal research tool. You g
 RULES:
 - Legal info only, not advice. Never promise outcomes.
 - Simple, clear English. Avoid jargon — explain terms if needed.
-- Reference cases as [Case CID: <cid>] when relevant.
+- ONLY reference cases that appear in the CASE LIBRARY below. Use format [Case CID: <cid>] with the exact CID provided. NEVER invent, fabricate, or guess a CID. If no cases are provided, do NOT reference any cases at all.
 - Be welcoming but informational — like a helpful librarian, not a therapist.
 
 YOUR RESPONSE MUST BE:
@@ -87,7 +87,16 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
       messages,
     });
 
-    const analysis = completion.choices[0]?.message?.content ?? "";
+    let analysis = completion.choices[0]?.message?.content ?? "";
+
+    // Collect valid CIDs from the cases we actually provided
+    const validCids = new Set(cases.map((c) => c.cid).filter(Boolean));
+
+    // Strip any [Case CID: ...] references that don't match real cases
+    analysis = analysis.replace(/\[Case CID:\s*([^\]]+)\]/g, (match, cid) => {
+      const trimmed = cid.trim();
+      return validCids.has(trimmed) ? match : "";
+    });
 
     const citedCases: CitedCaseRef[] = cases
       .filter((c) => c.cid && analysis.includes(c.cid))
@@ -100,7 +109,7 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
       }));
 
     return {
-      analysis,
+      analysis: analysis.trim(),
       citedCases,
       disclaimer: LEGAL_DISCLAIMER,
     };
