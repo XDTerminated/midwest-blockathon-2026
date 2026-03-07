@@ -138,6 +138,15 @@ export const textToSpeech = async (text: string, lang = "en"): Promise<Blob> => 
   return res.blob();
 };
 
+export const getContributorStats = async (walletAddress: string) => {
+  return apiFetch<{
+    casesUploaded: number;
+    totalEarned: number;
+    totalAccesses: number;
+    cases: { cidHash: string; accessCount: number; earned: number; registeredAt: number }[];
+  }>(`/api/stats/${walletAddress}`);
+};
+
 export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => {
   return (
     typeof res === "object" &&

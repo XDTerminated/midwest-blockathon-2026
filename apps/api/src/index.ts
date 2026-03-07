@@ -16,6 +16,7 @@ import { chatRoutes } from "./routes/chat";
 import { fileRoutes } from "./routes/files";
 import { searchRoutes } from "./routes/search";
 import { shareRoutes } from "./routes/share";
+import { statsRoutes } from "./routes/stats";
 import { ttsRoutes } from "./routes/tts";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
@@ -56,6 +57,7 @@ app.route("/api/files", fileRoutes);
 app.route("/api/upload", uploadRoutes);
 app.route("/api/verify", verifyRoutes);
 app.route("/api/share", shareRoutes);
+app.route("/api/stats", statsRoutes);
 app.route("/api/tts", ttsRoutes);
 
 const port = Number(process.env.PORT ?? 3001);
