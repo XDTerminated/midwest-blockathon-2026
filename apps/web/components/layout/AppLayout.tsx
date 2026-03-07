@@ -1,9 +1,9 @@
 "use client";
 
-import { Sidebar } from "./Sidebar";
 import { AuthGuard } from "@/components/AuthGuard";
+import { Sidebar } from "./Sidebar";
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthGuard>
       <div className="flex h-screen bg-[#0C0F18] overflow-hidden">
@@ -12,4 +12,4 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
     </AuthGuard>
   );
-}
+};

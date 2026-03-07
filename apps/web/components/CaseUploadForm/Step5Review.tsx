@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import type { FormData } from "./index";
-import { uploadCase } from "@/lib/api";
 import { CASE_TYPES, OUTCOMES } from "@immivault/shared";
-import { Loader2, CheckCircle } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
+
 import { Disclaimer } from "@/components/Disclaimer";
+import { uploadCase } from "@/lib/api";
+import type { FormData } from "./index";
 
 interface Props {
   data: FormData;
@@ -13,7 +14,7 @@ interface Props {
   onSubmitted: (cid: string) => void;
 }
 
-export function Step5Review({ data, onBack, onSubmitted }: Props) {
+export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,7 @@ export function Step5Review({ data, onBack, onSubmitted }: Props) {
   const caseTypeLabel = CASE_TYPES.find((t) => t.value === data.caseType)?.label ?? data.caseType;
   const outcomeLabel = OUTCOMES.find((o) => o.value === data.outcome)?.label ?? data.outcome;
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consent) return;
 
@@ -41,7 +42,7 @@ export function Step5Review({ data, onBack, onSubmitted }: Props) {
       setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
       setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -130,4 +131,4 @@ export function Step5Review({ data, onBack, onSubmitted }: Props) {
       </div>
     </form>
   );
-}
+};

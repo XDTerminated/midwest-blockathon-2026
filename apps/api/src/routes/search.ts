@@ -1,14 +1,15 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
 import { z } from "zod";
-import { pinataService } from "../services/pinata";
+
+import { getUser } from "../lib/auth";
 import { claudeService } from "../services/claude";
 import type { ChatMessage } from "../services/claude";
-import { getUser } from "../lib/auth";
+import { pinataService } from "../services/pinata";
 
 export const searchRoutes = new Hono();
 
-// Require auth for search
+// Require auth for search.
 searchRoutes.use("*", async (c, next) => {
   const user = await getUser(c);
   if (!user) return c.json({ error: "Unauthorized" }, 401);
@@ -50,7 +51,7 @@ searchRoutes.get("/", zValidator("query", searchQuerySchema), async (c) => {
   }
 });
 
-// POST route with conversation history
+// POST route with conversation history.
 const chatSchema = z.object({
   q: z.string().min(1).max(500),
   history: z.array(z.object({

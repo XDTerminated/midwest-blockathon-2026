@@ -1,12 +1,13 @@
 "use client";
 
+import type { SearchResult } from "@immivault/shared";
 import { useRef, useState, useEffect } from "react";
+
+import { AIAnalysis } from "@/components/AIAnalysis";
+import { ChatInput } from "@/components/ChatInput";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { chatSearch } from "@/lib/api";
 import type { ChatMessage } from "@/lib/api";
-import { AIAnalysis } from "@/components/AIAnalysis";
-import { AppLayout } from "@/components/layout/AppLayout";
-import { ChatInput } from "@/components/ChatInput";
-import type { SearchResult } from "@immivault/shared";
 
 interface Message {
   role: "user" | "assistant";
@@ -15,7 +16,7 @@ interface Message {
   error?: string;
 }
 
-export default function SearchPage() {
+const SearchPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -24,12 +25,12 @@ export default function SearchPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  async function handleSend(text: string) {
+  const handleSend = async (text: string) => {
     const userMsg: Message = { role: "user", content: text };
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
-    // Build history for the API (prior messages only)
+    // Build history for the API (prior messages only).
     const history: ChatMessage[] = messages.map((m) => ({
       role: m.role,
       content: m.role === "assistant" ? (m.result?.analysis ?? m.content) : m.content,
@@ -53,7 +54,7 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <AppLayout>
@@ -120,4 +121,6 @@ export default function SearchPage() {
       </div>
     </AppLayout>
   );
-}
+};
+
+export default SearchPage;

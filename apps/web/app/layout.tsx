@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 
@@ -8,9 +9,9 @@ export const metadata: Metadata = {
     "Community-powered immigration legal research. Real anonymized cases, AI-assisted search, and micropayments for contributors.",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: React.ReactNode }>) => {
   return (
     <html lang="en">
       <head>
@@ -26,4 +27,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

@@ -1,6 +1,7 @@
-import type { Context } from "hono";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import type { Context } from "hono";
+
 import { db } from "../db";
 import * as schema from "../db/schema";
 
@@ -20,7 +21,9 @@ export const auth = betterAuth({
   ],
 });
 
-export async function getUser(c: Context) {
+const getUser = async (c: Context) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   return session?.user ?? null;
-}
+};
+
+export { getUser };

@@ -1,9 +1,10 @@
-import OpenAI from "openai";
-import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
-import { LEGAL_DISCLAIMER } from "@immivault/shared";
 import { config } from "dotenv";
+import OpenAI from "openai";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+
+import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
+import { LEGAL_DISCLAIMER } from "@immivault/shared";
 
 // Ensure env vars are loaded before using GROQ_API_KEY
 if (!process.env.GROQ_API_KEY) {
@@ -13,12 +14,12 @@ if (!process.env.GROQ_API_KEY) {
 
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 
-function getClient() {
+const getClient = () => {
   return new OpenAI({
     baseURL: "https://api.groq.com/openai/v1",
     apiKey: process.env.GROQ_API_KEY,
   });
-}
+};
 
 const SYSTEM_PROMPT = `You are Lumina, an AI assistant on an immigration legal research platform. You can answer general questions AND help with immigration research.
 
@@ -33,7 +34,7 @@ FOR GENERAL QUESTIONS:
 FOR IMMIGRATION QUESTIONS:
 - Legal info only, not advice. Never promise outcomes.
 - Simple, clear English. Avoid jargon — explain terms if needed.
-- Reference cases as [Case CID: <cid>] when relevant.
+- ONLY reference cases that appear in the CASE LIBRARY below. Use format [Case CID: <cid>] with the exact CID provided. NEVER invent, fabricate, or guess a CID. If no cases are provided, do NOT reference any cases at all.
 - Be welcoming but informational — like a helpful librarian, not a therapist.
 - First give the key information, then ask 1 follow-up question to help narrow things down.
 
@@ -47,7 +48,7 @@ ALL RESPONSES:
 - NO headers. NO bold. NO bullet points. NO lists. NO markdown formatting at all.
 - Just 1-2 short paragraphs of plain text.`;
 
-function formatCaseForContext(c: CaseRecord & { cid?: string }, index: number): string {
+const formatCaseForContext = (c: CaseRecord & { cid?: string }, index: number): string => {
   return `
 CASE ${index + 1} [CID: ${c.cid ?? "unknown"}]:
 Type: ${c.caseType ?? "unknown"}
@@ -62,7 +63,7 @@ Key Factors: ${c.keyFactors ?? "N/A"}
 Documents Used: ${(c.documentsUsed ?? []).join(", ") || "N/A"}
 Lessons Learned: ${c.lessonsLearned ?? "N/A"}
 `.trim();
-}
+};
 
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -97,7 +98,16 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
       messages,
     });
 
-    const analysis = completion.choices[0]?.message?.content ?? "";
+    let analysis = completion.choices[0]?.message?.content ?? "";
+
+    // Collect valid CIDs from the cases we actually provided
+    const validCids = new Set(cases.map((c) => c.cid).filter(Boolean));
+
+    // Strip any [Case CID: ...] references that don't match real cases
+    analysis = analysis.replace(/\[Case CID:\s*([^\]]+)\]/g, (match, cid) => {
+      const trimmed = cid.trim();
+      return validCids.has(trimmed) ? match : "";
+    });
 
     const citedCases: CitedCaseRef[] = cases
       .filter((c) => c.cid && analysis.includes(c.cid))
@@ -110,7 +120,7 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
       }));
 
     return {
-      analysis,
+      analysis: analysis.trim(),
       citedCases,
       disclaimer: LEGAL_DISCLAIMER,
     };

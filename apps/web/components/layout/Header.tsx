@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { Scale, Shield, Upload, Search } from "lucide-react";
+import Link from "next/link";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
+
 import { formatCID } from "@/lib/utils";
 
-export function Header() {
+export const Header = () => {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
@@ -59,4 +60,4 @@ export function Header() {
       </div>
     </header>
   );
-}
+};

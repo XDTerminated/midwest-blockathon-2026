@@ -1,25 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Search, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface SearchBarProps {
   defaultValue?: string;
   variant?: "hero" | "compact";
 }
 
-export function SearchBar({ defaultValue = "", variant = "hero" }: SearchBarProps) {
+export const SearchBar = ({ defaultValue = "", variant = "hero" }: SearchBarProps) => {
   const [query, setQuery] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
     setLoading(true);
     router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-  }
+  };
 
   if (variant === "compact") {
     return (
@@ -65,4 +65,4 @@ export function SearchBar({ defaultValue = "", variant = "hero" }: SearchBarProp
       </div>
     </form>
   );
-}
+};

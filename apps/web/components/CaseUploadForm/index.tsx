@@ -1,13 +1,14 @@
 "use client";
 
+import type { CaseRecord } from "@immivault/shared";
+import { CheckCircle } from "lucide-react";
 import { useState } from "react";
+
 import { Step1BasicInfo } from "./Step1BasicInfo";
 import { Step2Narrative } from "./Step2Narrative";
 import { Step3Details } from "./Step3Details";
 import { Step4Wallet } from "./Step4Wallet";
 import { Step5Review } from "./Step5Review";
-import type { CaseRecord } from "@immivault/shared";
-import { CheckCircle } from "lucide-react";
 
 export type FormData = Partial<CaseRecord> & { contributorWallet?: string };
 
@@ -19,22 +20,22 @@ const STEPS = [
   "Review & Submit",
 ];
 
-export function CaseUploadForm() {
+export const CaseUploadForm = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [submitted, setSubmitted] = useState<{ cid: string } | null>(null);
 
-  function updateData(data: Partial<FormData>) {
+  const updateData = (data: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
-  }
+  };
 
-  function next() {
+  const next = () => {
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
-  }
+  };
 
-  function back() {
+  const back = () => {
     setStep((s) => Math.max(s - 1, 0));
-  }
+  };
 
   if (submitted) {
     return (
@@ -128,4 +129,4 @@ export function CaseUploadForm() {
       )}
     </div>
   );
-}
+};

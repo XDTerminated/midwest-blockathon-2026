@@ -1,15 +1,16 @@
-import Link from "next/link";
 import { CASE_TYPES } from "@immivault/shared";
 import type { CaseListItem } from "@immivault/shared";
-import { outcomeColor, outcomeLabel, cn } from "@/lib/utils";
-import { Clock, Globe, Scale, ArrowRight } from "lucide-react";
+import { ArrowRight, Clock, Globe, Scale } from "lucide-react";
+import Link from "next/link";
+
+import { cn, outcomeColor, outcomeLabel } from "@/lib/utils";
 
 interface CaseCardProps {
   item: CaseListItem;
   showLink?: boolean;
 }
 
-export function CaseCard({ item, showLink = true }: CaseCardProps) {
+export const CaseCard = ({ item, showLink = true }: CaseCardProps) => {
   const caseTypeLabel =
     CASE_TYPES.find((t) => t.value === item.caseType)?.label ?? item.caseType;
 
@@ -60,4 +61,4 @@ export function CaseCard({ item, showLink = true }: CaseCardProps) {
   }
 
   return card;
-}
+};

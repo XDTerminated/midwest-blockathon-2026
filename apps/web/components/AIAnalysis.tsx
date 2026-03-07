@@ -1,20 +1,21 @@
 "use client";
 
+import type { SearchResult } from "@immivault/shared";
+import { Volume2, Square } from "lucide-react";
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { Volume2, Square } from "lucide-react";
-import type { SearchResult } from "@immivault/shared";
+
 import { CitedCase } from "@/components/CitedCase";
 
 interface AIAnalysisProps {
   result: SearchResult;
 }
 
-export function AIAnalysis({ result }: AIAnalysisProps) {
+export const AIAnalysis = ({ result }: AIAnalysisProps) => {
   const [speaking, setSpeaking] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  function toggleSpeak() {
+  const toggleSpeak = () => {
     if (speaking) {
       window.speechSynthesis.cancel();
       setSpeaking(false);
@@ -24,8 +25,8 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
     const text = result.analysis.replace(/\[Case CID: [^\]]+\]/g, "");
     const utterance = new SpeechSynthesisUtterance(text);
 
-    // Try to auto-detect language from the text for proper pronunciation
-    // The browser will use the appropriate voice if available
+    // Try to auto-detect language from the text for proper pronunciation.
+    // The browser will use the appropriate voice if available.
     utterance.rate = 0.9;
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
@@ -33,7 +34,7 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
     setSpeaking(true);
-  }
+  };
 
   return (
     <div className="bg-[#161A24] rounded-[14px] border border-[#2E323A] p-5">
@@ -54,7 +55,7 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
         </button>
       </div>
 
-      {/* AI Analysis — markdown rendered */}
+      {/* AI analysis — markdown rendered */}
       <div className="text-base text-[#c0c2d0] leading-loose space-y-4">
         <ReactMarkdown
           components={{
@@ -94,13 +95,13 @@ export function AIAnalysis({ result }: AIAnalysisProps) {
 
     </div>
   );
-}
+};
 
-// Replace [Case CID: <cid>] patterns with CitedCase badges
-function processCitations(
+// Replace [Case CID: <cid>] patterns with CitedCase badges.
+const processCitations = (
   content: React.ReactNode,
   citedCases: SearchResult["citedCases"]
-): React.ReactNode {
+): React.ReactNode => {
   if (typeof content !== "string") return content;
 
   const cidPattern = /\[Case CID: ([^\]]+)\]/g;
@@ -127,4 +128,4 @@ function processCitations(
   }
 
   return parts.length > 0 ? parts : content;
-}
+};

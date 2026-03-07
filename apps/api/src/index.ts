@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-// Prevent Pinata SDK internal promise rejections from crashing the server
+// Prevent Pinata SDK internal promise rejections from crashing the server.
 process.on("unhandledRejection", (reason) => {
   console.error("Unhandled rejection (non-fatal):", reason);
 });
@@ -9,12 +9,13 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { searchRoutes } from "./routes/search";
+
+import { auth } from "./lib/auth";
 import { caseRoutes } from "./routes/cases";
+import { searchRoutes } from "./routes/search";
+import { shareRoutes } from "./routes/share";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
-import { shareRoutes } from "./routes/share";
-import { auth } from "./lib/auth";
 
 const app = new Hono();
 
@@ -32,7 +33,7 @@ app.use(
 );
 app.use("*", logger());
 
-// Global error handler — prevents uncaught Pinata/Anthropic errors from crashing
+// Global error handler — prevents uncaught Pinata/Anthropic errors from crashing.
 app.onError((err, c) => {
   console.error("API error:", err.message);
   return c.json({ error: "Internal server error", message: err.message }, 500);
@@ -40,7 +41,7 @@ app.onError((err, c) => {
 
 app.get("/health", (c) => c.json({ ok: true, service: "immivault-api" }));
 
-// BetterAuth handler — mount on /api/auth/*
+// BetterAuth handler — mount on /api/auth/*.
 app.all("/api/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
@@ -55,3 +56,4 @@ const port = Number(process.env.PORT ?? 3001);
 console.log(`ImmiVault API running on http://localhost:${port}`);
 
 serve({ fetch: app.fetch, port });
+

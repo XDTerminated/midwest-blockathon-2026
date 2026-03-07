@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowUp, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export function LandingSearchBar() {
+export const LandingSearchBar = () => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
     setLoading(true);
     router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
@@ -44,4 +44,4 @@ export function LandingSearchBar() {
       </div>
     </form>
   );
-}
+};

@@ -1,9 +1,10 @@
 "use client";
 
-import type { FormData } from "./index";
 import { COMMON_DOCUMENTS } from "@immivault/shared";
-import { useState } from "react";
 import { X } from "lucide-react";
+import { useState } from "react";
+
+import type { FormData } from "./index";
 
 interface Props {
   data: FormData;
@@ -17,29 +18,29 @@ const inputClass =
 
 const labelClass = "block text-sm font-medium text-[#8a8ea0] mb-1";
 
-export function Step3Details({ data, onChange, onNext, onBack }: Props) {
+export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
   const [customDoc, setCustomDoc] = useState("");
   const documents = data.documentsUsed ?? [];
 
-  function toggleDocument(doc: string) {
+  const toggleDocument = (doc: string) => {
     if (documents.includes(doc)) {
       onChange({ documentsUsed: documents.filter((d) => d !== doc) });
     } else {
       onChange({ documentsUsed: [...documents, doc] });
     }
-  }
+  };
 
-  function addCustomDoc() {
+  const addCustomDoc = () => {
     if (customDoc.trim() && !documents.includes(customDoc.trim())) {
       onChange({ documentsUsed: [...documents, customDoc.trim()] });
       setCustomDoc("");
     }
-  }
+  };
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -167,4 +168,4 @@ export function Step3Details({ data, onChange, onNext, onBack }: Props) {
       </div>
     </form>
   );
-}
+};

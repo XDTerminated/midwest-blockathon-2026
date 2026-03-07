@@ -1,13 +1,14 @@
-import { verifyCase } from "@/lib/api";
-import { AppLayout } from "@/components/layout/AppLayout";
 import { Shield, CheckCircle, XCircle, Clock, Key } from "lucide-react";
+
+import { AppLayout } from "@/components/layout/AppLayout";
+import { verifyCase } from "@/lib/api";
 import { formatCID } from "@/lib/utils";
 
 interface VerifyPageProps {
   params: Promise<{ cid: string }>;
 }
 
-export default async function VerifyPage({ params }: VerifyPageProps) {
+const VerifyPage = async ({ params }: VerifyPageProps) => {
   const { cid } = await params;
 
   let result = null;
@@ -125,4 +126,6 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
       </div>
     </AppLayout>
   );
-}
+};
+
+export default VerifyPage;

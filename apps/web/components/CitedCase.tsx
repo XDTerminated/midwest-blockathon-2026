@@ -1,14 +1,15 @@
-import Link from "next/link";
 import type { CitedCaseRef } from "@immivault/shared";
 import { CASE_TYPES } from "@immivault/shared";
-import { outcomeColor, outcomeLabel, formatCID, cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+
+import { cn, formatCID, outcomeColor, outcomeLabel } from "@/lib/utils";
 
 interface CitedCaseProps {
   ref_: CitedCaseRef;
 }
 
-export function CitedCase({ ref_ }: CitedCaseProps) {
+export const CitedCase = ({ ref_ }: CitedCaseProps) => {
   const typeLabel = CASE_TYPES.find((t) => t.value === ref_.type)?.label ?? ref_.type;
 
   return (
@@ -25,4 +26,4 @@ export function CitedCase({ ref_ }: CitedCaseProps) {
       <ExternalLink className="w-3 h-3 text-[#2E323A]" />
     </Link>
   );
-}
+};

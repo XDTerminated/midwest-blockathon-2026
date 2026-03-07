@@ -1,10 +1,10 @@
 "use client";
 
+import { Lock, Wallet, Loader2, CheckCircle } from "lucide-react";
 import { useState } from "react";
+import { parseUnits } from "viem";
 import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { parseUnits } from "viem";
-import { Lock, Wallet, Loader2, CheckCircle } from "lucide-react";
 
 interface PaymentGateProps {
   cid: string;
@@ -13,7 +13,7 @@ interface PaymentGateProps {
 
 type State = "idle" | "connecting" | "ready" | "paying" | "success" | "error";
 
-export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
+export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +21,7 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
   const { connect } = useConnect();
   const { sendTransaction } = useSendTransaction();
 
-  async function handleConnect() {
+  const handleConnect = async () => {
     setState("connecting");
     try {
       connect({ connector: injected() });
@@ -30,9 +30,9 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
       setState("error");
       setError("Failed to connect wallet. Please try again.");
     }
-  }
+  };
 
-  async function handlePay() {
+  const handlePay = async () => {
     if (!isConnected || !address) {
       handleConnect();
       return;
@@ -44,9 +44,9 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
     try {
       sendTransaction(
         {
-          to: "0x000000000000000000000000000000000000dead", // demo recipient
-          value: parseUnits("0.0001", 18), // symbolic payment
-          chainId: 8453, // Base mainnet
+          to: "0x000000000000000000000000000000000000dead", // Demo recipient.
+          value: parseUnits("0.0001", 18), // Symbolic payment.
+          chainId: 8453, // Base mainnet.
         },
         {
           onSuccess: (hash) => {
@@ -54,7 +54,7 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
             onPaymentSuccess(hash);
           },
           onError: (err) => {
-            // For demo: allow proceeding with a mock proof if tx fails
+            // For demo: allow proceeding with a mock proof if tx fails.
             console.warn("Transaction failed (demo mode):", err);
             const mockProof = `demo-${Date.now()}-${cid.slice(0, 8)}`;
             setState("success");
@@ -63,12 +63,12 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
         }
       );
     } catch {
-      // Demo fallback: generate a mock proof
+      // Demo fallback: generate a mock proof.
       const mockProof = `demo-${Date.now()}-${cid.slice(0, 8)}`;
       setState("success");
       onPaymentSuccess(mockProof);
     }
-  }
+  };
 
   if (state === "success") {
     return (
@@ -145,4 +145,4 @@ export function PaymentGate({ cid, onPaymentSuccess }: PaymentGateProps) {
       </p>
     </div>
   );
-}
+};

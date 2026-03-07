@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { AlertTriangle, X } from "lucide-react";
 import { LEGAL_DISCLAIMER } from "@immivault/shared";
+import { AlertTriangle, X } from "lucide-react";
+import { useState, useEffect } from "react";
+
 import { cn } from "@/lib/utils";
 
 type Mode = "banner" | "inline" | "card";
@@ -12,7 +13,7 @@ interface DisclaimerProps {
   className?: string;
 }
 
-export function Disclaimer({ mode = "inline", className }: DisclaimerProps) {
+export const Disclaimer = ({ mode = "inline", className }: DisclaimerProps) => {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -58,11 +59,11 @@ export function Disclaimer({ mode = "inline", className }: DisclaimerProps) {
     );
   }
 
-  // inline (default)
+  // Inline (default).
   return (
     <div className={cn("flex items-start gap-2 text-xs text-[#2E323A] bg-[#161A24] border border-[#2E323A] rounded px-3 py-2", className)}>
       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#C9A54E]" />
       <span>{LEGAL_DISCLAIMER}</span>
     </div>
   );
-}
+};
