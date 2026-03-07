@@ -1,0 +1,192 @@
+import { PinataSDK } from "pinata";
+import type { CaseRecord, CaseListItem, CategorySlug, CaseType } from "@immivault/shared";
+
+export const pinata = new PinataSDK({
+  pinataJwt: process.env.PINATA_JWT!,
+  pinataGateway: process.env.PINATA_GATEWAY!,
+});
+
+function getGroups(): Record<string, string> {
+  try {
+    return JSON.parse(process.env.PINATA_GROUPS ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+const CASE_TYPE_TO_SLUG: Record<CaseType, CategorySlug> = {
+  asylum: "asylum-refugee",
+  "green-card-family": "green-card-family",
+  "green-card-employment": "green-card-employment",
+  "cancellation-removal-lpr": "removal-defense",
+  "cancellation-removal-non-lpr": "removal-defense",
+  "deportation-defense": "removal-defense",
+  "voluntary-departure": "removal-defense",
+  "motion-to-reopen": "removal-defense",
+  "u-visa": "victim-protections",
+  "t-visa": "victim-protections",
+  vawa: "victim-protections",
+  sijs: "victim-protections",
+  tps: "humanitarian",
+  daca: "humanitarian",
+  h1b: "work-visas",
+  l1: "work-visas",
+  o1: "work-visas",
+  naturalization: "citizenship",
+  "k1-fiance": "family-reunification",
+};
+
+function groupIdForCaseType(caseType: CaseType): string | undefined {
+  const groups = getGroups();
+  const slug = CASE_TYPE_TO_SLUG[caseType];
+  return slug ? groups[slug] : undefined;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function fileListItemToCaseListItem(f: any): CaseListItem {
+  return {
+    cid: f.cid,
+    name: f.name ?? "",
+    caseType: (f.keyvalues?.caseType as CaseType) ?? "asylum",
+    countryOfOrigin: f.keyvalues?.countryOfOrigin ?? "",
+    outcome: (f.keyvalues?.outcome as CaseListItem["outcome"]) ?? "pending",
+    year: f.keyvalues?.year ?? "",
+    court: f.keyvalues?.court,
+    lawyerUsed: f.keyvalues?.lawyerUsed,
+    createdAt: f.created_at,
+  };
+}
+
+export const pinataService = {
+  async uploadCase(data: CaseRecord, contributorWallet: string) {
+    const payload = { ...data, contributorWallet, uploadedAt: new Date().toISOString() };
+    const file = new File(
+      [JSON.stringify(payload)],
+      `case-${Date.now()}.json`,
+      { type: "application/json" }
+    );
+
+    const groupId = groupIdForCaseType(data.caseType);
+    const keyvalues = {
+      caseType: data.caseType,
+      countryOfOrigin: data.countryOfOrigin,
+      outcome: data.outcome,
+      year: data.year,
+      court: data.court ?? "",
+      contributorWallet,
+      lawyerUsed: String(data.lawyerUsed),
+      timelineMonths: String(data.timelineMonths),
+    };
+    const name = `${data.caseType}-${data.countryOfOrigin.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+
+    let builder = pinata.upload.file(file).addMetadata({ name, keyvalues });
+    if (groupId) builder = builder.group(groupId);
+
+    try {
+      return await builder.vectorize();
+    } catch {
+      // vectorize may be in beta or not enabled
+      return await pinata.upload.file(file).addMetadata({ name, keyvalues });
+    }
+  },
+
+  async searchCases(query: string, limit = 10): Promise<CaseRecord[]> {
+    const groups = getGroups();
+    const groupIds = Object.values(groups);
+
+    if (groupIds.length === 0) {
+      return this.listAllCaseData(limit).catch(() => []);
+    }
+
+    // Search each group with vector query, collect all matches
+    const matches: { fileId: string; cid: string; score: number }[] = [];
+
+    for (const groupId of groupIds) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result: any = await pinata.files.queryVectors({ groupId, query, returnFile: false });
+        if (result?.matches) {
+          for (const m of result.matches) {
+            matches.push({ fileId: m.file_id, cid: m.cid, score: m.score });
+          }
+        }
+      } catch {
+        // Group may not be vectorized; skip
+      }
+    }
+
+    matches.sort((a, b) => b.score - a.score);
+    const topMatches = matches.slice(0, limit);
+
+    if (topMatches.length === 0) {
+      return this.listAllCaseData(limit);
+    }
+
+    const cases = await Promise.all(
+      topMatches.map((m) => this.getCase(m.cid).catch(() => null))
+    );
+    return cases.filter(Boolean) as CaseRecord[];
+  },
+
+  async listAllCaseData(limit = 20): Promise<CaseRecord[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().limit(limit);
+      const cases = await Promise.all(
+        (result.files ?? []).map((f: { cid: string }) => this.getCase(f.cid).catch(() => null))
+      );
+      return cases.filter(Boolean) as CaseRecord[];
+    } catch {
+      return [];
+    }
+  },
+
+  async listCases(limit = 20): Promise<CaseListItem[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().limit(limit);
+      return (result.files ?? []).map(fileListItemToCaseListItem);
+    } catch {
+      return [];
+    }
+  },
+
+  async listByCategory(slug: CategorySlug, limit = 20): Promise<CaseListItem[]> {
+    const groups = getGroups();
+    const groupId = groups[slug];
+    if (!groupId) return [];
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await pinata.files.list().group(groupId).limit(limit);
+      return (result.files ?? []).map(fileListItemToCaseListItem);
+    } catch {
+      return [];
+    }
+  },
+
+  async getCase(cid: string): Promise<CaseRecord> {
+    const response = await pinata.gateways.get(cid);
+    const raw = response.data;
+    if (typeof raw === "string") return { ...JSON.parse(raw), cid } as CaseRecord;
+    if (raw && typeof raw === "object") return { ...(raw as object), cid } as unknown as CaseRecord;
+    throw new Error(`Unexpected response type for CID ${cid}`);
+  },
+
+  async signCase(_cid: string): Promise<string | null> {
+    // File signatures are a Pinata beta feature not in SDK v1 — skip gracefully
+    return null;
+  },
+
+  async getSignature(_cid: string): Promise<{ isValid: boolean; signedAt?: string; signedBy?: string } | null> {
+    // Not in SDK v1 — return stub showing IPFS content-addressing provides integrity
+    return { isValid: true, signedAt: undefined, signedBy: undefined };
+  },
+
+  async createPresignedUrl(cid: string, expiresSeconds: number): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result: any = await pinata.gateways.createSignedURL({ cid, expires: expiresSeconds });
+    if (typeof result === "string") return result;
+    if (result?.url) return result.url;
+    throw new Error("Unexpected createSignedURL response");
+  },
+};

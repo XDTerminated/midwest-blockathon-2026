@@ -1,0 +1,133 @@
+"use client";
+
+import { useState } from "react";
+import type { FormData } from "./index";
+import { uploadCase } from "@/lib/api";
+import { CASE_TYPES, OUTCOMES } from "@immivault/shared";
+import { Loader2, CheckCircle } from "lucide-react";
+import { Disclaimer } from "@/components/Disclaimer";
+
+interface Props {
+  data: FormData;
+  onBack: () => void;
+  onSubmitted: (cid: string) => void;
+}
+
+export function Step5Review({ data, onBack, onSubmitted }: Props) {
+  const [consent, setConsent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const caseTypeLabel = CASE_TYPES.find((t) => t.value === data.caseType)?.label ?? data.caseType;
+  const outcomeLabel = OUTCOMES.find((o) => o.value === data.outcome)?.label ?? data.outcome;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!consent) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await uploadCase({
+        ...data,
+        documentsUsed: data.documentsUsed ?? [],
+        formsUsed: data.formsUsed ?? [],
+        lawyerUsed: data.lawyerUsed ?? false,
+        contributorWallet: data.contributorWallet ?? "",
+      });
+      onSubmitted(result.cid);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <h2 className="text-xl font-semibold text-[#e8e8f0]">Review & Submit</h2>
+      <p className="text-[#2E323A] text-sm">
+        Please review your case before submitting. PII will be automatically redacted.
+      </p>
+
+      {/* Review summary */}
+      <div className="bg-[#161A24] rounded-lg border border-[#2E323A] divide-y divide-[#2E323A]">
+        {[
+          { label: "Case Type", value: caseTypeLabel },
+          { label: "Country", value: data.countryOfOrigin },
+          { label: "Outcome", value: outcomeLabel },
+          { label: "Year", value: data.year },
+          { label: "Court/Office", value: data.court || "Not specified" },
+          { label: "Had Attorney", value: data.lawyerUsed ? "Yes" : "No" },
+          { label: "Timeline", value: data.timelineMonths ? `${data.timelineMonths} months` : "—" },
+          { label: "Documents", value: data.documentsUsed?.join(", ") || "None selected" },
+          {
+            label: "Earnings Wallet",
+            value: data.contributorWallet
+              ? `${data.contributorWallet.slice(0, 6)}...${data.contributorWallet.slice(-4)}`
+              : "Anonymous (no earnings)",
+          },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex gap-3 px-4 py-3 text-sm">
+            <span className="text-[#2E323A] w-32 shrink-0">{label}</span>
+            <span className="text-[#e8e8f0] font-medium">{value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Narrative preview */}
+      <div>
+        <p className="text-sm font-medium text-[#8a8ea0] mb-1">Narrative Preview</p>
+        <div className="bg-[#0C0F18] border border-[#2E323A] rounded-lg p-3 text-sm text-[#8a8ea0] max-h-32 overflow-y-auto">
+          {data.narrative ?? "—"}
+        </div>
+      </div>
+
+      <Disclaimer mode="card" />
+
+      {error && (
+        <div className="bg-[#2a1010] border border-[#3a2020] text-red-400 text-sm rounded-lg px-4 py-3">
+          {error}
+        </div>
+      )}
+
+      {/* Consent */}
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className="mt-0.5 accent-[#C9A54E]"
+        />
+        <span className="text-sm text-[#8a8ea0]">
+          I confirm that this case is anonymized and does not contain personally identifiable
+          information. I consent to this anonymized case being searchable by others on ImmiVault.
+          I understand that contributors earn USDC micropayments when their cases help others.
+        </span>
+      </label>
+
+      <div className="flex justify-between pt-2">
+        <button type="button" onClick={onBack} className="text-[#2E323A] hover:text-[#e8e8f0] text-sm px-4 py-2 transition" disabled={loading}>
+          ← Back
+        </button>
+        <button
+          type="submit"
+          disabled={!consent || loading}
+          className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <CheckCircle className="w-4 h-4" />
+              Submit Case
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}

@@ -1,0 +1,6 @@
+CLAUDE.md
+node_modules
+apps/api/.env
+apps/web/.env.local
+.env
+apps/api/data/
