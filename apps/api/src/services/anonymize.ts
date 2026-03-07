@@ -25,7 +25,7 @@ const PII_PATTERNS: { pattern: RegExp; replacement: string }[] = [
   { pattern: /\b(case|file|receipt)\s*#?\s*\d{10,}\b/gi, replacement: "[FILE NUMBER REDACTED]" },
 ];
 
-// Returns redacted text + whether PII was detected
+// Returns redacted text + whether PII was detected.
 const stripPII = (text: string): { redacted: string; hadPII: boolean } => {
   let redacted = text;
   let hadPII = false;
@@ -39,12 +39,4 @@ const stripPII = (text: string): { redacted: string; hadPII: boolean } => {
   return { redacted, hadPII };
 };
 
-// Checks if text contains likely PII (for frontend warning).
-const detectPII = (text: string): boolean => {
-  return PII_PATTERNS.some(({ pattern }) => {
-    pattern.lastIndex = 0; // reset for global patterns
-    return pattern.test(text);
-  });
-};
-
-export { stripPII, detectPII };
+export { stripPII };

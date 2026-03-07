@@ -4,10 +4,11 @@ import type { SearchResult } from "@immivault/shared";
 import { Volume2, Square, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+
 import { CitedCase } from "@/components/CitedCase";
 import { textToSpeech } from "@/lib/api";
 
-// Simple language detection based on Unicode ranges and common words
+// Simple language detection based on Unicode ranges and common words.
 const detectLang = (text: string): string => {
   if (/[\u4e00-\u9fff]/.test(text)) return "zh";
   if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return "ja";
@@ -107,7 +108,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
         </button>
       </div>
 
-      {/* AI analysis — markdown rendered */}
+      {/* AI analysis — markdown rendered. */}
       <div className="text-base text-[#c0c2d0] leading-loose space-y-4">
         <ReactMarkdown
           components={{
@@ -131,7 +132,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
         </ReactMarkdown>
       </div>
 
-      {/* Cited cases */}
+      {/* Cited cases. */}
       {result.citedCases.length > 0 && (
         <div className="mt-4 pt-4 border-t border-[#363C4A]">
           <p className="text-xs text-[#6B7280] uppercase tracking-wide mb-2">

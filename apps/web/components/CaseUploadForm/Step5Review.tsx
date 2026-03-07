@@ -51,7 +51,7 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
         Please review your case before submitting. PII will be automatically redacted.
       </p>
 
-      {/* Review summary */}
+      {/* Review summary. */}
       <div className="bg-[#1C2030] rounded-lg border border-[#363C4A] divide-y divide-[#363C4A]">
         {[
           { label: "Case Type", value: caseTypeLabel },
@@ -76,7 +76,7 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
         ))}
       </div>
 
-      {/* Narrative preview */}
+      {/* Narrative preview. */}
       <div>
         <p className="text-sm font-medium text-[#9CA3AF] mb-1">Narrative Preview</p>
         <div className="bg-[#121620] border border-[#363C4A] rounded-lg p-3 text-sm text-[#9CA3AF] max-h-32 overflow-y-auto">
@@ -92,7 +92,7 @@ export const Step5Review = ({ data, onBack, onSubmitted }: Props) => {
         </div>
       )}
 
-      {/* Consent */}
+      {/* Consent. */}
       <label className="flex items-start gap-3 cursor-pointer">
         <input
           type="checkbox"

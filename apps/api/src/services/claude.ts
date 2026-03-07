@@ -3,10 +3,9 @@ import OpenAI from "openai";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
-import type { CaseRecord, CitedCaseRef, SearchResult } from "@immivault/shared";
-import { LEGAL_DISCLAIMER } from "@immivault/shared";
+import { LEGAL_DISCLAIMER, type CaseRecord, type CitedCaseRef, type SearchResult } from "@immivault/shared";
 
-// Ensure env vars are loaded before using GROQ_API_KEY
+// Ensure env vars are loaded before using GROQ_API_KEY.
 if (!process.env.GROQ_API_KEY) {
   const __dirname = dirname(fileURLToPath(import.meta.url));
   config({ path: resolve(__dirname, "../../../../.env") });
@@ -86,10 +85,10 @@ ${caseContext}
 
 MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
 
-    // Build messages: system + prior conversation + new user message with case context
+    // Build messages: system + prior conversation + new user message with case context.
     const messages: { role: "system" | "user" | "assistant"; content: string }[] = [
       { role: "system", content: SYSTEM_PROMPT },
-      ...history.slice(-10), // keep last 10 messages for context
+      ...history.slice(-10), // Keep last 10 messages for context.
       { role: "user", content: userMessage },
     ];
 
@@ -100,10 +99,10 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
 
     let analysis = completion.choices[0]?.message?.content ?? "";
 
-    // Collect valid CIDs from the cases we actually provided
+    // Collect valid CIDs from the cases we actually provided.
     const validCids = new Set(cases.map((c) => c.cid).filter(Boolean));
 
-    // Strip any [Case CID: ...] references that don't match real cases
+    // Strip any [Case CID: ...] references that don't match real cases.
     analysis = analysis.replace(/\[Case CID:\s*([^\]]+)\]/g, (match, cid) => {
       const trimmed = cid.trim();
       return validCids.has(trimmed) ? match : "";

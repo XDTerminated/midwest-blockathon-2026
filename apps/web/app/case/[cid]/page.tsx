@@ -58,7 +58,7 @@ const CasePage = ({ params }: CasePageProps) => {
       const result = await presignCase(cid, 1440);
       setShareUrl(result.url);
     } catch {
-      // ignore
+      // Ignore.
     } finally {
       setSharing(false);
     }
@@ -122,7 +122,7 @@ const CasePage = ({ params }: CasePageProps) => {
   return (
     <AppLayout>
       <div className="max-w-3xl mx-auto px-6 py-8">
-        {/* Header */}
+        {/* Header. */}
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <span className="text-xs font-semibold text-[#D4AD5A] uppercase tracking-wide">
@@ -139,7 +139,7 @@ const CasePage = ({ params }: CasePageProps) => {
           )}
         </div>
 
-        {/* Meta — only for structured cases */}
+        {/* Meta — only for structured cases. */}
         {isStructuredCase && (
           <div className="flex flex-wrap gap-4 text-sm text-[#6B7280] mb-6 pb-6 border-b border-[#363C4A]">
             {caseData.countryOfOrigin && <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />{caseData.countryOfOrigin}</span>}
@@ -156,7 +156,7 @@ const CasePage = ({ params }: CasePageProps) => {
 
         <Disclaimer mode="card" className="mb-6" />
 
-        {/* Narrative */}
+        {/* Narrative. */}
         {caseData.narrative && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Case Narrative</h2>
@@ -166,7 +166,7 @@ const CasePage = ({ params }: CasePageProps) => {
           </section>
         )}
 
-        {/* Key Factors */}
+        {/* Key Factors. */}
         {caseData.keyFactors && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Key Factors</h2>
@@ -176,7 +176,7 @@ const CasePage = ({ params }: CasePageProps) => {
           </section>
         )}
 
-        {/* Lessons Learned */}
+        {/* Lessons Learned. */}
         {caseData.lessonsLearned && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Lessons Learned</h2>
@@ -186,7 +186,7 @@ const CasePage = ({ params }: CasePageProps) => {
           </section>
         )}
 
-        {/* Documents Used */}
+        {/* Documents Used. */}
         {caseData.documentsUsed?.length > 0 && (
           <section className="mb-6">
             <h2 className="text-base font-semibold text-[#e8e8f0] mb-3">Documents & Forms Used</h2>
@@ -200,7 +200,7 @@ const CasePage = ({ params }: CasePageProps) => {
           </section>
         )}
 
-        {/* CID + Share */}
+        {/* CID + Share. */}
         <div className="bg-[#1C2030] border border-[#363C4A] rounded-lg p-4 mt-8">
           <div className="flex items-center justify-between gap-4 mb-3">
             <div>
@@ -218,7 +218,7 @@ const CasePage = ({ params }: CasePageProps) => {
             </Link>
           </div>
 
-          {/* Attorney share */}
+          {/* Attorney share. */}
           <div className="border-t border-[#363C4A] pt-3">
             <p className="text-xs text-[#6B7280] mb-2">Share with your attorney (link expires in 24 hours)</p>
             {shareUrl ? (

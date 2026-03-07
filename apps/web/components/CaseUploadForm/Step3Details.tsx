@@ -49,7 +49,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
         Help others by sharing what documents you used and what made a difference.
       </p>
 
-      {/* Documents */}
+      {/* Documents. */}
       <div>
         <label className={labelClass}>
           Documents Used <span className="text-[#D4AD5A]">*</span>
@@ -70,7 +70,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
             </button>
           ))}
         </div>
-        {/* Custom document input */}
+        {/* Custom document input. */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -105,7 +105,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
         )}
       </div>
 
-      {/* Timeline */}
+      {/* Timeline. */}
       <div>
         <label className={labelClass}>
           Timeline (months from filing to decision) <span className="text-[#D4AD5A]">*</span>
@@ -122,7 +122,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
         />
       </div>
 
-      {/* Key Factors */}
+      {/* Key Factors. */}
       <div>
         <label className={labelClass}>
           Key Factors <span className="text-[#D4AD5A]">*</span>
@@ -138,7 +138,7 @@ export const Step3Details = ({ data, onChange, onNext, onBack }: Props) => {
         />
       </div>
 
-      {/* Lessons Learned */}
+      {/* Lessons Learned. */}
       <div>
         <label className={labelClass}>
           Lessons Learned <span className="text-[#D4AD5A]">*</span>

@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#121620] flex flex-col">
-      {/* Top-right nav */}
+      {/* Top-right nav. */}
       <div className="fixed top-6 right-6 z-10 flex items-center gap-3">
         {session?.user ? (
           <>
@@ -48,7 +48,7 @@ const Home = () => {
         </Link>
       </div>
 
-      {/* Hero */}
+      {/* Hero. */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
         <h1 className="text-5xl sm:text-6xl font-bold text-center leading-tight mb-6 max-w-2xl text-white">
           Find Cases Like{" "}

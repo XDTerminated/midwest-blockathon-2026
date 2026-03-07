@@ -1,21 +1,16 @@
 "use client";
 
-import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut } from "lucide-react";
+import { MessageSquarePlus, MessageSquare, Upload, Wallet, PanelLeftClose, PanelLeftOpen, LogIn, UserPlus, LogOut, LayoutDashboard, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 import { useSession, signOut } from "@/lib/auth-client";
-import { formatCID, cn } from "@/lib/utils";
-
-const navItems = [
-  { icon: MessageSquarePlus, label: "New Chat", href: "/search" },
-  { icon: MessageSquare, label: "Chats", href: "/search" },
-  { icon: Upload, label: "Upload a File", href: "/upload" },
-  { icon: Wallet, label: "Wallet", href: "#wallet" },
-];
+import { cn, formatCID } from "@/lib/utils";
+import { listChatSessions, deleteChatSession } from "@/lib/api";
+import type { ChatSession } from "@/lib/api";
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(() => {
@@ -25,7 +20,10 @@ export const Sidebar = () => {
     return false;
   });
   const [mounted, setMounted] = useState(false);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeSessionId = searchParams.get("session");
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -40,6 +38,33 @@ export const Sidebar = () => {
   // CSS-only tooltip: the "group" class on the wrapper triggers "group-hover:opacity-100" on the tooltip span
   const tooltipClass = "absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg bg-[#1C2030] border border-[#363C4A] text-[12px] text-[#e8e8f0] whitespace-nowrap z-50 pointer-events-none shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150";
 
+  const loadSessions = useCallback(async () => {
+    if (!session?.user) return;
+    try {
+      const { sessions } = await listChatSessions();
+      setChatSessions(sessions);
+    } catch {
+      // Non-fatal.
+    }
+  }, [session?.user]);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions, pathname, activeSessionId]);
+
+  const handleDeleteSession = async (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await deleteChatSession(id);
+      setChatSessions((prev) => prev.filter((s) => s.id !== id));
+    } catch {
+      // Non-fatal.
+    }
+  };
+
+  const isWalletActive = isConnected && address;
+
   return (
     <aside
       className={cn(
@@ -48,7 +73,7 @@ export const Sidebar = () => {
         collapsed ? "w-[68px] px-3" : "w-[260px] px-5"
       )}
     >
-      {/* Top row: collapse toggle */}
+      {/* Top row: collapse toggle. */}
       <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-end")}>
         <div className="relative group">
           <button
@@ -61,59 +86,113 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex flex-col gap-1 flex-1">
-        {navItems.map(({ icon: Icon, label, href }) => {
-          const isWallet = label === "Wallet";
-          const active =
-            href === "/upload"
-              ? pathname === "/upload"
-              : href === "/search" && label === "New Chat"
-                ? pathname === "/search"
-                : false;
-
-          const itemClass = cn(
-            "flex items-center transition cursor-pointer rounded-lg px-3 py-2.5 w-full",
+      {/* Nav. */}
+      <nav className="flex flex-col gap-5 flex-1 overflow-hidden">
+        {/* New Chat */}
+        <Link
+          href="/search"
+          className={cn(
+            "flex items-center transition cursor-pointer",
             collapsed ? "justify-center" : "gap-3",
-            isWallet && isConnected && address
-              ? "text-[#D4AD5A] bg-[#D4AD5A]/10"
-              : active
-                ? "text-[#D4AD5A] bg-[#D4AD5A]/10"
-                : "text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030]"
-          );
+            pathname === "/search" && !activeSessionId
+              ? "text-[#D4AD5A]"
+              : "text-[#6B7280] hover:text-[#9CA3AF]"
+          )}
+          title={collapsed ? "New Chat" : undefined}
+        >
+          <MessageSquarePlus className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>New Chat</span>
+        </Link>
 
-          const tooltipLabel = isWallet && isConnected && address ? formatCID(address, 4) : label;
+        {/* Chats header */}
+        <div
+          className={cn(
+            "flex items-center",
+            collapsed ? "justify-center" : "gap-3",
+            "text-[#6B7280]"
+          )}
+        >
+          <MessageSquare className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Chats</span>
+        </div>
 
-          if (isWallet) {
-            const walletActive = isConnected && address;
-            return (
-              <div key={label} className="relative group">
+        {/* Chat session list */}
+        {!collapsed && chatSessions.length > 0 && (
+          <div className="flex flex-col gap-1 pl-8 overflow-y-auto max-h-[200px] -mt-2">
+            {chatSessions.map((cs) => (
+              <Link
+                key={cs.id}
+                href={`/search?session=${cs.id}`}
+                className={cn(
+                  "group flex items-center justify-between text-[12px] py-1.5 px-2 rounded-md transition truncate",
+                  activeSessionId === String(cs.id)
+                    ? "text-[#D4AD5A] bg-[#1C2030]"
+                    : "text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030]"
+                )}
+              >
+                <span className="truncate">{cs.title}</span>
                 <button
-                  onClick={() => walletActive ? disconnect() : connect({ connector: injected() })}
-                  className={itemClass}
+                  onClick={(e) => handleDeleteSession(cs.id, e)}
+                  className="opacity-0 group-hover:opacity-100 text-[#6B7280] hover:text-red-400 transition shrink-0 ml-1"
                 >
-                  <Icon className="w-5 h-5 shrink-0" />
-                  <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{walletActive ? formatCID(address, 4) : "Wallet"}</span>
+                  <Trash2 className="w-3 h-3" />
                 </button>
-                {collapsed && <span className={tooltipClass}>{tooltipLabel}</span>}
-              </div>
-            );
-          }
-
-          return (
-            <div key={label} className="relative group">
-              <Link href={href} className={itemClass}>
-                <Icon className="w-5 h-5 shrink-0" />
-                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{label}</span>
               </Link>
-              {collapsed && <span className={tooltipClass}>{label}</span>}
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        )}
+
+        {/* Upload */}
+        <Link
+          href="/upload"
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            pathname === "/upload"
+              ? "text-[#D4AD5A]"
+              : "text-[#6B7280] hover:text-[#9CA3AF]"
+          )}
+          title={collapsed ? "Upload a File" : undefined}
+        >
+          <Upload className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Upload a File</span>
+        </Link>
+
+        {/* Dashboard */}
+        <Link
+          href="/dashboard"
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            pathname === "/dashboard"
+              ? "text-[#D4AD5A]"
+              : "text-[#6B7280] hover:text-[#9CA3AF]"
+          )}
+          title={collapsed ? "Dashboard" : undefined}
+        >
+          <LayoutDashboard className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
+        </Link>
+
+        {/* Wallet */}
+        <button
+          onClick={() => isWalletActive ? disconnect() : connect({ connector: injected() })}
+          className={cn(
+            "flex items-center transition cursor-pointer",
+            collapsed ? "justify-center" : "gap-3",
+            isWalletActive
+              ? "text-[#D4AD5A]"
+              : "text-[#6B7280] hover:text-[#9CA3AF]"
+          )}
+          title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}
+        >
+          <Wallet className="w-5 h-5 shrink-0" />
+          <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : "Wallet"}</span>
+        </button>
       </nav>
 
-      {/* Auth */}
-      <div className="flex flex-col gap-1 pt-4 border-t border-[#363C4A]">
+      {/* Auth. */}
+      <div className="flex flex-col gap-3 pt-4 border-t border-[#363C4A]">
         {session?.user ? (
           <>
             <div className="relative group">
