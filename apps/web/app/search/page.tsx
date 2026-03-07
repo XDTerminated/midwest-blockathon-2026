@@ -2,12 +2,13 @@
 
 import type { SearchResult } from "@immivault/shared";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
 import { CyclingPlaceholder } from "@/components/CyclingPlaceholder";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { TrustFeedback } from "@/components/TrustFeedback";
 import { addChatMessage, type ChatMessage, chatSearch, createChatSession, getChatMessages } from "@/lib/api";
 import { useLanguage } from "@/lib/i18n";
 
@@ -165,7 +166,16 @@ const SearchPage = () => {
                                 </div>
                             ) : (
                                 <div key={i} className="flex justify-start animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                                    <div className="max-w-[85%]">{msg.error ? <div className="bg-[#201518] border border-[#3a2020] text-red-400 rounded-[14px] px-5 py-4 text-base">{msg.error}</div> : msg.result ? <AIAnalysis result={msg.result} /> : null}</div>
+                                    <div className="max-w-[85%]">
+                                        {msg.error ? (
+                                            <div className="bg-[#201518] border border-[#3a2020] text-red-400 rounded-[14px] px-5 py-4 text-base">{msg.error}</div>
+                                        ) : msg.result ? (
+                                            <>
+                                                <AIAnalysis result={msg.result} />
+                                                <TrustFeedback citedCases={msg.result.citedCases} />
+                                            </>
+                                        ) : null}
+                                    </div>
                                 </div>
                             ),
                         )}
@@ -195,4 +205,10 @@ const SearchPage = () => {
     );
 };
 
-export default SearchPage;
+const SearchPageWrapper = () => (
+  <Suspense>
+    <SearchPage />
+  </Suspense>
+);
+
+export default SearchPageWrapper;

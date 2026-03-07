@@ -4,6 +4,7 @@ import type { CaseRecord } from "@immivault/shared";
 import { CheckCircle } from "lucide-react";
 import { useState } from "react";
 
+import { StakeStep } from "./StakeStep";
 import { Step1BasicInfo } from "./Step1BasicInfo";
 import { Step2Narrative } from "./Step2Narrative";
 import { Step3Details } from "./Step3Details";
@@ -24,6 +25,7 @@ export const CaseUploadForm = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [submitted, setSubmitted] = useState<{ cid: string } | null>(null);
+  const [pendingStake, setPendingStake] = useState<{ cid: string } | null>(null);
 
   const updateData = (data: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
@@ -36,6 +38,23 @@ export const CaseUploadForm = () => {
   const back = () => {
     setStep((s) => Math.max(s - 1, 0));
   };
+
+  if (pendingStake) {
+    return (
+      <StakeStep
+        cid={pendingStake.cid}
+        contributorWallet={formData.contributorWallet ?? ""}
+        onComplete={() => {
+          setSubmitted({ cid: pendingStake.cid });
+          setPendingStake(null);
+        }}
+        onSkip={() => {
+          setSubmitted({ cid: pendingStake.cid });
+          setPendingStake(null);
+        }}
+      />
+    );
+  }
 
   if (submitted) {
     return (
@@ -124,7 +143,7 @@ export const CaseUploadForm = () => {
         <Step5Review
           data={formData}
           onBack={back}
-          onSubmitted={(cid) => setSubmitted({ cid })}
+          onSubmitted={(cid) => setPendingStake({ cid })}
         />
       )}
     </div>

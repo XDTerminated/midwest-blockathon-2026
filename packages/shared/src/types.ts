@@ -116,3 +116,46 @@ export interface PaymentRequiredError {
   description: string;
   paymentInstructions: string;
 }
+
+// Escrow & Trust types
+export type EscrowStatus = "pending" | "released" | "slashed";
+export type TrustVoteType = "approve" | "flag";
+
+export interface EscrowInfo {
+  id: number;
+  cid: string;
+  cidHash: string;
+  contributorId: string;
+  contributorWallet: string;
+  stakeTxHash: string | null;
+  status: EscrowStatus;
+  approvalCount: number;
+  flagCount: number;
+  stakedAt: string;
+  releasedAt: string | null;
+}
+
+export interface TrustVoteSummary {
+  approvalCount: number;
+  flagCount: number;
+  userHasVoted: boolean;
+  userVoteType?: TrustVoteType;
+}
+
+export interface CreditInfo {
+  cid: string;
+  credits: number;
+  referenceCount: number;
+}
+
+export interface ContributorDashboardData {
+  escrows: EscrowInfo[];
+  credits: CreditInfo[];
+  totals: {
+    totalStaked: number;
+    totalReleased: number;
+    totalSlashed: number;
+    totalCredits: number;
+    totalReferences: number;
+  };
+}

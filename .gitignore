@@ -1,7 +1,9 @@
 CLAUDE.md
 node_modules
+dist
 apps/api/.env
 apps/web/.env.local
+packages/contracts/.env
 .env
 apps/api/data/
 .claude

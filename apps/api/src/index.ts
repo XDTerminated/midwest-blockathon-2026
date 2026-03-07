@@ -13,13 +13,16 @@ import { logger } from "hono/logger";
 import { auth } from "./lib/auth";
 import { caseRoutes } from "./routes/cases";
 import { chatRoutes } from "./routes/chat";
+import { creditRoutes } from "./routes/credits";
+import { escrowRoutes } from "./routes/escrow";
 import { fileRoutes } from "./routes/files";
 import { searchRoutes } from "./routes/search";
 import { shareRoutes } from "./routes/share";
-import { statsRoutes } from "./routes/stats";
+import { trustRoutes } from "./routes/trust";
 import { ttsRoutes } from "./routes/tts";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
+import { escrowService } from "./services/escrow";
 
 const app = new Hono();
 
@@ -57,8 +60,17 @@ app.route("/api/files", fileRoutes);
 app.route("/api/upload", uploadRoutes);
 app.route("/api/verify", verifyRoutes);
 app.route("/api/share", shareRoutes);
-app.route("/api/stats", statsRoutes);
 app.route("/api/tts", ttsRoutes);
+app.route("/api/escrow", escrowRoutes);
+app.route("/api/trust", trustRoutes);
+app.route("/api/credits", creditRoutes);
+
+// Auto-release pending escrows every 30 seconds.
+setInterval(() => {
+  escrowService.checkAutoRelease().catch((err) => {
+    console.error("Auto-release check error:", err);
+  });
+}, 30_000);
 
 const port = Number(process.env.PORT ?? 3001);
 console.log(`ImmiVault API running on http://localhost:${port}`);
