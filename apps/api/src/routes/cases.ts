@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-
 import type { CategorySlug } from "@immivault/shared";
+
 import { getUser } from "../lib/auth";
 import { pinataService } from "../services/pinata";
 

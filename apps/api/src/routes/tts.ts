@@ -1,37 +1,38 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
 import { z } from "zod";
+
 import { getUser } from "../lib/auth";
 
 export const ttsRoutes = new Hono();
 
-// Require auth
+// Require auth.
 ttsRoutes.use("*", async (c, next) => {
   const user = await getUser(c);
   if (!user) return c.json({ error: "Unauthorized" }, 401);
   await next();
 });
 
-// Language → ElevenLabs voice ID mapping
-// Using voices that sound natural for each language family
+// Language to ElevenLabs voice ID mapping.
+// Using voices that sound natural for each language family.
 const VOICE_MAP: Record<string, string> = {
-  en: "EXAVITQu4vr4xnSDxMaL",  // Sarah — clear English
-  es: "XrExE9yKIg1WjnnlVkGX",  // Matilda — warm, works great for Spanish
-  zh: "pFZP5JQG7iQjIQuC4Bku", // Lily — good for Mandarin
-  fr: "XrExE9yKIg1WjnnlVkGX",  // Matilda — French
-  pt: "XrExE9yKIg1WjnnlVkGX",  // Matilda — Portuguese
-  ar: "onwK4e9ZLuTAKqWW03F9", // Daniel — Arabic
-  hi: "pFZP5JQG7iQjIQuC4Bku", // Lily — Hindi
-  ko: "pFZP5JQG7iQjIQuC4Bku", // Lily — Korean
-  vi: "pFZP5JQG7iQjIQuC4Bku", // Lily — Vietnamese
-  ht: "XrExE9yKIg1WjnnlVkGX",  // Matilda — Haitian Creole
-  tl: "pFZP5JQG7iQjIQuC4Bku", // Lily — Tagalog
-  ru: "onwK4e9ZLuTAKqWW03F9", // Daniel — Russian
-  uk: "onwK4e9ZLuTAKqWW03F9", // Daniel — Ukrainian
-  ja: "pFZP5JQG7iQjIQuC4Bku", // Lily — Japanese
+  en: "EXAVITQu4vr4xnSDxMaL",  // Sarah — clear English.
+  es: "XrExE9yKIg1WjnnlVkGX",  // Matilda — warm, works great for Spanish.
+  zh: "pFZP5JQG7iQjIQuC4Bku", // Lily — good for Mandarin.
+  fr: "XrExE9yKIg1WjnnlVkGX",  // Matilda — French.
+  pt: "XrExE9yKIg1WjnnlVkGX",  // Matilda — Portuguese.
+  ar: "onwK4e9ZLuTAKqWW03F9", // Daniel — Arabic.
+  hi: "pFZP5JQG7iQjIQuC4Bku", // Lily — Hindi.
+  ko: "pFZP5JQG7iQjIQuC4Bku", // Lily — Korean.
+  vi: "pFZP5JQG7iQjIQuC4Bku", // Lily — Vietnamese.
+  ht: "XrExE9yKIg1WjnnlVkGX",  // Matilda — Haitian Creole.
+  tl: "pFZP5JQG7iQjIQuC4Bku", // Lily — Tagalog.
+  ru: "onwK4e9ZLuTAKqWW03F9", // Daniel — Russian.
+  uk: "onwK4e9ZLuTAKqWW03F9", // Daniel — Ukrainian.
+  ja: "pFZP5JQG7iQjIQuC4Bku", // Lily — Japanese.
 };
 
-const DEFAULT_VOICE = "EXAVITQu4vr4xnSDxMaL"; // Sarah
+const DEFAULT_VOICE = "EXAVITQu4vr4xnSDxMaL"; // Sarah.
 
 const ttsSchema = z.object({
   text: z.string().min(1).max(5000),

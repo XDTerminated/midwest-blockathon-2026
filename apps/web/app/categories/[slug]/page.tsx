@@ -3,10 +3,10 @@ import type { CategorySlug, CaseListItem } from "@immivault/shared";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { listCasesByCategory } from "@/lib/api";
 import { CaseCard } from "@/components/CaseCard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { SearchBar } from "@/components/SearchBar";
+import { listCasesByCategory } from "@/lib/api";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;

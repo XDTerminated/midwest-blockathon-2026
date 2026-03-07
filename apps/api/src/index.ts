@@ -12,6 +12,7 @@ import { logger } from "hono/logger";
 
 import { auth } from "./lib/auth";
 import { caseRoutes } from "./routes/cases";
+import { chatRoutes } from "./routes/chat";
 import { searchRoutes } from "./routes/search";
 import { shareRoutes } from "./routes/share";
 import { ttsRoutes } from "./routes/tts";
@@ -48,6 +49,7 @@ app.all("/api/auth/*", (c) => {
 });
 
 app.route("/api/search", searchRoutes);
+app.route("/api/chat", chatRoutes);
 app.route("/api/cases", caseRoutes);
 app.route("/api/upload", uploadRoutes);
 app.route("/api/verify", verifyRoutes);

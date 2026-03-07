@@ -1,4 +1,4 @@
-import type { CategorySlug, CaseType, Outcome } from "./types";
+import type { CaseType, CategorySlug, Outcome } from "./types";
 
 export const CASE_TYPES: { value: CaseType; label: string }[] = [
   { value: "asylum", label: "Asylum" },
@@ -92,24 +92,6 @@ export const CATEGORIES: {
     emoji: "❤️",
   },
 ];
-
-export const CATEGORY_TO_CASE_TYPES: Record<CategorySlug, CaseType[]> = {
-  "asylum-refugee": ["asylum"],
-  "green-card-family": ["green-card-family"],
-  "green-card-employment": ["green-card-employment"],
-  "removal-defense": [
-    "cancellation-removal-lpr",
-    "cancellation-removal-non-lpr",
-    "deportation-defense",
-    "voluntary-departure",
-    "motion-to-reopen",
-  ],
-  "victim-protections": ["u-visa", "t-visa", "vawa", "sijs"],
-  "humanitarian": ["tps", "daca"],
-  "work-visas": ["h1b", "l1", "o1"],
-  "citizenship": ["naturalization"],
-  "family-reunification": ["k1-fiance"],
-};
 
 export const COMMON_DOCUMENTS = [
   "I-589 (Asylum Application)",

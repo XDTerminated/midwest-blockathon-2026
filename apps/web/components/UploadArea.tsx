@@ -109,7 +109,7 @@ export const UploadArea = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* File upload drop zone */}
+      {/* File upload drop zone. */}
       <div
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
@@ -151,14 +151,14 @@ export const UploadArea = () => {
         </div>
       )}
 
-      {/* Divider */}
+      {/* Divider. */}
       <div className="flex items-center gap-4">
         <div className="flex-1 h-px bg-[#2E323A]" />
         <span className="text-xs text-[#8a8ea0]">or</span>
         <div className="flex-1 h-px bg-[#2E323A]" />
       </div>
 
-      {/* Create case manually */}
+      {/* Create case manually. */}
       <button
         onClick={() => setMode("form")}
         className="w-full flex items-center justify-center gap-3 bg-[#161A24] border border-[#2E323A] hover:border-[#C9A54E] rounded-[14px] py-5 transition group cursor-pointer"
@@ -172,7 +172,7 @@ export const UploadArea = () => {
         </div>
       </button>
 
-      {/* Uploaded files list */}
+      {/* Uploaded files list. */}
       <div className="mt-4">
         <h2 className="text-sm font-medium text-[#e8e8f0] mb-3">Your Files</h2>
         {loadingFiles ? (

@@ -36,7 +36,7 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
         </div>
 
         <div className="bg-[#161A24] border border-[#2E323A] rounded-xl p-6 space-y-5">
-          {/* CID */}
+          {/* CID. */}
           <div>
             <p className="text-xs font-semibold text-[#2E323A] uppercase tracking-wide mb-1">
               Content ID (CID)
@@ -61,7 +61,7 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
 
           {result && (
             <>
-              {/* Validity badge */}
+              {/* Validity badge. */}
               <div
                 className={`flex items-center gap-3 rounded-lg p-4 ${
                   result.isValid
@@ -86,7 +86,7 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
                 </div>
               </div>
 
-              {/* Metadata */}
+              {/* Metadata. */}
               {result.signedAt && (
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-[#2E323A] mt-0.5 shrink-0" />
@@ -113,7 +113,7 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
             </>
           )}
 
-          {/* Explanation */}
+          {/* Explanation. */}
           <div className="border-t border-[#2E323A] pt-4">
             <p className="text-xs text-[#2E323A]">
               Lumina stores case files on Pinata Private IPFS. Each file receives a content
