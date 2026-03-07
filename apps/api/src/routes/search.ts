@@ -7,13 +7,6 @@ import { getUser } from "../lib/auth";
 
 export const searchRoutes = new Hono();
 
-// Require auth for search
-searchRoutes.use("*", async (c, next) => {
-  const user = await getUser(c);
-  if (!user) return c.json({ error: "Unauthorized" }, 401);
-  await next();
-});
-
 const searchQuerySchema = z.object({
   q: z.string().min(1).max(500),
   caseType: z.string().optional(),
