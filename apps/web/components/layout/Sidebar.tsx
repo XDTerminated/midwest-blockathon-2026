@@ -8,7 +8,7 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 import { useSession, signOut } from "@/lib/auth-client";
-import { formatCID, cn } from "@/lib/utils";
+import { cn, formatCID } from "@/lib/utils";
 
 const navItems = [
   { icon: MessageSquarePlus, label: "New Chat", href: "/search" },
@@ -36,7 +36,7 @@ export const Sidebar = () => {
         collapsed ? "w-[60px] px-3" : "w-[220px] px-5"
       )}
     >
-      {/* Top row: collapse toggle */}
+      {/* Top row: collapse toggle. */}
       <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-end")}>
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -46,7 +46,7 @@ export const Sidebar = () => {
         </button>
       </div>
 
-      {/* Nav */}
+      {/* Nav. */}
       <nav className="flex flex-col gap-5 flex-1">
         {navItems.map(({ icon: Icon, label, href }) => {
           const isWallet = label === "Wallet";
@@ -96,7 +96,7 @@ export const Sidebar = () => {
         })}
       </nav>
 
-      {/* Auth */}
+      {/* Auth. */}
       <div className="flex flex-col gap-3 pt-4 border-t border-[#2E323A]">
         {session?.user ? (
           <>

@@ -56,7 +56,7 @@ export interface CaseRecord {
   rfesReceived?: string;
   denialReasons?: string;
   appealDetails?: string;
-  // Added by upload pipeline
+  // Added by upload pipeline.
   cid?: string;
   contributorWallet?: string;
   uploadedAt?: string;
@@ -116,10 +116,4 @@ export interface PaymentRequiredError {
   paymentInstructions: string;
 }
 
-export interface SearchParams {
-  q: string;
-  caseType?: CaseType;
-  country?: string;
-  outcome?: Outcome;
-  limit?: number;
-}
+

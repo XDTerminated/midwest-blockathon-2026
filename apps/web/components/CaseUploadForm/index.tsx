@@ -78,7 +78,7 @@ export const CaseUploadForm = () => {
 
   return (
     <div>
-      {/* Progress steps */}
+      {/* Progress steps. */}
       <div className="flex items-center gap-0 mb-8">
         {STEPS.map((label, i) => (
           <div key={label} className="flex items-center flex-1">
@@ -107,7 +107,7 @@ export const CaseUploadForm = () => {
         ))}
       </div>
 
-      {/* Step content */}
+      {/* Step content. */}
       {step === 0 && (
         <Step1BasicInfo data={formData} onChange={updateData} onNext={next} />
       )}
