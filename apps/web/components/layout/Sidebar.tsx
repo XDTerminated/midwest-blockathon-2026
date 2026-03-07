@@ -1,14 +1,15 @@
 "use client";
 
-import { LayoutDashboard, LogIn, LogOut, MessageSquare, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, Trash2, Upload, UserPlus, Wallet } from "lucide-react";
+import { FileText, LayoutDashboard, LogIn, LogOut, MessageSquare, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, Trash2, Upload, UserPlus, Wallet } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 import { deleteChatSession, listChatSessions, type ChatSession } from "@/lib/api";
 import { signOut, useSession } from "@/lib/auth-client";
+import { useLanguage } from "@/lib/i18n";
 import { cn, formatCID } from "@/lib/utils";
 
 export const Sidebar = () => {
@@ -21,8 +22,10 @@ export const Sidebar = () => {
     const [mounted, setMounted] = useState(false);
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
     const pathname = usePathname();
+    const router = useRouter();
     const searchParams = useSearchParams();
     const activeSessionId = searchParams.get("session");
+    const { t } = useLanguage();
 
     useEffect(() => {
         setMounted(true);
@@ -36,7 +39,7 @@ export const Sidebar = () => {
     const { disconnect } = useDisconnect();
     const { data: session } = useSession();
 
-    // CSS-only tooltip: the "group" class on the wrapper triggers "group-hover:opacity-100" on the tooltip span
+    // CSS-only tooltip: the "group" class on the wrapper triggers "group-hover:opacity-100" on the tooltip span.
     const tooltipClass = "absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg bg-[#1C2030] border border-[#363C4A] text-[12px] text-[#e8e8f0] whitespace-nowrap z-50 pointer-events-none shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150";
 
     const loadSessions = useCallback(async () => {
@@ -74,22 +77,22 @@ export const Sidebar = () => {
                     <button onClick={() => setCollapsed(!collapsed)} className="p-2 rounded-lg text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition">
                         {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
                     </button>
-                    {collapsed && <span className={tooltipClass}>Expand</span>}
+                    {collapsed && <span className={tooltipClass}>{t("expand")}</span>}
                 </div>
             </div>
 
             {/* Nav. */}
             <nav className="flex flex-col gap-5 flex-1 overflow-hidden">
                 {/* New Chat */}
-                <Link href="/search" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/search" && !activeSessionId ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "New Chat" : undefined}>
+                <button onClick={() => router.push("/search")} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/search" && !activeSessionId ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("newChat") : undefined}>
                     <MessageSquarePlus className="w-5 h-5 shrink-0" />
-                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>New Chat</span>
-                </Link>
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("newChat")}</span>
+                </button>
 
                 {/* Chats header */}
                 <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-3", "text-[#6B7280]")}>
                     <MessageSquare className="w-5 h-5 shrink-0" />
-                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Chats</span>
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("chats")}</span>
                 </div>
 
                 {/* Chat session list */}
@@ -107,9 +110,15 @@ export const Sidebar = () => {
                 )}
 
                 {/* Upload */}
-                <Link href="/upload" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Upload a File" : undefined}>
+                <Link href="/upload" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("uploadFile") : undefined}>
                     <Upload className="w-5 h-5 shrink-0" />
-                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Upload a File</span>
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("uploadFile")}</span>
+                </Link>
+
+                {/* Files */}
+                <Link href="/files" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/files" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("files") : undefined}>
+                    <FileText className="w-5 h-5 shrink-0" />
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("files")}</span>
                 </Link>
 
                 {/* Dashboard */}
@@ -119,9 +128,9 @@ export const Sidebar = () => {
                 </Link>
 
                 {/* Wallet */}
-                <button onClick={() => (isWalletActive ? disconnect() : connect({ connector: injected() }))} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : "Wallet") : undefined}>
+                <button onClick={() => (isWalletActive ? disconnect() : connect({ connector: injected() }))} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : t("wallet")) : undefined}>
                     <Wallet className="w-5 h-5 shrink-0" />
-                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : "Wallet"}</span>
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : t("wallet")}</span>
                 </button>
             </nav>
 
@@ -139,9 +148,9 @@ export const Sidebar = () => {
                         <div className="relative group">
                             <button onClick={() => signOut()} className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5 w-full", collapsed ? "justify-center" : "gap-3")}>
                                 <LogOut className="w-5 h-5 shrink-0" />
-                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log out</span>
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("logOut")}</span>
                             </button>
-                            {collapsed && <span className={tooltipClass}>Log out</span>}
+                            {collapsed && <span className={tooltipClass}>{t("logOut")}</span>}
                         </div>
                     </>
                 ) : (
@@ -149,16 +158,16 @@ export const Sidebar = () => {
                         <div className="relative group">
                             <Link href="/login" className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5", collapsed ? "justify-center" : "gap-3", pathname === "/login" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator")}>
                                 <LogIn className="w-5 h-5 shrink-0" />
-                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Log in</span>
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("logIn")}</span>
                             </Link>
-                            {collapsed && <span className={tooltipClass}>Log in</span>}
+                            {collapsed && <span className={tooltipClass}>{t("logIn")}</span>}
                         </div>
                         <div className="relative group">
                             <Link href="/signup" className={cn("flex items-center text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition rounded-lg px-3 py-2.5", collapsed ? "justify-center" : "gap-3", pathname === "/signup" && "text-[#D4AD5A] bg-[#D4AD5A]/10 active-indicator")}>
                                 <UserPlus className="w-5 h-5 shrink-0" />
-                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Sign up</span>
+                                <span className={cn("text-[13px] whitespace-nowrap overflow-hidden transition-[opacity,width] duration-200", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("signUp")}</span>
                             </Link>
-                            {collapsed && <span className={tooltipClass}>Sign up</span>}
+                            {collapsed && <span className={tooltipClass}>{t("signUp")}</span>}
                         </div>
                     </>
                 )}

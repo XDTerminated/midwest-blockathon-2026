@@ -6,8 +6,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { ChatInput } from "@/components/ChatInput";
+import { CyclingPlaceholder } from "@/components/CyclingPlaceholder";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { addChatMessage, chatSearch, type ChatMessage, createChatSession, getChatMessages } from "@/lib/api";
+import { addChatMessage, type ChatMessage, chatSearch, createChatSession, getChatMessages } from "@/lib/api";
+import { useLanguage } from "@/lib/i18n";
 
 interface Message {
     role: "user" | "assistant";
@@ -21,12 +23,13 @@ const SearchPage = () => {
     const searchParams = useSearchParams();
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
-    const [sessionId, setSessionId] = useState<number | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     const initialQuerySent = useRef(false);
     const messagesRef = useRef<Message[]>([]);
+    const sessionIdRef = useRef<number | null>(null);
+    const lastLoadedSession = useRef<number | null>(null);
+    const { t, language, promptLanguageSwitch } = useLanguage();
 
-    // Load existing session if ?session= param is present.
     const paramSessionId = searchParams.get("session");
 
     const loadSession = useCallback(async (id: number) => {
@@ -39,22 +42,34 @@ const SearchPage = () => {
             }));
             messagesRef.current = loaded;
             setMessages(loaded);
-            setSessionId(id);
+            sessionIdRef.current = id;
+            lastLoadedSession.current = id;
         } catch {
             messagesRef.current = [];
             setMessages([]);
-            setSessionId(null);
+            sessionIdRef.current = null;
+            lastLoadedSession.current = null;
         }
     }, []);
 
     useEffect(() => {
         if (paramSessionId) {
             const id = Number(paramSessionId);
-            if (!isNaN(id) && id !== sessionId) {
-                loadSession(id);
+            if (isNaN(id)) return;
+            // Don't reload if we already have this session loaded (either from creation or prior load).
+            if (lastLoadedSession.current === id || sessionIdRef.current === id) return;
+            loadSession(id);
+        } else {
+            // Navigated to /search without session — clear chat.
+            if (sessionIdRef.current !== null) {
+                messagesRef.current = [];
+                setMessages([]);
+                sessionIdRef.current = null;
+                lastLoadedSession.current = null;
+                initialQuerySent.current = false;
             }
         }
-    }, [paramSessionId, loadSession, sessionId]);
+    }, [paramSessionId, loadSession]);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,12 +89,13 @@ const SearchPage = () => {
             setLoading(true);
 
             // Create session on first message if needed.
-            let activeSessionId = sessionId;
+            let activeSessionId = sessionIdRef.current;
             if (!activeSessionId) {
                 try {
                     const created = await createChatSession();
                     activeSessionId = created.id;
-                    setSessionId(created.id);
+                    sessionIdRef.current = created.id;
+                    lastLoadedSession.current = created.id;
                     router.replace(`/search?session=${created.id}`);
                 } catch {
                     // Non-fatal — continue without persistence.
@@ -100,6 +116,9 @@ const SearchPage = () => {
                 if (activeSessionId) {
                     addChatMessage(activeSessionId, "assistant", result.analysis).catch(() => {});
                 }
+                if (result.detectedLanguage && result.detectedLanguage !== language) {
+                    promptLanguageSwitch(result.detectedLanguage);
+                }
             } catch (err) {
                 const next = [
                     ...messagesRef.current,
@@ -115,7 +134,7 @@ const SearchPage = () => {
                 setLoading(false);
             }
         },
-        [sessionId, router],
+        [router, language, promptLanguageSwitch],
     );
 
     // Auto-send the initial query from the URL (?q=...)
@@ -134,7 +153,7 @@ const SearchPage = () => {
                 <div className="flex-1 overflow-auto px-6 py-8 max-w-3xl mx-auto w-full">
                     {messages.length === 0 && !loading && (
                         <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
-                            <p className="text-[#6B7280] text-base">Describe your immigration situation to find relevant cases</p>
+                            <CyclingPlaceholder />
                         </div>
                     )}
 
@@ -155,7 +174,7 @@ const SearchPage = () => {
                             <div className="flex justify-start animate-fade-in">
                                 <div className="flex items-center gap-3 py-3">
                                     <span className="pulse-ring" />
-                                    <span className="shimmer-text text-sm font-medium tracking-wide">Analyzing cases...</span>
+                                    <span className="shimmer-text text-sm font-medium tracking-wide">{t("analyzingCases")}</span>
                                 </div>
                             </div>
                         )}
@@ -168,7 +187,7 @@ const SearchPage = () => {
                 <div className="px-6 py-5 relative before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-linear-to-t before:from-[#121620] before:to-transparent before:pointer-events-none">
                     <div className="max-w-3xl mx-auto">
                         <ChatInput onSend={handleSend} disabled={loading} />
-                        <p className="text-center text-[#6B7280] text-xs mt-3">Project utilizes real case data, not legal advice. Always verify with a qualified immigration attorney.</p>
+                        <p className="text-center text-[#6B7280] text-xs mt-3">{t("disclaimer")}</p>
                     </div>
                 </div>
             </div>

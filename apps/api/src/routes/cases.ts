@@ -30,12 +30,9 @@ caseRoutes.get("/category/:slug", async (c) => {
   return c.json({ cases, slug });
 });
 
-// Get full case content — only if user owns it.
+// Get full case content.
 caseRoutes.get("/:cid", async (c) => {
-  const user = await getUser(c);
   const cid = c.req.param("cid") ?? "";
-  const isOwner = await pinataService.isFileOwnedByUser(cid, user!.id);
-  if (!isOwner) return c.json({ error: "Not found" }, 404);
   const caseData = await pinataService.getCase(cid);
   return c.json({ ...caseData, cid });
 });

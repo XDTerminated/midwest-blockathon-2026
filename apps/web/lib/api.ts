@@ -46,6 +46,22 @@ export const chatSearch = async (
   });
 };
 
+export interface CaseListItem {
+  cid: string;
+  name: string;
+  caseType: string;
+  countryOfOrigin: string;
+  outcome: string;
+  year: string;
+  court?: string;
+  lawyerUsed?: string;
+  createdAt?: string;
+}
+
+export const listAllFiles = async (limit = 100): Promise<{ cases: CaseListItem[] }> => {
+  return apiFetch(`/api/files?limit=${limit}`);
+};
+
 export const listCasesByCategory = async (slug: CategorySlug): Promise<{ cases: CaseListItem[]; slug: string }> => {
   return apiFetch(`/api/cases/category/${slug}`);
 };
