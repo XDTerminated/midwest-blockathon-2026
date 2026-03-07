@@ -45,8 +45,14 @@ Lessons Learned: ${c.lessonsLearned}
 `.trim();
 }
 
+export type ChatMessage = { role: "user" | "assistant"; content: string };
+
 export const claudeService = {
-  async synthesize(userQuery: string, cases: CaseRecord[]): Promise<SearchResult> {
+  async synthesize(
+    userQuery: string,
+    cases: CaseRecord[],
+    history: ChatMessage[] = []
+  ): Promise<SearchResult> {
     const caseContext =
       cases.length > 0
         ? cases.map((c, i) => formatCaseForContext(c, i)).join("\n\n---\n\n")
@@ -60,12 +66,16 @@ ${caseContext}
 
 MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
 
+    // Build messages: system + prior conversation + new user message with case context
+    const messages: { role: "system" | "user" | "assistant"; content: string }[] = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...history.slice(-10), // keep last 10 messages for context
+      { role: "user", content: userMessage },
+    ];
+
     const completion = await getClient().chat.completions.create({
       model: GROQ_MODEL,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userMessage },
-      ],
+      messages,
     });
 
     const analysis = completion.choices[0]?.message?.content ?? "";

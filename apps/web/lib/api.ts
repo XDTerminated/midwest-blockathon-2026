@@ -34,6 +34,8 @@ async function apiFetch<T>(
   return res.json() as Promise<T>;
 }
 
+export type ChatMessage = { role: "user" | "assistant"; content: string };
+
 export async function searchCases(
   q: string,
   params?: { caseType?: string; country?: string; outcome?: string; limit?: number }
@@ -42,6 +44,16 @@ export async function searchCases(
     Object.entries(params ?? {}).filter(([, v]) => v != null).map(([k, v]) => [k, String(v)])
   )});
   return apiFetch<SearchResult>(`/api/search?${query}`);
+}
+
+export async function chatSearch(
+  q: string,
+  history: ChatMessage[] = []
+): Promise<SearchResult> {
+  return apiFetch<SearchResult>("/api/search", {
+    method: "POST",
+    body: JSON.stringify({ q, history }),
+  });
 }
 
 export async function listCases(page = 1, limit = 20): Promise<{ cases: CaseListItem[]; page: number; limit: number }> {

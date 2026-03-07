@@ -6,20 +6,24 @@ import { Plus, Send, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   defaultValue?: string;
+  onSend?: (message: string) => void;
+  disabled?: boolean;
 }
 
-export function ChatInput({ defaultValue = "" }: ChatInputProps) {
+export function ChatInput({ defaultValue = "", onSend, disabled }: ChatInputProps) {
   const [query, setQuery] = useState(defaultValue);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!query.trim()) return;
-    setLoading(true);
+    if (!query.trim() || disabled) return;
     const q = query.trim();
     setQuery("");
-    router.push(`/search?q=${encodeURIComponent(q)}`);
+    if (onSend) {
+      onSend(q);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(q)}`);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -54,10 +58,10 @@ export function ChatInput({ defaultValue = "" }: ChatInputProps) {
 
       <button
         type="submit"
-        disabled={loading || !query.trim()}
+        disabled={disabled || !query.trim()}
         className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-30 text-[#0C0F18] rounded-lg transition ml-3"
       >
-        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+        {disabled ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
       </button>
     </form>
   );
