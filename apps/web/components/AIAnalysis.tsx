@@ -89,14 +89,24 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
         <div className="bg-[#1C2030] rounded-[14px] border border-[#363C4A] p-5 shadow-elevated">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-linear-to-br from-[#D4AD5A] to-[#B8942E] flex items-center justify-center shadow-surface">
-                        <svg className="w-3 h-3 text-[#121620]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 3v19" />
-                            <path d="M5 7l7-4 7 4" />
-                            <path d="M3 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
-                            <path d="M17 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
-                        </svg>
-                    </div>
+                    <svg viewBox="0 0 64 96" fill="none" className="w-5 h-7">
+                        <rect x="20" y="40" width="24" height="52" rx="4" fill="#d4c89a" />
+                        <rect x="30" y="32" width="4" height="12" rx="2" fill="#4a4a3a" />
+                        <path d="M32 4 C26 16, 20 24, 22 32 C24 38, 28 40, 32 40 C36 40, 40 38, 42 32 C44 24, 38 16, 32 4Z" fill="url(#aiFlameOuter)" className="flame-flicker" style={{ transformOrigin: "32px 32px" }} />
+                        <path d="M32 14 C29 20, 26 26, 28 32 C29 36, 31 38, 32 38 C33 38, 35 36, 36 32 C38 26, 35 20, 32 14Z" fill="url(#aiFlameInner)" className="flame-flicker" style={{ transformOrigin: "32px 30px", animationDelay: "0.15s" }} />
+                        <defs>
+                            <linearGradient id="aiFlameOuter" x1="32" y1="4" x2="32" y2="40" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stopColor="#FFD54F" />
+                                <stop offset="40%" stopColor="#FF9800" />
+                                <stop offset="100%" stopColor="#E65100" />
+                            </linearGradient>
+                            <linearGradient id="aiFlameInner" x1="32" y1="14" x2="32" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stopColor="#FFF9C4" />
+                                <stop offset="60%" stopColor="#FFE082" />
+                                <stop offset="100%" stopColor="#FFB74D" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
                     <span className="text-xs text-[#9CA3AF] bg-[#121620] border border-[#363C4A] px-2 py-1 rounded">Lumina</span>
                 </div>
                 <button onClick={toggleSpeak} disabled={loading} className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium cursor-pointer ${speaking ? "text-[#D4AD5A] bg-[#D4AD5A]/10" : loading ? "text-[#D4AD5A] bg-[#D4AD5A]/5 opacity-70" : "text-[#7B8294] hover:text-[#D4AD5A] hover:bg-[#D4AD5A]/5"}`} title={loading ? "Generating audio..." : speaking ? "Stop listening" : "Listen to response"}>
