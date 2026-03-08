@@ -3,12 +3,13 @@
 import { CASE_TYPES, type CaseRecord } from "@lumina/shared";
 import { ArrowLeft, BookOpen, Clock, Copy, FileText, Globe, Lightbulb, Loader2, Paperclip, Scale, Share2, Shield } from "lucide-react";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useState, useEffect, useRef, use } from "react";
 
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PaymentGate } from "@/components/PaymentGate";
-import { getCase, isPaymentRequired, presignCase } from "@/lib/api";
-import { cn, formatCID, outcomeColor, outcomeLabel } from "@/lib/utils";
+import { getCase, presignCase, isPaymentRequired, translateTexts } from "@/lib/api";
+import { useLanguage } from "@/lib/i18n";
+import { outcomeColor, outcomeLabel, formatCID, cn } from "@/lib/utils";
 
 type State = "loading" | "requires_payment" | "loaded" | "error";
 
@@ -18,12 +19,16 @@ interface CasePageProps {
 
 const CasePage = ({ params }: CasePageProps) => {
   const { cid } = use(params);
+  const { t, language } = useLanguage();
   const [state, setState] = useState<State>("loading");
   const [caseData, setCaseData] = useState<(CaseRecord & { cid: string }) | null>(null);
+  const [translated, setTranslated] = useState<Record<string, string>>({});
+  const translationCache = useRef<Record<string, Record<string, string>>>({});
   const [error, setError] = useState<string | null>(null);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [translating, setTranslating] = useState(false);
 
   const loadCase = async (paymentProof?: string) => {
     setState("loading");
@@ -45,6 +50,41 @@ const CasePage = ({ params }: CasePageProps) => {
     loadCase();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cid]);
+
+  const lastTranslateRef = useRef(0);
+
+  useEffect(() => {
+    if (!caseData || language === "en") {
+      setTranslated({});
+      return;
+    }
+    const cacheKey = `${cid}:${language}`;
+    if (translationCache.current[cacheKey]) {
+      setTranslated(translationCache.current[cacheKey]);
+      return;
+    }
+    const texts: Record<string, string> = {};
+    if (caseData.narrative) texts.narrative = caseData.narrative;
+    if (caseData.keyFactors) texts.keyFactors = caseData.keyFactors;
+    if (caseData.lessonsLearned) texts.lessonsLearned = caseData.lessonsLearned;
+    if (caseData.documentsUsed?.length) {
+      caseData.documentsUsed.forEach((d, i) => { texts[`doc_${i}`] = d; });
+    }
+    if (Object.keys(texts).length === 0) return;
+    const requestId = ++lastTranslateRef.current;
+    setTranslating(true);
+    translateTexts(texts, language)
+      .then((result) => {
+        if (lastTranslateRef.current !== requestId) return;
+        translationCache.current[cacheKey] = result;
+        setTranslated(result);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (lastTranslateRef.current === requestId) setTranslating(false);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseData, language, cid]);
 
   const handlePaymentSuccess = async (txHash: string) => {
     await loadCase(txHash);
@@ -86,7 +126,7 @@ const CasePage = ({ params }: CasePageProps) => {
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <p className="text-red-400 mb-4">{error}</p>
           <button onClick={() => loadCase()} className="text-[#D4AD5A] hover:underline text-sm">
-            Try again
+            {t("tryAgain")}
           </button>
         </div>
       </AppLayout>
@@ -98,9 +138,9 @@ const CasePage = ({ params }: CasePageProps) => {
       <AppLayout>
         <div className="max-w-2xl mx-auto px-4 py-12">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-[#e8e8f0] mb-2">Full Case Access</h1>
+            <h1 className="text-2xl font-bold text-[#e8e8f0] mb-2">{t("fullCaseAccess")}</h1>
             <p className="text-[#6B7280] text-sm">
-              This case is available for a small micropayment that goes directly to the contributor.
+              {t("casePaymentDesc")}
             </p>
           </div>
           <PaymentGate cid={cid} onPaymentSuccess={handlePaymentSuccess} />
@@ -111,7 +151,9 @@ const CasePage = ({ params }: CasePageProps) => {
 
   if (!caseData) return null;
 
-  const caseTypeLabel = CASE_TYPES.find((t) => t.value === caseData.caseType)?.label ?? caseData.caseType ?? "File";
+  const caseTypeLabel = CASE_TYPES.find((ct) => ct.value === caseData.caseType)?.label ?? caseData.caseType ?? "File";
+  const needsTranslation = language !== "en";
+  const contentReady = !needsTranslation || !translating;
 
   return (
     <AppLayout>
@@ -119,7 +161,7 @@ const CasePage = ({ params }: CasePageProps) => {
         {/* Back link */}
         <Link href="/files" className="inline-flex items-center gap-1.5 text-sm text-[#6B7280] hover:text-[#D4AD5A] transition">
           <ArrowLeft className="w-4 h-4" />
-          Back to Files
+          {t("backToFiles")}
         </Link>
 
         {/* Header card */}
@@ -157,56 +199,69 @@ const CasePage = ({ params }: CasePageProps) => {
             {caseData.timelineMonths != null && (
               <span className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#6B7280]" />
-                {caseData.timelineMonths} months
+                {caseData.timelineMonths} {t("months")}
               </span>
             )}
             {caseData.lawyerUsed != null && (
               <span className="flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5 text-[#6B7280]" />
-                {caseData.lawyerUsed ? "Had attorney" : "Pro se"}
+                {caseData.lawyerUsed ? t("hadAttorney") : t("proSe")}
               </span>
             )}
           </div>
         </div>
 
-        {/* Narrative */}
-        {caseData.narrative && (
-          <Section icon={<BookOpen className="w-4 h-4" />} title="Case Narrative">
-            <p className="text-sm text-[#9CA3AF] leading-relaxed whitespace-pre-wrap">
-              {caseData.narrative}
-            </p>
-          </Section>
+        {/* Translation loading bar */}
+        {translating && (
+          <div className="flex items-center justify-center gap-3 py-6 animate-fade-in">
+            <Loader2 className="w-5 h-5 animate-spin text-[#D4AD5A]" />
+            <span className="text-sm text-[#6B7280]">{t("translating") || "Translating..."}</span>
+          </div>
         )}
 
-        {/* Key Factors */}
-        {caseData.keyFactors && (
-          <Section icon={<FileText className="w-4 h-4" />} title="Key Factors">
-            <p className="text-sm text-[#9CA3AF] leading-relaxed">
-              {caseData.keyFactors}
-            </p>
-          </Section>
-        )}
+        {/* Content sections — hidden until translation is ready */}
+        {contentReady && (
+          <>
+            {/* Narrative */}
+            {caseData.narrative && (
+              <Section icon={<BookOpen className="w-4 h-4" />} title={t("caseNarrative")}>
+                <p className="text-sm text-[#9CA3AF] leading-relaxed whitespace-pre-wrap">
+                  {translated.narrative ?? caseData.narrative}
+                </p>
+              </Section>
+            )}
 
-        {/* Lessons Learned */}
-        {caseData.lessonsLearned && (
-          <Section icon={<Lightbulb className="w-4 h-4" />} title="Lessons Learned">
-            <p className="text-sm text-[#9CA3AF] leading-relaxed">
-              {caseData.lessonsLearned}
-            </p>
-          </Section>
-        )}
+            {/* Key Factors */}
+            {caseData.keyFactors && (
+              <Section icon={<FileText className="w-4 h-4" />} title={t("keyFactors")}>
+                <p className="text-sm text-[#9CA3AF] leading-relaxed">
+                  {translated.keyFactors ?? caseData.keyFactors}
+                </p>
+              </Section>
+            )}
 
-        {/* Documents & Forms */}
-        {caseData.documentsUsed?.length > 0 && (
-          <Section icon={<Paperclip className="w-4 h-4" />} title="Documents & Forms Used">
-            <div className="flex flex-wrap gap-2">
-              {caseData.documentsUsed.map((doc) => (
-                <span key={doc} className="bg-[#121620] border border-[#363C4A] text-[#9CA3AF] text-xs px-3 py-1.5 rounded-full">
-                  {doc}
-                </span>
-              ))}
-            </div>
-          </Section>
+            {/* Lessons Learned */}
+            {caseData.lessonsLearned && (
+              <Section icon={<Lightbulb className="w-4 h-4" />} title={t("lessonsLearned")}>
+                <p className="text-sm text-[#9CA3AF] leading-relaxed">
+                  {translated.lessonsLearned ?? caseData.lessonsLearned}
+                </p>
+              </Section>
+            )}
+
+            {/* Documents & Forms */}
+            {caseData.documentsUsed?.length > 0 && (
+              <Section icon={<Paperclip className="w-4 h-4" />} title={t("documentsUsed")}>
+                <div className="flex flex-wrap gap-2">
+                  {caseData.documentsUsed.map((doc, i) => (
+                    <span key={doc} className="bg-[#121620] border border-[#363C4A] text-[#9CA3AF] text-xs px-3 py-1.5 rounded-full">
+                      {translated[`doc_${i}`] ?? doc}
+                    </span>
+                  ))}
+                </div>
+              </Section>
+            )}
+          </>
         )}
 
         {/* CID + Share */}
@@ -214,7 +269,7 @@ const CasePage = ({ params }: CasePageProps) => {
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-xs text-[#6B7280] uppercase tracking-wide mb-1">
-                Content ID (CID)
+                {t("contentId")}
               </p>
               <p className="font-mono text-xs text-[#D4AD5A] break-all">{caseData.cid}</p>
             </div>
@@ -223,12 +278,12 @@ const CasePage = ({ params }: CasePageProps) => {
               className="shrink-0 flex items-center gap-1.5 text-xs text-[#D4AD5A] hover:text-[#f0c860] transition bg-[#121620] border border-[#363C4A] px-3 py-1.5 rounded-lg"
             >
               <Shield className="w-3.5 h-3.5" />
-              Verify
+              {t("verify")}
             </Link>
           </div>
 
           <div className="border-t border-[#363C4A] pt-4">
-            <p className="text-xs text-[#6B7280] mb-2">Share with your attorney (expires in 24h)</p>
+            <p className="text-xs text-[#6B7280] mb-2">{t("shareWithAttorney")}</p>
             {shareUrl ? (
               <div className="flex gap-2">
                 <input
@@ -250,7 +305,7 @@ const CasePage = ({ params }: CasePageProps) => {
                 className="text-xs flex items-center gap-1.5 text-[#D4AD5A] hover:text-[#f0c860] transition"
               >
                 {sharing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
-                Generate Share Link
+                {t("generateShareLink")}
               </button>
             )}
           </div>
@@ -258,7 +313,7 @@ const CasePage = ({ params }: CasePageProps) => {
 
         {/* Disclaimer */}
         <p className="text-center text-[#6B7280] text-xs py-2">
-          This is real case data, not legal advice. Always verify with a qualified immigration attorney.
+          {t("caseDisclaimer")}
         </p>
       </div>
     </AppLayout>

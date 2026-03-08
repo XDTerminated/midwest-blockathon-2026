@@ -141,6 +141,17 @@ export const textToSpeech = async (text: string, lang = "en"): Promise<Blob> => 
   return res.blob();
 };
 
+export const translateTexts = async (
+  texts: Record<string, string>,
+  targetLang: string
+): Promise<Record<string, string>> => {
+  const res = await apiFetch<{ translations: Record<string, string> }>("/api/translate", {
+    method: "POST",
+    body: JSON.stringify({ texts, targetLang }),
+  });
+  return res.translations;
+};
+
 export const isPaymentRequired = (res: unknown): res is PaymentRequiredError => {
   return (
     typeof res === "object" &&
