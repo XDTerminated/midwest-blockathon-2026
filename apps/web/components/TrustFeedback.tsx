@@ -1,6 +1,6 @@
 "use client";
 
-import type { CitedCaseRef } from "@lumina/shared";
+import type { CitedCaseRef } from "@immivault/shared";
 import { ThumbsUp, Flag, Loader2 } from "lucide-react";
 import { useState } from "react";
 

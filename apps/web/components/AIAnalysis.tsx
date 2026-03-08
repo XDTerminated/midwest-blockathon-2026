@@ -1,6 +1,6 @@
 "use client";
 
-import type { SearchResult } from "@lumina/shared";
+import type { SearchResult } from "@immivault/shared";
 import { Loader2, Square, Volume2 } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -97,7 +97,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
                             <path d="M17 13l2-6h0l2 6a3 3 0 0 1-4 0z" />
                         </svg>
                     </div>
-                    <span className="text-xs text-[#9CA3AF] bg-[#121620] border border-[#363C4A] px-2 py-1 rounded">Lumina AI</span>
+                    <span className="text-xs text-[#9CA3AF] bg-[#121620] border border-[#363C4A] px-2 py-1 rounded">Lumina</span>
                 </div>
                 <button onClick={toggleSpeak} disabled={loading} className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 transition text-xs font-medium cursor-pointer ${speaking ? "text-[#D4AD5A] bg-[#D4AD5A]/10" : loading ? "text-[#D4AD5A] bg-[#D4AD5A]/5 opacity-70" : "text-[#7B8294] hover:text-[#D4AD5A] hover:bg-[#D4AD5A]/5"}`} title={loading ? "Generating audio..." : speaking ? "Stop listening" : "Listen to response"}>
                     {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : speaking ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}

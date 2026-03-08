@@ -22,6 +22,11 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
   const { sendTransaction } = useSendTransaction();
 
   const handleConnect = async () => {
+    if (!window.ethereum) {
+      setState("error");
+      setError("No crypto wallet detected. Please install MetaMask or another Web3 wallet to make payments.");
+      return;
+    }
     setState("connecting");
     try {
       connect({ connector: injected() });
@@ -106,7 +111,7 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
         <button
           onClick={handleConnect}
           disabled={state === "connecting"}
-          className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
+          className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition cursor-pointer"
         >
           {state === "connecting" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -123,7 +128,7 @@ export const PaymentGate = ({ cid, onPaymentSuccess }: PaymentGateProps) => {
           <button
             onClick={handlePay}
             disabled={state === "paying"}
-            className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition"
+            className="w-full flex items-center justify-center gap-2 bg-[#D4AD5A] hover:bg-[#E0BD6A] text-white font-semibold px-6 py-3 rounded-lg disabled:opacity-60 transition cursor-pointer"
           >
             {state === "paying" ? (
               <>

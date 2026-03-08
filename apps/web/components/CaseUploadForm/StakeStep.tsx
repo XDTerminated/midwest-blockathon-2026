@@ -6,7 +6,7 @@ import {
   CONTRACT_ADDRESSES,
   STAKE_AMOUNT_USDC,
   STAKE_AMOUNT_DISPLAY,
-} from "@lumina/shared";
+} from "@immivault/shared";
 import { Loader2, Lock, CheckCircle, AlertTriangle, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
@@ -41,6 +41,12 @@ export const StakeStep = ({ cid, contributorWallet, onComplete, onSkip }: Props)
   const handleStake = async () => {
     if (!hasContracts) {
       setError("Escrow contracts are not deployed. Please deploy contracts to Base Sepolia and update CONTRACT_ADDRESSES before staking.");
+      setState("error");
+      return;
+    }
+
+    if (!window.ethereum) {
+      setError("No crypto wallet detected. Please install MetaMask or another Web3 wallet to stake.");
       setState("error");
       return;
     }
@@ -152,7 +158,7 @@ export const StakeStep = ({ cid, contributorWallet, onComplete, onSkip }: Props)
           <button
             onClick={handleStake}
             disabled={state !== "idle"}
-            className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center gap-2 mx-auto"
+            className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center gap-2 mx-auto cursor-pointer"
           >
             {state !== "idle" || waitingTx ? (
               <>

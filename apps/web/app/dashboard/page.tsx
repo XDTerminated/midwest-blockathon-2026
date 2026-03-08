@@ -2,7 +2,7 @@ import { DashboardContent } from "@/components/DashboardContent";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 export const metadata = {
-  title: "Dashboard — Lumina",
+  title: "Dashboard — ImmiVault",
 };
 
 const DashboardPage = () => {

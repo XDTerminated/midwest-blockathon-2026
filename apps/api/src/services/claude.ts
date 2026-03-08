@@ -1,4 +1,4 @@
-import { type CaseRecord, type CitedCaseRef, LEGAL_DISCLAIMER, type SearchResult } from "@lumina/shared";
+import { type CaseRecord, type CitedCaseRef, LEGAL_DISCLAIMER, type SearchResult } from "@immivault/shared";
 import { config } from "dotenv";
 import OpenAI from "openai";
 import { dirname, resolve } from "path";
@@ -34,7 +34,7 @@ FOR GENERAL QUESTIONS:
 FOR IMMIGRATION QUESTIONS:
 - Legal info only, not advice. Never promise outcomes.
 - Simple, clear English. Avoid jargon — explain terms if needed.
-- ONLY reference cases that appear in the CASE LIBRARY below. Use format [Case CID: <cid>] with the exact CID provided. NEVER invent, fabricate, or guess a CID. If no cases are provided, do NOT reference any cases at all.
+- When referencing cases from the CASE LIBRARY, describe them naturally (e.g. "a similar case involved..." or "one case had a comparable situation..."). NEVER expose raw CIDs, hashes, or internal identifiers to the user. If no cases are provided, do NOT reference any cases at all.
 - Be welcoming but informational — like a helpful librarian, not a therapist.
 - First give the key information, then ask 1 follow-up question to help narrow things down.
 

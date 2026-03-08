@@ -1,4 +1,4 @@
-import { CATEGORIES, type CaseListItem, type CategorySlug } from "@lumina/shared";
+import { CATEGORIES, type CaseListItem, type CategorySlug } from "@immivault/shared";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

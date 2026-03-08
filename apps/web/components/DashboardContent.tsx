@@ -1,7 +1,7 @@
 "use client";
 
-import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@lumina/shared";
-import type { EscrowInfo, CreditInfo } from "@lumina/shared";
+import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@immivault/shared";
+import type { EscrowInfo, CreditInfo } from "@immivault/shared";
 import { CheckCircle, Clock, ExternalLink, Eye, FileText, Lock, Loader2, Star, TrendingUp, Wallet, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -85,7 +85,7 @@ export const DashboardContent = () => {
         </div>
         <button
           onClick={() => connect({ connector: injected() })}
-          className="flex items-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg transition"
+          className="flex items-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg transition cursor-pointer"
         >
           <Wallet className="w-4 h-4" />
           Connect Wallet

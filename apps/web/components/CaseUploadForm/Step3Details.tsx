@@ -1,6 +1,6 @@
 "use client";
 
-import { COMMON_DOCUMENTS } from "@lumina/shared";
+import { COMMON_DOCUMENTS } from "@immivault/shared";
 import { X } from "lucide-react";
 import { useState } from "react";
 

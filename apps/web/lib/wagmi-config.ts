@@ -9,7 +9,7 @@ export const wagmiConfig = createConfig({
   connectors: [
     injected(),
     metaMask(),
-    coinbaseWallet({ appName: "Lumina" }),
+    coinbaseWallet({ appName: "ImmiVault" }),
   ],
   transports: {
     [base.id]: http(),

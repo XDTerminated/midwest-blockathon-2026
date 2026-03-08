@@ -1,6 +1,6 @@
 "use client";
 
-import type { CaseRecord } from "@lumina/shared";
+import type { CaseRecord } from "@immivault/shared";
 import { CheckCircle } from "lucide-react";
 import { useState } from "react";
 

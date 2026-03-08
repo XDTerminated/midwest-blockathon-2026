@@ -4,6 +4,7 @@
   --font-questrial: "Questrial", sans-serif;
   --font-crimson: "Crimson Text", serif;
   --font-andika: "Andika", sans-serif;
+  --font-quantico: "Quantico", sans-serif;
 }
 
 body {
@@ -147,6 +148,37 @@ body {
 
 .animate-cycle-text {
   animation: cycleFadeIn 3s ease-in-out;
+}
+
+/* Landing flame animation */
+@keyframes flameFadeIn {
+  0% { opacity: 0; transform: scale(0.3); filter: blur(4px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+
+@keyframes flameFlicker {
+  0%, 100% { transform: scaleX(1) scaleY(1); }
+  25% { transform: scaleX(0.95) scaleY(1.03); }
+  50% { transform: scaleX(1.02) scaleY(0.97); }
+  75% { transform: scaleX(0.97) scaleY(1.02); }
+}
+
+@keyframes contentReveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.flame-fade-in {
+  animation: flameFadeIn 0.5s ease-out forwards;
+}
+
+.flame-flicker {
+  animation: flameFlicker 0.4s ease-in-out infinite;
+}
+
+.content-reveal {
+  opacity: 0;
+  animation: contentReveal 0.6s ease-out forwards;
 }
 
 /* Scrollbar */

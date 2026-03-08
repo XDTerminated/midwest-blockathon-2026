@@ -688,7 +688,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const [pendingSwitch, setPendingSwitch] = useState<PendingSwitch>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("lumina-lang");
+    const saved = localStorage.getItem("immivault-lang");
     if (saved && translations[saved]) {
       setLang(saved);
     }
@@ -698,7 +698,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     const code = lang.toLowerCase().slice(0, 2);
     if (translations[code]) {
       setLang(code);
-      localStorage.setItem("lumina-lang", code);
+      localStorage.setItem("immivault-lang", code);
     }
   }, []);
 
@@ -711,7 +711,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const handleAccept = useCallback(() => {
     if (pendingSwitch) {
       setLang(pendingSwitch.lang);
-      localStorage.setItem("lumina-lang", pendingSwitch.lang);
+      localStorage.setItem("immivault-lang", pendingSwitch.lang);
       setPendingSwitch(null);
     }
   }, [pendingSwitch]);
