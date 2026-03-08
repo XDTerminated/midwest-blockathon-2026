@@ -1,7 +1,7 @@
 "use client";
 
-import { Upload } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { LandingSearchBar } from "@/components/LandingSearchBar";
@@ -40,6 +40,7 @@ const Flame = ({ className = "" }: { className?: string }) => (
 
 const Home = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [phase, setPhase] = useState<"dark" | "glow" | "reveal">("dark");
 
   useEffect(() => {
@@ -109,18 +110,26 @@ const Home = () => {
       />
 
       {/* Top-left logo */}
-      <div className={`fixed top-6 left-6 z-10 ${isRevealed ? "content-reveal" : "opacity-0"}`} style={{ animationDelay: "0.3s" }}>
+      <div className={`fixed top-6 left-6 z-40 ${isRevealed ? "content-reveal" : "opacity-0"}`} style={{ animationDelay: "0.3s" }}>
         <LuminaLogo />
       </div>
 
       {/* Top-right nav. */}
-      <div className={`fixed top-6 right-6 z-10 flex items-center gap-3 ${isRevealed ? "content-reveal" : "opacity-0"}`} style={{ animationDelay: "0.3s" }}>
+      <div className={`fixed top-6 right-6 z-40 flex items-center gap-3 ${isRevealed ? "content-reveal" : "opacity-0"}`} style={{ animationDelay: "0.3s" }}>
         {session?.user ? (
           <>
             <span className="text-sm text-[#9CA3AF]">{session.user.name}</span>
             <button
-              onClick={() => signOut()}
-              className="text-sm text-[#6B7280] hover:text-[#e8e8f0] transition"
+              onClick={() => {
+                signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.refresh();
+                    },
+                  },
+                });
+              }}
+              className="text-sm text-[#6B7280] hover:text-[#e8e8f0] transition cursor-pointer"
             >
               Log out
             </button>
@@ -141,13 +150,6 @@ const Home = () => {
             </Link>
           </>
         )}
-        <Link
-          href="/upload"
-          className="flex items-center gap-2 bg-[#1C2030] border border-[#363C4A] hover:border-[#D4AD5A] text-[#e8e8f0] text-sm font-medium px-4 py-2 rounded-lg transition"
-        >
-          <Upload className="w-4 h-4" />
-          Upload
-        </Link>
       </div>
 
       {/* Hero. */}
