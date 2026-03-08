@@ -17,6 +17,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     process.env.WEB_URL ?? "http://localhost:3000",
+    "https://midwest-blockathon-2026-api.vercel.app",
     "http://localhost:3000",
   ],
 });

@@ -33,6 +33,7 @@ app.use(
   cors({
     origin: [
       process.env.WEB_URL ?? "http://localhost:3000",
+      "https://midwest-blockathon-2026-api.vercel.app",
       "http://localhost:3000",
     ],
     allowHeaders: ["Content-Type", "X-Payment-Proof"],
