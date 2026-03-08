@@ -148,6 +148,26 @@ export interface CreditInfo {
   referenceCount: number;
 }
 
+// Lawyer request types
+export type LawyerRequestStatus = "pending" | "matched" | "completed" | "cancelled";
+export type LawyerRequestUrgency = "low" | "medium" | "high" | "urgent";
+
+export interface LawyerRequest {
+  id: number;
+  userId: string;
+  caseType: CaseType;
+  countryOfOrigin: string;
+  summary: string;
+  urgency: LawyerRequestUrgency;
+  preferredLanguage: string;
+  contactEmail: string;
+  contactPhone?: string;
+  relatedCid?: string;
+  status: LawyerRequestStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ContributorDashboardData {
   escrows: EscrowInfo[];
   credits: CreditInfo[];

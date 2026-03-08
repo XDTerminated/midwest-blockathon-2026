@@ -95,6 +95,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Try again",
     caseDisclaimer: "This is real case data, not legal advice. Always verify with a qualified immigration attorney.",
     translating: "Translating...",
+    requestLawyer: "Request a Lawyer",
+    lawyerDescription: "Connect with a free pro bono immigration attorney for professional guidance on your case.",
   },
   es: {
     newChat: "Nuevo Chat",
@@ -148,6 +150,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Intentar de nuevo",
     caseDisclaimer: "Estos son datos reales, no consejo legal. Siempre verifique con un abogado de inmigracion calificado.",
     translating: "Traduciendo...",
+    requestLawyer: "Solicitar Abogado",
+    lawyerDescription: "Conectese con un abogado de inmigracion pro bono gratuito para orientacion profesional sobre su caso.",
   },
   zh: {
     newChat: "新对话",
@@ -201,6 +205,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "重试",
     caseDisclaimer: "这是真实案例数据，不构成法律建议。请务必咨询合格的移民律师。",
     translating: "翻译中...",
+    requestLawyer: "申请律师",
+    lawyerDescription: "联系免费的公益移民律师，获得关于您案件的专业指导。",
   },
   ar: {
     newChat: "محادثة جديدة",
@@ -254,6 +260,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "حاول مرة أخرى",
     caseDisclaimer: "هذه بيانات قضايا حقيقية وليست نصيحة قانونية. تحقق دائمًا مع محامي هجرة مؤهل.",
     translating: "...جارٍ الترجمة",
+    requestLawyer: "طلب محامي",
+    lawyerDescription: "تواصل مع محامي هجرة مجاني للحصول على إرشادات مهنية حول قضيتك.",
   },
   hi: {
     newChat: "नई चैट",
@@ -307,6 +315,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "पुनः प्रयास करें",
     caseDisclaimer: "यह वास्तविक मामले का डेटा है, कानूनी सलाह नहीं। हमेशा योग्य आव्रजन वकील से सत्यापित करें।",
     translating: "अनुवाद हो रहा है...",
+    requestLawyer: "वकील का अनुरोध करें",
+    lawyerDescription: "अपने मामले पर पेशेवर मार्गदर्शन के लिए मुफ्त प्रो बोनो आव्रजन वकील से जुड़ें।",
   },
   fr: {
     newChat: "Nouveau Chat",
@@ -360,6 +370,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Reessayer",
     caseDisclaimer: "Ce sont des donnees reelles, pas des conseils juridiques. Verifiez toujours aupres d'un avocat en immigration qualifie.",
     translating: "Traduction en cours...",
+    requestLawyer: "Demander un Avocat",
+    lawyerDescription: "Connectez-vous avec un avocat en immigration pro bono gratuit pour un accompagnement professionnel.",
   },
   ht: {
     newChat: "Nouvo Chat",
@@ -413,6 +425,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Eseye ankò",
     caseDisclaimer: "Sa a se done reyèl, pa konsèy legal. Toujou verifye ak yon avoka imigrasyon kalifye.",
     translating: "Ap tradui...",
+    requestLawyer: "Mande Avoka",
+    lawyerDescription: "Konekte ak yon avoka imigrasyon gratis pou konsèy pwofesyonèl sou ka ou.",
   },
   pt: {
     newChat: "Novo Chat",
@@ -466,6 +480,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Tentar novamente",
     caseDisclaimer: "Estes sao dados reais, nao aconselhamento juridico. Sempre verifique com um advogado de imigracao qualificado.",
     translating: "Traduzindo...",
+    requestLawyer: "Solicitar Advogado",
+    lawyerDescription: "Conecte-se com um advogado de imigracao pro bono gratuito para orientacao profissional.",
   },
   ko: {
     newChat: "새 채팅",
@@ -519,6 +535,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "다시 시도",
     caseDisclaimer: "이것은 실제 사례 데이터이며 법적 조언이 아닙니다. 항상 자격을 갖춘 이민 변호사와 확인하세요.",
     translating: "번역 중...",
+    requestLawyer: "변호사 요청",
+    lawyerDescription: "무료 공익 이민 변호사와 연결하여 전문적인 안내를 받으세요.",
   },
   vi: {
     newChat: "Cuoc tro chuyen moi",
@@ -572,6 +590,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Thu lai",
     caseDisclaimer: "Day la du lieu vu an thuc, khong phai tu van phap ly. Luon xac minh voi luat su di tru co trinh do.",
     translating: "Dang dich...",
+    requestLawyer: "Yeu cau Luat su",
+    lawyerDescription: "Ket noi voi luat su di tru mien phi de duoc huong dan chuyen nghiep ve vu an cua ban.",
   },
   tl: {
     newChat: "Bagong Chat",
@@ -625,6 +645,8 @@ const translations: Record<string, Record<string, string>> = {
     tryAgain: "Subukan muli",
     caseDisclaimer: "Ito ay totoong data ng kaso, hindi legal na payo. Palaging kumonsulta sa isang kwalipikadong abogado sa imigrasyon.",
     translating: "Nagsasalin...",
+    requestLawyer: "Humiling ng Abogado",
+    lawyerDescription: "Kumonekta sa isang libreng pro bono na abogado sa imigrasyon para sa propesyonal na gabay.",
   },
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, LayoutDashboard, LogIn, LogOut, MessageSquare, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, Trash2, Upload, UserPlus, Wallet } from "lucide-react";
+import { FileText, LayoutDashboard, LogIn, LogOut, MessageSquare, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, Scale, Trash2, Upload, UserPlus, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -125,6 +125,12 @@ export const Sidebar = () => {
                 <Link href="/dashboard" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/dashboard" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Dashboard" : undefined}>
                     <LayoutDashboard className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
+                </Link>
+
+                {/* Request a Lawyer */}
+                <Link href="/lawyer" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/lawyer" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("requestLawyer") : undefined}>
+                    <Scale className="w-5 h-5 shrink-0" />
+                    <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("requestLawyer")}</span>
                 </Link>
 
                 {/* Wallet */}

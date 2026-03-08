@@ -109,6 +109,25 @@ export const caseCredit = pgTable("case_credit", {
   referenceCount: integer("reference_count").notNull().default(0),
 });
 
+// Lawyer requests — users requesting free pro bono legal consultation.
+export const lawyerRequest = pgTable("lawyer_request", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id),
+  caseType: text("case_type").notNull(),
+  countryOfOrigin: text("country_of_origin").notNull(),
+  summary: text("summary").notNull(),
+  urgency: text("urgency").notNull().default("medium"), // low | medium | high | urgent
+  preferredLanguage: text("preferred_language").notNull().default("en"),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  relatedCid: text("related_cid"),
+  status: text("status").notNull().default("pending"), // pending | matched | completed | cancelled
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Individual credit events — log each AI citation.
 export const creditEvent = pgTable("credit_event", {
   id: serial("id").primaryKey(),

@@ -23,6 +23,7 @@ import { trustRoutes } from "./routes/trust";
 import { ttsRoutes } from "./routes/tts";
 import { uploadRoutes } from "./routes/upload";
 import { verifyRoutes } from "./routes/verify";
+import { lawyerRoutes } from "./routes/lawyer";
 import { escrowService } from "./services/escrow";
 
 const app = new Hono();
@@ -66,6 +67,7 @@ app.route("/api/tts", ttsRoutes);
 app.route("/api/escrow", escrowRoutes);
 app.route("/api/trust", trustRoutes);
 app.route("/api/credits", creditRoutes);
+app.route("/api/lawyer", lawyerRoutes);
 
 // Auto-release pending escrows every 30 seconds.
 setInterval(() => {

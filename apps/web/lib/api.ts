@@ -242,6 +242,50 @@ export const getTrustStatus = async (cid: string): Promise<TrustVoteSummary> => 
   return apiFetch(`/api/trust/status/${cid}`);
 };
 
+// --- Lawyer requests ---
+
+export interface LawyerRequestData {
+  caseType: string;
+  countryOfOrigin: string;
+  summary: string;
+  urgency: "low" | "medium" | "high" | "urgent";
+  preferredLanguage: string;
+  contactEmail: string;
+  contactPhone?: string;
+  relatedCid?: string;
+}
+
+export interface LawyerRequestRecord {
+  id: number;
+  userId: string;
+  caseType: string;
+  countryOfOrigin: string;
+  summary: string;
+  urgency: string;
+  preferredLanguage: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  relatedCid: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const createLawyerRequest = async (data: LawyerRequestData): Promise<LawyerRequestRecord> => {
+  return apiFetch("/api/lawyer", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+};
+
+export const listLawyerRequests = async (): Promise<{ requests: LawyerRequestRecord[] }> => {
+  return apiFetch("/api/lawyer");
+};
+
+export const cancelLawyerRequest = async (id: number): Promise<LawyerRequestRecord> => {
+  return apiFetch(`/api/lawyer/${id}/cancel`, { method: "PATCH" });
+};
+
 // --- Credits ---
 
 export const getMyCredits = async (): Promise<CreditInfo[]> => {
