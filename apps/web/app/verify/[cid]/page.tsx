@@ -116,7 +116,7 @@ const VerifyPage = async ({ params }: VerifyPageProps) => {
           {/* Explanation. */}
           <div className="border-t border-[#363C4A] pt-4">
             <p className="text-xs text-[#6B7280]">
-              Lumina stores case files on Pinata Private IPFS. Each file receives a content
+              ImmiVault stores case files on Pinata Private IPFS. Each file receives a content
               identifier (CID) — a cryptographic hash of its contents. If the file were modified,
               the CID would change. The file signature proves who uploaded the file and when,
               providing a tamper-evident audit trail.

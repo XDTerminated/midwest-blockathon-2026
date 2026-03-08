@@ -1,4 +1,4 @@
-// LuminaRegistry contract ABI and addresses.
+// ImmiVaultRegistry contract ABI and addresses.
 
 export const REGISTRY_ABI = [
   {
@@ -112,7 +112,7 @@ export const ERC20_ABI = [
   },
 ] as const;
 
-// LuminaEscrow ABI
+// ImmiVaultEscrow ABI
 export const ESCROW_ABI = [
   {
     inputs: [{ name: "_usdc", type: "address" }, { name: "_treasury", type: "address" }],

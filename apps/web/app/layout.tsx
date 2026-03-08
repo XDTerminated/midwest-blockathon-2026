@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 
 export const metadata: Metadata = {
-  title: "Lumina — Community Immigration Legal Research",
+  title: "ImmiVault — Community Immigration Legal Research",
   description:
     "Community-powered immigration legal research. Real anonymized cases, AI-assisted search, and micropayments for contributors.",
 };

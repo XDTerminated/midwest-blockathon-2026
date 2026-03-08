@@ -6,7 +6,7 @@ import {
   CONTRACT_ADDRESSES,
   STAKE_AMOUNT_USDC,
   STAKE_AMOUNT_DISPLAY,
-} from "@lumina/shared";
+} from "@immivault/shared";
 import { Loader2, Lock, CheckCircle, AlertTriangle, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";

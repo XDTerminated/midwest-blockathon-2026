@@ -2,7 +2,7 @@ import { eq, and, lt, sql } from "drizzle-orm";
 
 import { db } from "../db";
 import { caseEscrow, trustVote } from "../db/schema";
-import type { EscrowStatus, TrustVoteType } from "@lumina/shared";
+import type { EscrowStatus, TrustVoteType } from "@immivault/shared";
 
 const REQUIRED_APPROVALS = 2;
 const REQUIRED_FLAGS = 2;

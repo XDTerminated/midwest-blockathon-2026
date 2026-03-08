@@ -12,7 +12,7 @@
     "@anthropic-ai/sdk": "^0.51.0",
     "@hono/node-server": "^1.13.8",
     "@hono/zod-validator": "^0.7.6",
-    "@lumina/shared": "workspace:*",
+    "@immivault/shared": "workspace:*",
     "@neondatabase/serverless": "^1.0.2",
     "better-auth": "^1.5.4",
     "better-sqlite3": "^12.6.2",

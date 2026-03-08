@@ -1,7 +1,7 @@
 "use client";
 
-import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@lumina/shared";
-import type { EscrowInfo, CreditInfo } from "@lumina/shared";
+import { ACCESS_PRICE_DISPLAY, STAKE_AMOUNT_DISPLAY } from "@immivault/shared";
+import type { EscrowInfo, CreditInfo } from "@immivault/shared";
 import { CheckCircle, Clock, ExternalLink, Eye, FileText, Lock, Loader2, Star, TrendingUp, Wallet, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
