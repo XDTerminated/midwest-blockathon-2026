@@ -71,6 +71,7 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="new-password"
               className="w-full bg-[#1C2030] border border-[#363C4A] rounded-[10px] px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6B7280] outline-none focus:border-[#D4AD5A] transition"
               placeholder="Your password"
             />
