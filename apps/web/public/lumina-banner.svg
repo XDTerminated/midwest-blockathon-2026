@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#1a1e2e"/>
+      <stop offset="60%" stop-color="#121620"/>
+      <stop offset="100%" stop-color="#0a0d14"/>
+    </radialGradient>
+    <radialGradient id="candleGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(212,173,90,0.15)"/>
+      <stop offset="40%" stop-color="rgba(212,173,90,0.05)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <linearGradient id="bannerFlameOuter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD54F"/>
+      <stop offset="40%" stop-color="#FF9800"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <linearGradient id="bannerFlameInner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF9C4"/>
+      <stop offset="60%" stop-color="#FFE082"/>
+      <stop offset="100%" stop-color="#FFB74D"/>
+    </linearGradient>
+    <linearGradient id="bannerCandleShade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.12)"/>
+    </linearGradient>
+    <filter id="flameBlur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+    <filter id="glowFilter">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Quantico:wght@400;700&amp;family=Questrial&amp;display=swap');
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- Warm ambient glow behind candle -->
+  <ellipse cx="540" cy="320" rx="300" ry="280" fill="url(#candleGlow)"/>
+
+  <!-- Candle group, centered-left area -->
+  <g transform="translate(490, 210) scale(2.5)">
+    <!-- Candle body -->
+    <rect x="20" y="40" width="24" height="52" rx="4" fill="#d4c89a"/>
+    <rect x="20" y="40" width="24" height="52" rx="4" fill="url(#bannerCandleShade)"/>
+    <!-- Wick -->
+    <rect x="30" y="32" width="4" height="12" rx="2" fill="#4a4a3a"/>
+    <!-- Flame outer glow -->
+    <path d="M32 4 C26 16, 20 24, 22 32 C24 38, 28 40, 32 40 C36 40, 40 38, 42 32 C44 24, 38 16, 32 4Z" fill="url(#bannerFlameOuter)" opacity="0.3" filter="url(#flameBlur)"/>
+    <!-- Flame outer -->
+    <path d="M32 4 C26 16, 20 24, 22 32 C24 38, 28 40, 32 40 C36 40, 40 38, 42 32 C44 24, 38 16, 32 4Z" fill="url(#bannerFlameOuter)"/>
+    <!-- Flame inner -->
+    <path d="M32 14 C29 20, 26 26, 28 32 C29 36, 31 38, 32 38 C33 38, 35 36, 36 32 C38 26, 35 20, 32 14Z" fill="url(#bannerFlameInner)"/>
+  </g>
+
+  <!-- "Lumina" text -->
+  <text x="640" y="390" font-family="Quantico, sans-serif" font-weight="700" font-size="96" fill="#D4AD5A" letter-spacing="6" filter="url(#glowFilter)">Lumina</text>
+
+  <!-- Tagline -->
+  <text x="640" y="445" font-family="Questrial, sans-serif" font-size="22" fill="#9CA3AF" letter-spacing="1">Community Immigration Legal Research</text>
+
+  <!-- Subtle bottom border line -->
+  <line x1="520" y1="480" x2="760" y2="480" stroke="#D4AD5A" stroke-width="1" opacity="0.3"/>
+</svg>

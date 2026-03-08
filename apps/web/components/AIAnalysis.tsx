@@ -49,7 +49,7 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
             return;
         }
 
-        const text = result.analysis.replace(/\[Case CID: [^\]]+\]/g, "");
+        const text = result.analysis.replace(/\[case:\d+\|[^\]]+\]/gi, "");
         const lang = detectLang(text);
 
         setLoading(true);
@@ -136,25 +136,30 @@ export const AIAnalysis = ({ result }: AIAnalysisProps) => {
     );
 };
 
-// Replace [Case CID: <cid>] patterns with CitedCase badges.
+// Replace [case:N|CID] patterns with clickable CitedCase badges.
 const processCitations = (content: React.ReactNode, citedCases: SearchResult["citedCases"]): React.ReactNode => {
     if (typeof content !== "string") return content;
 
-    const cidPattern = /\[Case CID: ([^\]]+)\]/g;
+    const caseRefPattern = /\[case:(\d+)\|([^\]]+)\]/gi;
     const parts: React.ReactNode[] = [];
     let lastIndex = 0;
     let match;
 
-    while ((match = cidPattern.exec(content)) !== null) {
+    while ((match = caseRefPattern.exec(content)) !== null) {
         if (match.index > lastIndex) {
             parts.push(content.slice(lastIndex, match.index));
         }
-        const cid = match[1];
+        const num = match[1];
+        const cid = match[2];
         const cited = citedCases.find((c) => c.cid === cid);
         if (cited) {
-            parts.push(<CitedCase key={cid} ref_={cited} />);
+            parts.push(<CitedCase key={`${cid}-${num}`} ref_={cited} />);
         } else {
-            parts.push(match[0]);
+            parts.push(
+                <a key={`${cid}-${num}`} href={`/case/${cid}`} className="inline-flex items-center gap-1 text-[#D4AD5A] hover:underline text-xs font-medium mx-0.5">
+                    View Case
+                </a>
+            );
         }
         lastIndex = match.index + match[0].length;
     }

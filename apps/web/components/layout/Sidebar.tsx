@@ -4,6 +4,7 @@ import { FileText, LayoutDashboard, LogIn, LogOut, MessageSquare, MessageSquareP
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
@@ -76,6 +77,7 @@ export const Sidebar = () => {
     const isWalletActive = isConnected && address;
 
     return (
+        <>
         <aside className={cn("shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] flex flex-col py-6 sticky top-0 shadow-[4px_0_16px_rgba(0,0,0,0.3)]", mounted && "transition-all duration-200", collapsed ? "w-17 px-3" : "w-65 px-5")}>
             {/* Top row: logo + collapse toggle. */}
             <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-between")}>
@@ -192,25 +194,28 @@ export const Sidebar = () => {
                 )}
             </div>
 
-            {/* Disconnect wallet confirmation modal */}
-            {showDisconnectConfirm && (
-                <>
-                    <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowDisconnectConfirm(false)} />
-                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-[#1C2030] border border-[#363C4A] rounded-xl p-6 shadow-2xl w-80 text-center">
-                        <Wallet className="w-8 h-8 text-[#D4AD5A] mx-auto mb-3" />
-                        <h3 className="text-[#e8e8f0] font-semibold text-sm mb-1">Disconnect Wallet?</h3>
-                        <p className="text-[#6B7280] text-xs mb-5">You will need to reconnect to make payments or stake cases.</p>
-                        <div className="flex gap-3">
-                            <button onClick={() => setShowDisconnectConfirm(false)} className="flex-1 text-sm text-[#9CA3AF] border border-[#363C4A] px-4 py-2 rounded-lg hover:bg-[#121620] transition cursor-pointer">
-                                Cancel
-                            </button>
-                            <button onClick={() => { disconnect(); setShowDisconnectConfirm(false); }} className="flex-1 text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition cursor-pointer">
-                                Disconnect
-                            </button>
-                        </div>
-                    </div>
-                </>
-            )}
         </aside>
+
+        {/* Disconnect wallet confirmation modal — portaled to body so it's above everything */}
+        {showDisconnectConfirm && mounted && createPortal(
+            <>
+                <div className="fixed inset-0 bg-black/50 z-[9999]" onClick={() => setShowDisconnectConfirm(false)} />
+                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] bg-[#1C2030] border border-[#363C4A] rounded-xl p-6 shadow-2xl w-80 text-center">
+                    <Wallet className="w-8 h-8 text-[#D4AD5A] mx-auto mb-3" />
+                    <h3 className="text-[#e8e8f0] font-semibold text-sm mb-1">Disconnect Wallet?</h3>
+                    <p className="text-[#6B7280] text-xs mb-5">You will need to reconnect to make payments or stake cases.</p>
+                    <div className="flex gap-3">
+                        <button onClick={() => setShowDisconnectConfirm(false)} className="flex-1 text-sm text-[#9CA3AF] border border-[#363C4A] px-4 py-2 rounded-lg hover:bg-[#121620] transition cursor-pointer">
+                            Cancel
+                        </button>
+                        <button onClick={() => { disconnect(); setShowDisconnectConfirm(false); }} className="flex-1 text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition cursor-pointer">
+                            Disconnect
+                        </button>
+                    </div>
+                </div>
+            </>,
+            document.body
+        )}
+        </>
     );
 };

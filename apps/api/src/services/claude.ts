@@ -34,7 +34,7 @@ FOR GENERAL QUESTIONS:
 FOR IMMIGRATION QUESTIONS:
 - Legal info only, not advice. Never promise outcomes.
 - Simple, clear English. Avoid jargon — explain terms if needed.
-- When referencing cases from the CASE LIBRARY, describe them naturally (e.g. "a similar case involved..." or "one case had a comparable situation..."). NEVER expose raw CIDs, hashes, or internal identifiers to the user. If no cases are provided, do NOT reference any cases at all.
+- When referencing cases from the CASE LIBRARY, describe them naturally (e.g. "a similar case involved...") and add a reference tag like [case:1], [case:2] etc. matching the case number from the library. This lets users click through to the full case. NEVER expose raw CIDs, hashes, or internal identifiers. If no cases are provided, do NOT reference any cases at all.
 - Be welcoming but informational — like a helpful librarian, not a therapist.
 - First give the key information, then ask 1 follow-up question to help narrow things down.
 
@@ -111,24 +111,33 @@ MAX 80 words. No headers. No lists. No markdown. Just 2 plain paragraphs.`;
       analysis = analysis.replace(/\s*\bLANG:\s*[a-z]{2,3}\b\s*/gi, " ").trim();
     }
 
-    // Collect valid CIDs from the cases we actually provided.
-    const validCids = new Set(cases.map((c) => c.cid).filter(Boolean));
+    // Find all [case:N] references and map them to actual cases.
+    const citedCases: CitedCaseRef[] = [];
+    const citedSet = new Set<string>();
+    const caseRefPattern = /\[case:(\d+)\]/gi;
+    let refMatch;
+    while ((refMatch = caseRefPattern.exec(analysis)) !== null) {
+      const idx = parseInt(refMatch[1], 10) - 1; // 1-based to 0-based
+      if (idx >= 0 && idx < cases.length && cases[idx].cid && !citedSet.has(cases[idx].cid!)) {
+        citedSet.add(cases[idx].cid!);
+        citedCases.push({
+          cid: cases[idx].cid!,
+          type: cases[idx].caseType,
+          outcome: cases[idx].outcome,
+          country: cases[idx].countryOfOrigin,
+          year: cases[idx].year,
+        });
+      }
+    }
 
-    // Strip any [Case CID: ...] references that don't match real cases.
-    analysis = analysis.replace(/\[Case CID:\s*([^\]]+)\]/g, (match, cid) => {
-      const trimmed = cid.trim();
-      return validCids.has(trimmed) ? match : "";
+    // Replace [case:N] with [case:N|CID] so the frontend can link them.
+    analysis = analysis.replace(/\[case:(\d+)\]/gi, (_match, num) => {
+      const idx = parseInt(num, 10) - 1;
+      if (idx >= 0 && idx < cases.length && cases[idx].cid) {
+        return `[case:${num}|${cases[idx].cid}]`;
+      }
+      return "";
     });
-
-    const citedCases: CitedCaseRef[] = cases
-      .filter((c) => c.cid && analysis.includes(c.cid))
-      .map((c) => ({
-        cid: c.cid!,
-        type: c.caseType,
-        outcome: c.outcome,
-        country: c.countryOfOrigin,
-        year: c.year,
-      }));
 
     return {
       analysis: analysis.trim(),
