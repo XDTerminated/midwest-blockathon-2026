@@ -45,6 +45,12 @@ export const StakeStep = ({ cid, contributorWallet, onComplete, onSkip }: Props)
       return;
     }
 
+    if (!window.ethereum) {
+      setError("No crypto wallet detected. Please install MetaMask or another Web3 wallet to stake.");
+      setState("error");
+      return;
+    }
+
     if (!isConnected) {
       setError("Please connect your wallet before staking.");
       setState("error");
@@ -152,7 +158,7 @@ export const StakeStep = ({ cid, contributorWallet, onComplete, onSkip }: Props)
           <button
             onClick={handleStake}
             disabled={state !== "idle"}
-            className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center gap-2 mx-auto"
+            className="bg-[#C9A54E] hover:bg-[#d4a030] disabled:opacity-50 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center gap-2 mx-auto cursor-pointer"
           >
             {state !== "idle" || waitingTx ? (
               <>

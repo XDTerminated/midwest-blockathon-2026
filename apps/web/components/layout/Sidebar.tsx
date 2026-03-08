@@ -10,6 +10,7 @@ import { injected } from "wagmi/connectors";
 import { deleteChatSession, listChatSessions, type ChatSession } from "@/lib/api";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useLanguage } from "@/lib/i18n";
+import { LuminaLogo } from "@/components/LuminaLogo";
 import { cn, formatCID } from "@/lib/utils";
 
 export const Sidebar = () => {
@@ -21,6 +22,7 @@ export const Sidebar = () => {
     });
     const [mounted, setMounted] = useState(false);
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+    const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -62,6 +64,10 @@ export const Sidebar = () => {
         try {
             await deleteChatSession(id);
             setChatSessions((prev) => prev.filter((s) => s.id !== id));
+            // If we deleted the active session, navigate to a fresh chat.
+            if (activeSessionId === String(id)) {
+                router.replace("/search");
+            }
         } catch {
             // Non-fatal.
         }
@@ -71,8 +77,9 @@ export const Sidebar = () => {
 
     return (
         <aside className={cn("shrink-0 h-screen bg-[#121620] border-r border-[#363C4A] flex flex-col py-6 sticky top-0 shadow-[4px_0_16px_rgba(0,0,0,0.3)]", mounted && "transition-all duration-200", collapsed ? "w-17 px-3" : "w-65 px-5")}>
-            {/* Top row: collapse toggle. */}
-            <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-end")}>
+            {/* Top row: logo + collapse toggle. */}
+            <div className={cn("flex items-center mb-10", collapsed ? "justify-center" : "justify-between")}>
+                {!collapsed && <LuminaLogo size="sm" />}
                 <div className="relative group">
                     <button onClick={() => setCollapsed(!collapsed)} className="p-2 rounded-lg text-[#6B7280] hover:text-[#9CA3AF] hover:bg-[#1C2030] transition">
                         {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
@@ -110,25 +117,31 @@ export const Sidebar = () => {
                 )}
 
                 {/* Upload */}
-                <Link href="/upload" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("uploadFile") : undefined}>
+                <Link href="/upload" onClick={(e) => { if (pathname === "/upload") e.preventDefault(); }} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/upload" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("uploadFile") : undefined}>
                     <Upload className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("uploadFile")}</span>
                 </Link>
 
                 {/* Files */}
-                <Link href="/files" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/files" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("files") : undefined}>
+                <Link href="/files" onClick={(e) => { if (pathname === "/files") e.preventDefault(); }} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/files" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? t("files") : undefined}>
                     <FileText className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{t("files")}</span>
                 </Link>
 
                 {/* Dashboard */}
-                <Link href="/dashboard" className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/dashboard" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Dashboard" : undefined}>
+                <Link href="/dashboard" onClick={(e) => { if (pathname === "/dashboard") e.preventDefault(); }} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", pathname === "/dashboard" ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? "Dashboard" : undefined}>
                     <LayoutDashboard className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>Dashboard</span>
                 </Link>
 
                 {/* Wallet */}
-                <button onClick={() => (isWalletActive ? disconnect() : connect({ connector: injected() }))} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : t("wallet")) : undefined}>
+                <button onClick={() => {
+                    if (isWalletActive) {
+                        setShowDisconnectConfirm(true);
+                    } else {
+                        connect({ connector: injected() });
+                    }
+                }} className={cn("flex items-center transition cursor-pointer", collapsed ? "justify-center" : "gap-3", isWalletActive ? "text-[#D4AD5A]" : "text-[#6B7280] hover:text-[#9CA3AF]")} title={collapsed ? (isWalletActive ? formatCID(address, 4) : t("wallet")) : undefined}>
                     <Wallet className="w-5 h-5 shrink-0" />
                     <span className={cn("text-[13px] whitespace-nowrap overflow-hidden", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>{isWalletActive ? formatCID(address, 4) : t("wallet")}</span>
                 </button>
@@ -172,6 +185,26 @@ export const Sidebar = () => {
                     </>
                 )}
             </div>
+
+            {/* Disconnect wallet confirmation modal */}
+            {showDisconnectConfirm && (
+                <>
+                    <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowDisconnectConfirm(false)} />
+                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-[#1C2030] border border-[#363C4A] rounded-xl p-6 shadow-2xl w-80 text-center">
+                        <Wallet className="w-8 h-8 text-[#D4AD5A] mx-auto mb-3" />
+                        <h3 className="text-[#e8e8f0] font-semibold text-sm mb-1">Disconnect Wallet?</h3>
+                        <p className="text-[#6B7280] text-xs mb-5">You will need to reconnect to make payments or stake cases.</p>
+                        <div className="flex gap-3">
+                            <button onClick={() => setShowDisconnectConfirm(false)} className="flex-1 text-sm text-[#9CA3AF] border border-[#363C4A] px-4 py-2 rounded-lg hover:bg-[#121620] transition cursor-pointer">
+                                Cancel
+                            </button>
+                            <button onClick={() => { disconnect(); setShowDisconnectConfirm(false); }} className="flex-1 text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition cursor-pointer">
+                                Disconnect
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
         </aside>
     );
 };

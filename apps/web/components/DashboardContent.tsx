@@ -85,7 +85,7 @@ export const DashboardContent = () => {
         </div>
         <button
           onClick={() => connect({ connector: injected() })}
-          className="flex items-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg transition"
+          className="flex items-center gap-2 bg-[#C9A54E] hover:bg-[#d4a030] text-white font-semibold px-6 py-3 rounded-lg transition cursor-pointer"
         >
           <Wallet className="w-4 h-4" />
           Connect Wallet
