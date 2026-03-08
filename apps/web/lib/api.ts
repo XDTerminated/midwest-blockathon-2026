@@ -10,7 +10,7 @@ import type {
   TrustVoteSummary,
   UploadResult,
   VerifyResult,
-} from "@immivault/shared";
+} from "@lumina/shared";
 
 export type { CaseListItem };
 

@@ -46,7 +46,7 @@ app.onError((err, c) => {
   return c.json({ error: "Internal server error", message: err.message }, 500);
 });
 
-app.get("/health", (c) => c.json({ ok: true, service: "immivault-api" }));
+app.get("/health", (c) => c.json({ ok: true, service: "lumina-api" }));
 
 // BetterAuth handler — mount on /api/auth/*.
 app.all("/api/auth/*", (c) => {
@@ -73,6 +73,6 @@ setInterval(() => {
 }, 30_000);
 
 const port = Number(process.env.PORT ?? 3001);
-console.log(`ImmiVault API running on http://localhost:${port}`);
+console.log(`Lumina API running on http://localhost:${port}`);
 
 serve({ fetch: app.fetch, port });

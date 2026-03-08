@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title ImmiVaultEscrow
+/// @title LuminaEscrow
 /// @notice Staking & escrow for case uploads with trust-based release
-contract ImmiVaultEscrow {
+contract LuminaEscrow {
     IERC20 public immutable usdc;
     address public immutable treasury;
 

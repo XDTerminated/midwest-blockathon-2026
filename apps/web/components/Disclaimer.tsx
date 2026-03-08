@@ -1,6 +1,6 @@
 "use client";
 
-import { LEGAL_DISCLAIMER } from "@immivault/shared";
+import { LEGAL_DISCLAIMER } from "@lumina/shared";
 import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 

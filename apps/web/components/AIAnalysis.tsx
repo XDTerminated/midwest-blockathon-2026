@@ -1,6 +1,6 @@
 "use client";
 
-import type { SearchResult } from "@immivault/shared";
+import type { SearchResult } from "@lumina/shared";
 import { Loader2, Square, Volume2 } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";

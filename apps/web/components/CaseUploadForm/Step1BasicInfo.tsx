@@ -1,6 +1,6 @@
 "use client";
 
-import { CASE_TYPES, OUTCOMES } from "@immivault/shared";
+import { CASE_TYPES, OUTCOMES } from "@lumina/shared";
 
 import type { FormData } from "./index";
 

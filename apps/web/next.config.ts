@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@immivault/shared"],
+  transpilePackages: ["@lumina/shared"],
 };
 
 export default nextConfig;

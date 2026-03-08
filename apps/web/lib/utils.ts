@@ -1,4 +1,4 @@
-import type { Outcome } from "@immivault/shared";
+import type { Outcome } from "@lumina/shared";
 import { clsx, type ClassValue } from "clsx";
 
 export const cn = (...inputs: ClassValue[]) => {

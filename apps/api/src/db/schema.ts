@@ -70,7 +70,7 @@ export const chatMessage = pgTable("chat_message", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Escrow tracking — mirrors on-chain ImmiVaultEscrow state for fast queries.
+// Escrow tracking — mirrors on-chain LuminaEscrow state for fast queries.
 export const caseEscrow = pgTable("case_escrow", {
   id: serial("id").primaryKey(),
   cid: text("cid").notNull().unique(),

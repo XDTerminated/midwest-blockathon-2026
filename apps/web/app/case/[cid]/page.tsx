@@ -1,6 +1,6 @@
 "use client";
 
-import { CASE_TYPES, type CaseRecord } from "@immivault/shared";
+import { CASE_TYPES, type CaseRecord } from "@lumina/shared";
 import { ArrowLeft, BookOpen, Clock, Copy, FileText, Globe, Lightbulb, Loader2, Paperclip, Scale, Share2, Shield } from "lucide-react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";

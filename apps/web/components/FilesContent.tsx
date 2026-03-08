@@ -1,6 +1,6 @@
 "use client";
 
-import { CASE_TYPES } from "@immivault/shared";
+import { CASE_TYPES } from "@lumina/shared";
 import { Loader2, Search, X, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -122,8 +122,8 @@ export function FilesContent() {
                   </span>
 
                   {/* Outcome */}
-                  <span className={cn("text-[11px] font-semibold px-2 py-0.5 rounded-full text-center w-fit", outcomeColor(item.outcome as import("@immivault/shared").Outcome))}>
-                    {outcomeLabel(item.outcome as import("@immivault/shared").Outcome)}
+                  <span className={cn("text-[11px] font-semibold px-2 py-0.5 rounded-full text-center w-fit", outcomeColor(item.outcome as import("@lumina/shared").Outcome))}>
+                    {outcomeLabel(item.outcome as import("@lumina/shared").Outcome)}
                   </span>
 
                   {/* Arrow */}

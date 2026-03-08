@@ -7,7 +7,7 @@ const tsupConfig = defineConfig({
   splitting: false,
   bundle: true,
   // Bundle the shared workspace package (TS source, not compiled).
-  noExternal: ["@immivault/shared"],
+  noExternal: ["@lumina/shared"],
   // Keep heavy runtime deps as externals.
   external: [
     "pinata",

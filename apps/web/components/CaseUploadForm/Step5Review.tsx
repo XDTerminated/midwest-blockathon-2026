@@ -1,6 +1,6 @@
 "use client";
 
-import { CASE_TYPES, OUTCOMES } from "@immivault/shared";
+import { CASE_TYPES, OUTCOMES } from "@lumina/shared";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 

@@ -10,7 +10,7 @@
     "declaration": true,
     "types": ["node"],
     "paths": {
-      "@immivault/shared": ["../../packages/shared/src/index.ts"]
+      "@lumina/shared": ["../../packages/shared/src/index.ts"]
     }
   },
   "include": ["src", "../../packages/shared/src"],

@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/// @title ImmiVaultRegistry
+/// @title LuminaRegistry
 /// @notice On-chain registry for immigration case CIDs with micropayment tracking
-contract ImmiVaultRegistry is Ownable {
+contract LuminaRegistry is Ownable {
     IERC20 public immutable usdc;
     uint256 public accessPrice; // in USDC smallest unit (6 decimals)
 

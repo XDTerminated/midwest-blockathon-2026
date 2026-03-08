@@ -1,4 +1,4 @@
-import type { CaseListItem, CaseRecord, CaseType, CategorySlug } from "@immivault/shared";
+import type { CaseListItem, CaseRecord, CaseType, CategorySlug } from "@lumina/shared";
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { PinataSDK } from "pinata";

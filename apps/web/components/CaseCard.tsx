@@ -1,4 +1,4 @@
-import { CASE_TYPES, type CaseListItem } from "@immivault/shared";
+import { CASE_TYPES, type CaseListItem } from "@lumina/shared";
 import { ArrowRight, Clock, Globe, Scale } from "lucide-react";
 import Link from "next/link";
 

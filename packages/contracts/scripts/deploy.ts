@@ -13,18 +13,18 @@ async function main() {
   const ACCESS_PRICE = 100000n;
 
   // Deploy Registry
-  const Registry = await ethers.getContractFactory("ImmiVaultRegistry");
+  const Registry = await ethers.getContractFactory("LuminaRegistry");
   const registry = await Registry.deploy(usdcAddress, ACCESS_PRICE);
   await registry.waitForDeployment();
   const registryAddress = await registry.getAddress();
-  console.log("ImmiVaultRegistry deployed to:", registryAddress);
+  console.log("LuminaRegistry deployed to:", registryAddress);
 
   // Deploy Escrow
-  const Escrow = await ethers.getContractFactory("ImmiVaultEscrow");
+  const Escrow = await ethers.getContractFactory("LuminaEscrow");
   const escrow = await Escrow.deploy(usdcAddress, treasury);
   await escrow.waitForDeployment();
   const escrowAddress = await escrow.getAddress();
-  console.log("ImmiVaultEscrow deployed to:", escrowAddress);
+  console.log("LuminaEscrow deployed to:", escrowAddress);
 
   console.log("\nUSDC address:", usdcAddress);
   console.log("Treasury:", treasury);

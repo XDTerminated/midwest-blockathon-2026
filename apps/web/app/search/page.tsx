@@ -1,6 +1,6 @@
 "use client";
 
-import type { SearchResult } from "@immivault/shared";
+import type { SearchResult } from "@lumina/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
