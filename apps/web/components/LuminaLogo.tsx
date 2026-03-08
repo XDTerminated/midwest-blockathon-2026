@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const FlameIcon = ({ className = "" }: { className?: string }) => (
   <svg viewBox="0 0 64 96" fill="none" className={className}>
     <rect x="20" y="40" width="24" height="52" rx="4" fill="#d4c89a" />
@@ -31,11 +33,11 @@ export const LuminaLogo = ({ size = "md" }: { size?: "sm" | "md" }) => {
   const textSize = size === "sm" ? "text-xl" : "text-3xl";
 
   return (
-    <div className="flex items-center gap-1.5">
+    <Link href="/" className="flex items-center gap-1.5">
       <FlameIcon className={iconSize} />
       <span className={`${textSize} font-bold text-[#D4AD5A] font-quantico tracking-wide`}>
         Lumina
       </span>
-    </div>
+    </Link>
   );
 };
