@@ -1,6 +1,6 @@
 "use client";
 
-import { CASE_TYPES } from "@lumina/shared";
+import { CASE_TYPES } from "@immivault/shared";
 import { AlertTriangle, CheckCircle, Clock, Loader2, Scale, Send, X, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 

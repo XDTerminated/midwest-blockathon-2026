@@ -2,7 +2,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { FilesContent } from "@/components/FilesContent";
 
 export const metadata = {
-  title: "Files — ImmiVault",
+  title: "Files — Lumina",
 };
 
 export default function FilesPage() {
